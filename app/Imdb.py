@@ -6,7 +6,7 @@ from Library.AdderModuleF import Adder
 from Library.ConstantsModuleF import Constants
 from flask_login import current_user
 from app import db
-from django.db.models.sql.constants import ORDER_DIR
+
 
 
 def like(args, strg):
