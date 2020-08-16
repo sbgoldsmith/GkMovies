@@ -4,7 +4,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'sajyd6w487349phofnjkshdf45698t74htfi'
     #SQLALCHEMY_DATABASE_URI = "mysql://sbg:BABylon55!!@localhost/gkmovies"
-    SQLALCHEMY_DATABASE_URI='mysql+mysqlconnector://sbg:BABylon55!!@localhost/gkmovies'
+    SQLALCHEMY_DATABASE_URI='mysql+pymysql://sbg:BABylon55!!@localhost:3306/gkmovies'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     
