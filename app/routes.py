@@ -18,6 +18,7 @@ from datetime import datetime, timedelta
 from app.Imdb import ImdbFind
 from app.email import send_password_reset_email
 
+
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
