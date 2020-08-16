@@ -1,0 +1,54 @@
+<HTML>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+<HEAD>
+<TITLE>
+Goldkeys Movies - {{ title }}
+</TITLE>
+
+<link rel="stylesheet" href="{{url_for('static', filename='client/GkMovies.css')}}">
+<link href="//db.onlinewebfonts.com/c/157c6cc36dd65b1b2adc9e7f3329c761?family=Amazon+Ember" rel="stylesheet" type="text/css">
+<script src="{{url_for('.static', filename='client/GkMovies.js')}}"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+<style>
+{{ sstyle }}
+</style>
+
+</HEAD>
+<BODY>
+<div class="helv">
+     Goldkeys Movies 
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ 
+     {% if current_user.is_anonymous %}
+     <a href="{{ url_for('index') }}">Home</a>&nbsp;&nbsp;    
+     {% else %}
+
+     Welcome {{ current_user.firstName }}
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <a href="{{ url_for('home') }}">Home</a>&nbsp;&nbsp;
+     <a href="{{ url_for('addMovies') }}">Add</a>&nbsp;&nbsp;
+     <a href="{{ url_for('displayMovies') }}">Display</a>&nbsp;&nbsp;
+     <a href="{{ url_for('settings') }}">Settings</a>&nbsp;&nbsp;          
+     <a href="{{ url_for('logout') }}">Logout</a>
+     {% endif %}
+</div>
+        
+<hr>
+
+<H2> {{ title }} </H2>
+
+{% block content %}
+
+
+
+
+
+{% endblock %}
+
+</BODY>
+</HTML>

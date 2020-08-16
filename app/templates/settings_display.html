@@ -1,0 +1,64 @@
+<div class="helv" width="500px" >
+Use this table to customize your Display Movies.  You can change the Label or Width of any column, hide or show columns, and change the order for which columns are shown. 
+<P>
+Click on a row to see more options for that row.  There is no submit button, all changes are made in real time.
+<P>
+Be careful not to make columns too narrow, they might not align with the headers.
+<P>
+
+</div>
+
+<table id="table">
+<tr>
+<th>Show</th>
+<th>Name</th>
+<th>Label</th>
+<th>Width</th>
+<th>Rows</th>
+</tr>
+
+{% for col in user.columns %}
+<tr id="user_{{ col.name }}">
+	<td align="center"><input type="checkbox" id="{{ col.name }}_vis" name="{{ col.name }}_vis" onclick="changeSettingsDisplayInput(this, '{{ col.name }}', 'vis', 'boolean')" {{ flasker.isVisible( col ) }}></td>
+	
+	<td>{{ col.name }}</td>
+	<td><input type="text" id="{{ col.name }}_label" name="{{ col.name }}_label" value="{{ col.label }}" size="10" onkeyup="changeSettingsDisplayInput(this, '{{ col.name }}', 'label', 'text')" ></td>
+	<td><input type="text" id="{{ col.name }}_cols" name="{{ col.name }}_cols" value="{{ col.cols }}" size="3" onkeyup="changeSettingsDisplayInput(this, '{{ col.name }}', 'cols', 'int')"></td>
+	<td><input type="text" id="{{ col.name }}_rows" name="{{ col.name }}_rows" value="{{ col.rows }}" size="3" onkeyup="changeSettingsDisplayInput(this, '{{ col.name }}', 'rows', 'int')"></td>
+	<td>
+	{% if col.name.startswith('user') %}
+	<select name="{{ col.name }}_dataFormat" id="{{ col.name }}_dataFormat" onchange="changeSettingsDisplayInput(this, '{{ col.name }}', 'dataFormat', 'text')" }}>
+  		<option value="text" {{ flasker.getSelected(col, 'text' ) }}>Text</option>
+  		<option value="date" {{ flasker.getSelected(col, 'date' ) }}>Date</option>
+  		<option value="number" {{ flasker.getSelected(col, 'number' ) }}>Number</option>
+  		<option value="currency" {{ flasker.getSelected(col, 'currency' ) }}>Currency</option>
+	</select>
+	{% else %}
+	&nbsp;
+	{% endif %}
+	</td>
+	
+	
+	<td id="arrow_{{ col.name }}" style="display:none;">
+		<a href="Javascript:upCol('{{ col.name }}' )"><img src="{{url_for('static', filename='images/upArrow.jpg')}}" width="15px"></a>
+		<a href="Javascript:dnCol('{{ col.name }}' )"><img src="{{url_for('static', filename='images/dnArrow.jpg')}}" width="15px"></a>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<a href="Javascript:resetCol('{{ col.name }}' )" class="helv_small">Reset</a>
+	</td>
+		
+</tr>
+{% endfor %}
+
+</table>
+
+&nbsp;&nbsp;&nbsp;
+<a href="Javascript:resetAll()" class="helv_small">Reset All</a> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="Javascript:resetSort()" class="helv_small">Reset Sort</a>
+
+<script type="text/javascript">
+settingsColors('{{ selectCol }}')
+</script>
+
+	

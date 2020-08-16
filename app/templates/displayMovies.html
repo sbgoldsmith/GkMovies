@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<TABLE  class="title_table" cellspacing="0">
+<TR>
+<TD >
+<SPAN  class="found_text">{{ movies|length }} Movies Found</SPAN>
+</TD>
+</TR>
+</TABLE>
+
+<TABLE  class="fixed_headers" cellspacing="0">
+<THEAD>
+<TR>
+{% for col in user.columns %}
+
+	{% if col.vis == 'T' %}
+	
+	<TD align="center">
+	<IMG src="{{ flasker.getArrow(col.name) }}" width="20" style="visibility: {{ flasker.getVisibility(col.name) }}; ">
+	<br>
+	{% if col.attribute.sortable == 'T' %}
+	<BUTTON  name="{{ col.name }}" type="submit" class="" onclick="doButton('{{ col.name }}')">{{ col.label }}</BUTTON>
+	{% else %}
+	<div class="button_height">{{ col.label }}</div>
+	{% endif %}
+	<br>
+	{% if col.attribute.searchable == 'T' %}
+	<INPUT  id="{{ col.name }}Search" name="{{ col.name }}Search" type="search"  value="{{ flasker.getArgValue(col.name) }}" style="width:{{ col.getWidth() }}px"  oninput="doSearch('{{ col.name }}')">
+	{% endif %}
+	<br>
+	</TD>
+	{% endif %}
+	
+{% endfor %}
+</TR>
+</THEAD>
+<TBODY>
+{% for movie in movies %}
+	<tr>
+	{% for col in user.columns %}
+	
+		{% if col.vis == 'T' %}
+		<td>
+		{% if col.attribute.dataType == "poster" %}
+			<a href="https://www.imdb.com/title/{{ movie.imdb_movie.tt }}" target="_blank"><img src="{{url_for('static', filename='posters')}}/{{ movie.imdb_movie.tt }}.jpg" width="50px"  /></a>
+		{% elif col.attribute.dataType == "img" %}
+			<a href="Javascript:{{ col.name }}('{{ movie.imdb_movie.id }}', '{{ movie.imdb_movie.title }}' )"><img src="/static/images/{{ col.name }}.jpg" width="{{ col.getWidth() }}px"  ></a>
+		{% elif col.attribute.editable == 'T' and col.rows < 2 %}
+			<input type="text"  id="{{ col.name }}_{{ movie.imdb_movie.id }}" name="{{ col.name }}_{{ movie.imdb_movie.id }}" value="{{ flasker.getFormatValue(movie, col) }}" style="width:{{ col.getWidth() }}px" onkeyup="changeInput('{{ col.name }}', '{{ movie.imdb_movie.id }}', '{{ col.attribute.dataType }}')" >
+		{% elif col.attribute.editable == "T" and col.rows > 1 %}
+<textarea id="{{ col.name }}_{{ movie.imdb_movie.id }}" name="{{ col.name }}_{{ movie.imdb_movie.id }}" style="width:{{ col.getWidth() }}px" rows="{{ col.rows }}"  onkeyup="changeInput('{{ col.name }}', '{{ movie.imdb_movie.id }}', '{{ col.attribute.dataType }}')" >{{ flasker.getFormatValue(movie, col) }}</textarea>
+		{% elif col.attribute.scrollable == 'T' %}
+		<div class="scrollable">
+{{ flasker.getFormatValue(movie, col) }}
+		</div>
+		{% elif col.name == 'title' %}
+			<a href="https://www.imdb.com/title/{{ movie.imdb_movie.tt }}" target="_blank">{{ flasker.getFormatValue(movie, col) }}</a>
+		{% elif col.name == 'genre' %}
+			{% for genre in movie.imdb_movie.genres %}
+				{{ flasker.getFormatString(genre.genre, col) }}<br>
+			{% endfor %}
+		{% elif col.name == 'actor' %}
+			{% for actor in movie.imdb_movie.actor_movies %}
+				<a href="https://www.imdb.com/name/{{ actor.nm }}">{{ flasker.getFormatString(actor.actor.actor, col) }}</a><br>
+			{% endfor %}
+		{% else %}
+			{{ flasker.getFormatValue(movie, col) }}
+        {% endif %}
+        </td>
+        {% endif %}
+     {% endfor %}
+     </tr>
+{% endfor %}
+</TABLE>
+
+<script>
+setSearchFocus( '{{ thisSearch }}' );
+</script>
+
+
+{% endblock %}
+

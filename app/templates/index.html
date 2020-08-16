@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<table>
+<tr>
+<td class="helv" valign="top" width = "400px">
+With this site you can record all your favorite movies and link them to the Internet Movie Database 
+<img src="{{url_for('.static', filename='images/imdb.jpg')}}"  style="vertical-align:middle" width="40">.  Add as many or as few as you like.
+Then sort or search for titles, reviews, plot lines, cast members, etc.  
+<P>
+Begin by Registering for an account, then sign in with your login and password.
+</td>
+
+<td width = "70px">
+&nbsp;
+</td>
+
+
+<td class="helv" >
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+	<div class="helv_small_color" >
+    {% for message in messages %}
+    {{ message }}<br>
+    {% endfor %}
+	</div>
+{% endif %}
+{% endwith %}
+          
+          
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.login.label }}<br>
+        {{ form.login(size=24) }}
+    </p>
+    <p>
+        {{ form.password.label }}<br>
+        {{ form.password(size=24) }}
+        <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<a class="helv_small" href="{{ url_for('reset_password_request') }}">Forgot password</a>
+    </p>
+    
+    <!--  <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>  -->
+    <p>{{ form.submit() }}</p>
+</form>
+<P><br>
+<p>New User? <a href="{{ url_for('register') }}">Click to Register!</a></p>
+</td>
+</tr>
+
+
+</table>
+
+{% endblock %}
+
+

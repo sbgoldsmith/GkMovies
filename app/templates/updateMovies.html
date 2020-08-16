@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+
+    {{ form.fromMovie.label }}{{ form.fromMovie(size=5) }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ form.toMovie.label }}{{ form.toMovie(size=5) }}
+ 
+<p>{{ form.submit() }}</p>    
+
+</form>
+
+
+
+<P>
+{{ message }}
+
+
+{% endblock %}
+

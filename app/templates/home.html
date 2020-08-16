@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="helv_section">
+Welcome To Goldkeys Movies.  With this site you can record all your favorite movies and link them to the Internet Movie Database 
+<img src="{{url_for('.static', filename='images/imdb.jpg')}}"  style="vertical-align:middle" width="40">.  Add as many or as few as you like.
+Then sort or search for titles, review, plot lines, cast members, etc.  
+<P>
+&nbsp;
+</div>
+
+
+
+<table class="home" width="650px">
+<tr>
+<td class="home" width="130" valign="top" ><a href="{{ url_for('addMovies') }}">Add to My Movies</a></td>
+<td class="home" >Go to this page first.  You will see a simple input box.  Start typing and matching movies from IMDb will be listed.  
+When one or more appears that you have seen, press the <strong>Add Movie</strong> button to add it to your list.  
+After you have added a few, go to the next page.</td>
+
+</tr>
+
+<tr>
+<td class="home" width="130" valign="top"><a href="{{ url_for('displayMovies') }}">Display My Movies</td>
+<td class="home" >This is the main Goldkeys Movies page.  The page lists all of your movies and some associated information from IMDb.  For each movie, you can enter some fields: stars you gave the movie, date you saw the
+movie was seen and your review.  The remaining fields come from IMDb and are update daily.  This is where you can search and sort.  CLick on a movie poster, title 
+or cast member to go to that page.</td>
+</tr>
+
+<tr>
+<td class="home" width="130" valign="top"><a href="{{ url_for('settings') }}">Settings</td>
+<td class="home" >This page is not implemented yet but eventually you can customize the columns that are displayed as well as adding your own.</td>
+</tr>
+
+{% if user.admin == 'T' %}
+<tr>
+<td class="home" width="130" valign="top"><a href="{{ url_for('updateMovies') }}">Update Movies</td>
+<td class="home" >Users with administrative permissions can run a manual update of IMDb information.</td>
+</tr>
+{% endif %}
+
+{% endblock %}
+
