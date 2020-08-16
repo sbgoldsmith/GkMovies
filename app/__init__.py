@@ -16,6 +16,7 @@ from app import routes, models
 
 #---------------------+
 
+'''
 from app.models import User, UserColumn, ImdbMovie
 from app.Imdb import ImdbFind
 from datetime import datetime
@@ -24,7 +25,8 @@ from Library.FlaskModule import FlaskHelper
 from Library.ServerModule import Inputter
 from sqlalchemy.orm import selectinload, joinedload, query
 from app.email import send_email, send_password_reset_email
-'''
+
+
 user = User.query.filter_by(login = 'sbg').first()
 imdbFind = ImdbFind()
 imdbFind.findMovies(user, 'The Godfather')
