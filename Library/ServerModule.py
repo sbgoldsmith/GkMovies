@@ -61,8 +61,9 @@ class Rtn:
                             
 class Inputter():
     def processInput(self, imdbMovieId, name, value, dataType):
-        
+        print('processInput, dataType=' + dataType)
         rtn = processValue(value, dataType)
+        print('processInput, rtn.message=' + rtn.message)
         if rtn.message == '':
             column = getattr(UserMovie, name)
             UserMovie.query.filter_by(user_id = current_user.id, imdb_movie_id = imdbMovieId).update({column: rtn.value})

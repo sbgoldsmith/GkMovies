@@ -123,7 +123,6 @@ class FlaskHelper(Constants):
     '''
    
     def strong(self, called, line, label):
-        print ("called=" + called)
         if called == line:
             return Markup("<strong>" + label + "</strong>")
         else:
