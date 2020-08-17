@@ -109,7 +109,7 @@ class Adder(Constants):
     def addMovieToUser(self, imovie):       
         umovie = UserMovie(user_id = current_user.id,
                            imdb_movie_id = imovie.id,
-                           seen = 0,
+                           seen = '0000-00-00',
                            stars = 0,
                            review = "",
                            user01 = '',
