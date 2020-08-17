@@ -5,6 +5,7 @@ from Library.ConstantsModuleF import Constants
 from flask import Markup
 from app.models import UserColumn
 from app import db
+from datetime import datetime
 
 #.DEBUG move to Imdb or vs
 
@@ -77,17 +78,20 @@ class FlaskHelper(Constants):
         
         if value == None:
             rtn = ""
-        elif col.attribute.dataType == "comma":
+        elif col.dataFormat == "comma":
             rtn = "{:,.0f}".format(float(value))
-        elif col.attribute.dataType == "time":
+        elif col.dataFormat == "time":
             rtn = str(value)[1:5]
-        elif col.attribute.dataType == "date":
-            if value == '0000-00-00':
+        elif col.dataFormat == "date":
+
+            if value == '':
                 rtn = ''
             else:
-                rtn = '{d.month}/{d.day}/{d.year}'.format(d=value)
+                date_object = datetime.strptime(value, '%Y-%m-%d')
+                rtn = '{d.month}/{d.day}/{d.year}'.format(d=date_object)
+            print('getFormatValue, rtn=' + str(rtn))    
 
-        elif col.attribute.dataType == "int":
+        elif col.dataFormat == "int":
             if value == 0:
                 rtn = ""
             else:
@@ -99,6 +103,7 @@ class FlaskHelper(Constants):
 
         else:
             rtn = value
+        print('getFormatValue, returning rtn=' + str(rtn))    
         return rtn
 
     def getFormatString(self, strg, col):       

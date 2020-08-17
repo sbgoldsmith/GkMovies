@@ -422,8 +422,8 @@ def formatter(value, fmt):
     elif fmt == "time":
         rtn = str(value)[1:5]
     elif fmt == "comma":
+        steve = 1
         rtn = "{:,.0f}".format(float(value))
     return rtn
-
 
 
