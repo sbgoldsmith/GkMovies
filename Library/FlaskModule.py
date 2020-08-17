@@ -82,7 +82,11 @@ class FlaskHelper(Constants):
         elif col.attribute.dataType == "time":
             rtn = str(value)[1:5]
         elif col.attribute.dataType == "date":
-            rtn = '{d.month}/{d.day}/{d.year}'.format(d=value)
+            if value == '0000-00-00':
+                rtn = ''
+            else:
+                rtn = '{d.month}/{d.day}/{d.year}'.format(d=value)
+
         elif col.attribute.dataType == "int":
             if value == 0:
                 rtn = ""

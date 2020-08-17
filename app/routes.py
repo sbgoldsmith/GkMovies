@@ -415,7 +415,10 @@ def formatter(value, fmt):
         else:
             rtn = value
     elif fmt == 'date':
-        rtn = '{d.month}/{d.day}/{d.year}'.format(d=value)
+        if value == '0000-00-00':
+            rtn = ''
+        else:
+            rtn = '{d.month}/{d.day}/{d.year}'.format(d=value)
     elif fmt == "time":
         rtn = str(value)[1:5]
     elif fmt == "comma":
