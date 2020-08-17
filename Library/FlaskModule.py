@@ -84,7 +84,7 @@ class FlaskHelper(Constants):
             rtn = str(value)[1:5]
         elif col.dataFormat == "date":
 
-            if value == '':
+            if value == '0000-00-00':
                 rtn = ''
             else:
                 date_object = datetime.strptime(value, '%Y-%m-%d')
