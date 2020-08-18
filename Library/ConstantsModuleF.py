@@ -1,6 +1,12 @@
+import os
+
 class Constants:
-    posterPath = "C:/Users/sgold/eclipse-workspace/Flasker/app/static/posters/"
-    #posterPath = "C:/Users/sgold/Pictures/Posters/"
+    
+    if os.name == 'nt':
+        posterPath = "C:/Users/sgold/eclipse-workspace/Flasker/app/static/posters/"
+    else:
+        posterPath = "/var/www/html/GkMovies/app/static/posters/"
+        
     
     userColumns = ['seen', 'stars', 'review', 'user01', 'user02', 'user03', 'user04', 'user05' ]
     
