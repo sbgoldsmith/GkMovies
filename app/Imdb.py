@@ -51,14 +51,14 @@ def getSort(user, sortButton):
     column = UserColumn.query.filter(UserColumn.user_id == user.id, UserColumn.name == sortButton).first();
 
     if column.dataFormat in ["number", "currency", "comma"]:
-        dbType = db.Float
+        dbType = db.Float()
     elif column.dataFormat == 'date':
         dbType = db.DateTime()
     else:
         dbType = db.String()
         
         
-    print("cast = ")
+    print("In Imdb, Cast = ")
     print(dbType)
     if user.order_dir == 'desc':
         columnSorted = db.cast(getattr(table, sortButton), dbType).desc()
@@ -141,7 +141,7 @@ class ImdbFind(Constants):
             order_by(columnSort).\
             order_by(ImdbMovie.title).\
             all()
-                   
+
         print("in Imdb.display, titleSearch = :" + titleSearch + ":, movies = " +  str(len(movies)))
 
         return movies

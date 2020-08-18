@@ -16,10 +16,18 @@ from app import routes, models
 
 #---------------------+
 
-
 '''
 from app.models import User, UserColumn, ImdbMovie
 from app.Imdb import ImdbFind
+args = {'sortButton':'user01', 'titleSearch': '',  'reviewSearch': '', 'genreSearch': '', 'actorSearch':'', 'plotSearch':'', 'user01Search':'', 'user02Search':'', 'user03Search':'', 'user04Search':'', 'user05Search':''}
+user = User.query.filter_by(login = 'tara').first() 
+
+imdb = ImdbFind()
+imdb.displayMovies(user, args)
+
+
+
+
 from datetime import datetime
 from Library.AdderModuleF import Adder
 from Library.FlaskModule import FlaskHelper
@@ -44,8 +52,7 @@ db.session.commit()
 
 
 
-args = {'sortButton':'user01', 'titleSearch': 'star',  'reviewSearch': '', 'genreSearch': '', 'actorSearch':'', 'plotSearch':'', 'user01Search':'11'}
-user = User.query.filter_by(login = 'tara').first() 
+
 
 
 movies = imdbFind.displayMovies(user, args) 

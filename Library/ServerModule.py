@@ -5,8 +5,8 @@ import datetime
 import re
 
 def processValue(value, dataType):
-    if dataType == "int":
-        return processInt(value)
+    if dataType in ['number', 'currency', 'comma']:
+        return processNumber(value)
     elif dataType == "date":
         return processDate(value)
     else:
@@ -19,15 +19,20 @@ def processText(value):
 
     return rtn
 
-def processInt(value):
+def processNumber(value):
     rtn = Rtn()
     if value == "":
         rtn.value = "0"
-    elif not value.isdigit():
-        rtn.value = value
-        rtn.message = "Please enter a number"
     else:
-        rtn.value = value
+        value = value.replace('$', '')
+        value = value.replace(',', '')
+        
+        rtn.value = value 
+        try:
+            float(value)
+        except ValueError:
+            rtn.message = "Please enter a number"
+
     return rtn
     
 def processDate(value):

@@ -76,10 +76,12 @@ class FlaskHelper(Constants):
     def getFormatValue(self, movie, col):
         value = self.getValue(movie, col)
         
-        if value == None:
+        if value == None or value == '':
             rtn = ""
         elif col.dataFormat == "comma":
             rtn = "{:,.0f}".format(float(value))
+        elif col.dataFormat == 'currency':
+            rtn = '${:,.2f}'.format(float(value))
         elif col.dataFormat == "time":
             rtn = str(value)[1:5]
         elif col.dataFormat == "date":
@@ -87,7 +89,7 @@ class FlaskHelper(Constants):
             if value == '0000-00-00' or value == '':
                 rtn = ''
             else:
-                print('Creating date_object, col.name=' + col.name + ', movie_id=' + str(movie.imdb_movie_id) + ', value=' + value)
+                #print('Creating date_object, col.name=' + col.name + ', movie_id=' + str(movie.imdb_movie_id) + ', value=' + value)
                 date_object = datetime.strptime(value, '%Y-%m-%d')
                 rtn = '{d.month}/{d.day}/{d.year}'.format(d=date_object)
             print('getFormatValue, rtn=' + str(rtn))    
@@ -104,7 +106,7 @@ class FlaskHelper(Constants):
 
         else:
             rtn = value
-        print('getFormatValue, returning rtn=' + str(rtn))    
+        #print('getFormatValue, returning rtn=' + str(rtn))    
         return rtn
 
     def getFormatString(self, strg, col):       
