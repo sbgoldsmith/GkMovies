@@ -84,10 +84,10 @@ class FlaskHelper(Constants):
             rtn = str(value)[1:5]
         elif col.dataFormat == "date":
 
-            if value == '0000-00-00':
+            if value == '0000-00-00' or value == '':
                 rtn = ''
             else:
-                print('Creating date_object for ' + value)
+                print('Creating date_object, col.name=' + col.name + ', movie_id=' + movie.imdb_movie_id + ', value=' + value)
                 date_object = datetime.strptime(value, '%Y-%m-%d')
                 rtn = '{d.month}/{d.day}/{d.year}'.format(d=date_object)
             print('getFormatValue, rtn=' + str(rtn))    
