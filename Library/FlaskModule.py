@@ -87,6 +87,7 @@ class FlaskHelper(Constants):
             if value == '0000-00-00':
                 rtn = ''
             else:
+                print('Creating date_object for ' + value)
                 date_object = datetime.strptime(value, '%Y-%m-%d')
                 rtn = '{d.month}/{d.day}/{d.year}'.format(d=date_object)
             print('getFormatValue, rtn=' + str(rtn))    
