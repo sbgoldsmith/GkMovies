@@ -28,10 +28,13 @@ def processNumber(value):
         value = value.replace(',', '')
         
         rtn.value = value 
-        try:
-            float(value)
-        except ValueError:
-            rtn.message = "Please enter a number"
+        if value == '.':
+            rtn.message = 'silent'
+        else:
+            try:
+                float(value)
+            except ValueError:
+                rtn.message = "Please enter a number"
 
     return rtn
     
