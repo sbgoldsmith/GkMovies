@@ -162,6 +162,7 @@ class Adder(Constants):
         
         else: 
             try:
+                print("*** addMoviePoster, trying download to " + imagePath)
                 urllib.request.urlretrieve(dmovie['Poster'], imagePath)
                 valid = 'T'
                 rtn = 1
