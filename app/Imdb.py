@@ -50,7 +50,7 @@ def getSort(user, sortButton):
     table = getTable(sortButton)
     column = UserColumn.query.filter(UserColumn.user_id == user.id, UserColumn.name == sortButton).first();
 
-    if column.dataFormat in ["number", "currency"]:
+    if column.dataFormat in ["number", "currency", "comma"]:
         dbType = db.Float
     elif column.dataFormat == 'date':
         dbType = db.DateTime()
