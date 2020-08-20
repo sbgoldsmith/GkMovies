@@ -163,7 +163,6 @@ class UserColumn(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index = True)
     name = db.Column(db.String(16), index = True)
     label = db.Column(db.String(16))
-    width = db.Column(db.Integer)
     cols = db.Column(db.Integer)
     rows = db.Column(db.Integer)
     dataFormat = db.Column(db.String(8))

@@ -409,11 +409,6 @@ def test():
 def formatter(value, fmt):
     if value == None:
         rtn = ""
-    elif fmt == 'int':
-        if value == 0:
-            rtn = ""
-        else:
-            rtn = value
     elif fmt == 'date':
         if value == '0000-00-00':
             rtn = ''

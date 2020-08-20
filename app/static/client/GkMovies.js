@@ -183,57 +183,70 @@ function resetAll() {
 }
 
 function settingsColors(selectCol) {
-	var clickColor = 'deepskyblue';
-	var overColor = 'lightgrey'
+
+	var overColor = 'deepskyblue'
+	var leaveColor = 'white'
     var elements= document.getElementsByTagName('tr');
+	
     for(var i=0; i<elements.length;i++)
     {
 	   	if ( ! (elements)[i].id.startsWith('user_')) {
 	   		continue
 	   		
 	   	}
-	   	
-	   	if ( (elements)[i].id == 'user_' + selectCol ) {
-	   		(elements)[i].style = 'background-color:' + clickColor + ';';
-	   		arrow_id = 'arrow_' + selectCol
-		    arrow_element =  document.getElementById(arrow_id);
-	    	arrow_element.style.display = 'inline'
-	   	}
-	    (elements)[i].addEventListener("click", function(){
-	    	var elements = document.getElementsByTagName('tr');
-	        for(var i=0; i<elements.length;i++)
-	        {
-	    	   	if ( ! (elements)[i].id.startsWith('user_')) {
-	    	   		continue
-	    	   		
-	    	   	}
-	    	   	
-	        	(elements)[i].style.backgroundColor = '';
-		    	arrow_id  = "arrow_" + (elements)[i].id.substring(5)
-		    	arrow_element =  document.getElementById(arrow_id);
-		    	arrow_element.style.display = 'none'
-	        }
-	    	this.style = 'background-color:' + clickColor + ';';
-	    	
-	    	arrow_id  = "arrow_" + this.id.substring(5)
-	    	arrow_element =  document.getElementById(arrow_id);
-	    	arrow_element.style.display = 'inline'
-	    });
+	   	/*
+	   	 * Previously selected so highlight this one
+	   	 */
+		if ( (elements)[i].id == 'user_' + selectCol ) {
+			setColor((elements)[i], 'on')
+		}
 	    
+		
+		/*
+		 * On mouseenter, unlighlight all rows and hilight the new one.
+		 */
 	    (elements)[i].addEventListener("mouseenter", function(){
 	    	
-	    	if ( this.style.backgroundColor != clickColor) {
-	         	this.style = 'background-color:' + overColor + ';';
-	    	}
+	    	for(var i=0; i<elements.length;i++)
+	        {
+	    	   	if (  (elements)[i].id.startsWith('user_')) {
+	    	   		setColor( (elements)[i], 'off')
+	    	   		
+	    	   	}
+	    		
+	        }
+	    	setColor(this, 'on')
 	    });
 	    
+		/*
+		 * On mouseleave, unlighlight the one we are leaving
+		 */
 	    (elements)[i].addEventListener("mouseleave", function(){
-	    
-	    	if ( this.style.backgroundColor == overColor) {
-	        	this.style = 'background-color:white;';
-	    	}
+			setColor(this, 'off')
 	   	});
 	    
     }
 
+}
+
+function setColor(element, onoff) {
+	var overColor = 'deepskyblue'
+	var leaveColor = 'white'
+	var color, display;
+	
+	if ( onoff == 'on' ) {
+		color = overColor
+		display = 'inline'
+	} else {
+		color = leaveColor
+		display = 'none'
+	}
+	
+	
+	element.style = 'background-color:' + color + ';';
+	arrow_id  = "arrow_" + element.id.substring(5)
+	arrow_element =  document.getElementById(arrow_id);
+	arrow_element.style.display = display
+		
+		
 }

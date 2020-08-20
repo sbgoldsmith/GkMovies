@@ -3,7 +3,7 @@
 
     <table>
     <tr>
-    <td  colspan="3">
+    <td  colspan="2">
     <div class="helv_small_color" >
     {% with messages = get_flashed_messages() %}
 		{% if messages %}
@@ -22,9 +22,7 @@
 	</tr>
 	
     <tr>
-    <td class='helv' width = "200px" valign="top">
-        
-    <p>
+    <td>    
         {{ form.firstName.label }}<br>
         {{ form.firstName(size=16) }}<br>
         {% if form.firstName.errors|length > 0 %}
@@ -34,10 +32,10 @@
 	    {% else %}
         	<br>
         {% endif %}   
-    </p>
-    
-    <p>
-        {{ form.lastName.label }}<br>
+	</td>
+	
+	<td>
+	    {{ form.lastName.label }}<br>
         {{ form.lastName(size=16) }}<br>
         {% if form.lastName.errors|length > 0 %}
 	        {% for error in form.lastName.errors %}
@@ -45,29 +43,13 @@
 	        {% endfor %}
 	    {% else %}
         	<br>
-        {% endif %}    
-    </p>
-    
-    <p>
-        {{ form.email.label }}<br>
-        {{ form.email(size=24) }}<br>
-        {% if form.email.errors|length > 0 %}
-        	{% for error in form.email.errors %}
-        	<span style="color: red;">[{{ error }}]</span>
-        	{% endfor %}
-        {% else %}
-        	<br>
-        {% endif %}
-    </p>
-    
-        <p>{{ form.submit() }}</p>
-        
+        {% endif %}  
         
     </td>
+    </tr>
     
-    <td width="50px">&nbsp;</td>
-    <td class='helv'  width = "350px" valign="top" >
-    <p>
+    <tr>
+    <td>    
         {{ form.login.label }}<br>
         {{ form.login(size=12) }}<br>
         {% if form.login.errors|length > 0 %}
@@ -77,20 +59,39 @@
         {% else %}
         	<br>
         {% endif %}
-    </p>
-    <p>
-		{{ form.password.label }}<br>
-        {{ form.password(size=16) }}<br>
-        {% if form.password.errors|length > 0 %}
-        	{% for error in form.password.errors %}
+	</td>
+	</tr>
+	
+	<tr>
+	<td colspan="2">
+        {{ form.email.label }}<br>
+        {{ form.email(size=24) }}<br>
+        {% if form.email.errors|length > 0 %}
+        	{% for error in form.email.errors %}
         	<span style="color: red;">[{{ error }}]</span>
         	{% endfor %}
         {% else %}
         	<br>
         {% endif %}
+    </td>
+    </tr>
     
-    <p>
-        {{ form.password2.label }}<br>
+    <tr>
+    <td>
+		{{ form.password.label }}<br>
+        {{ form.password(size=16) }}<br>
+        {% if form.password.errors|length > 0 %}
+	      	{% for error in form.password.errors %}
+	      	<span style="color: red;">[{{ error }}]</span>
+	      	{% endfor %}
+        {% else %}
+      	<br>
+        {% endif %}
+	</td>
+	
+	
+	<td>
+	    {{ form.password2.label }}<br>
         {{ form.password2(size=16) }}<br>
         {% if form.password2.errors|length > 0 %}
         	{% for error in form.password2.errors %}
@@ -99,11 +100,13 @@
         {% else %}
         	<br>
         {% endif %} 
-    </p>
     </td>
+    
     </tr>
-
-
+    
+    <tr>
+    <td>&nbsp;<br>{{ form.submit() }}</td>
+    </tr>
 
     
     </table>

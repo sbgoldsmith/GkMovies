@@ -20,6 +20,7 @@ def processText(value):
     return rtn
 
 def processNumber(value):
+    #print("***** processValue, value=" + value)
     rtn = Rtn()
     if value == "":
         rtn.value = "0"
@@ -36,6 +37,8 @@ def processNumber(value):
             except ValueError:
                 rtn.message = "Please enter a number"
 
+    #print("***** processValue, rtn=")
+    #print(rtn.__dict__)
     return rtn
     
 def processDate(value):
@@ -84,7 +87,7 @@ class Inputter():
             return rtn.message
         
     def processSettingsDisplayInput(self, user, name, colAttribute, dataType, value): 
-        print("dataType=" + dataType)
+        print("**** processSettingsDisplayInput, dataType=" + dataType + ", value=" + value)
         rtn = processValue(value, dataType)
         print(rtn.__dict__)
         
@@ -92,7 +95,7 @@ class Inputter():
             column = getattr(UserColumn, colAttribute)
             UserColumn.query.filter(UserColumn.user_id == user.id, UserColumn.name == name).update({column: rtn.value})
             db.session.commit()
-            print("Updated UserColumn, user_id=" + str(user.id) + ", " + name + "." + colAttribute + "=" + rtn.value)
+            print("**** processSettingsDisplayInput, Updated UserColumn, user_id=" + str(user.id) + ", " + name + "." + colAttribute + "=" + rtn.value)
             return ""
         elif rtn.message == 'silent':
             return ""

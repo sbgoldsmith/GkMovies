@@ -92,13 +92,7 @@ class FlaskHelper(Constants):
                 #print('Creating date_object, col.name=' + col.name + ', movie_id=' + str(movie.imdb_movie_id) + ', value=' + value)
                 date_object = datetime.strptime(value, '%Y-%m-%d')
                 rtn = '{d.month}/{d.day}/{d.year}'.format(d=date_object)
-            print('getFormatValue, rtn=' + str(rtn))    
-
-        elif col.dataFormat == "int":
-            if value == 0:
-                rtn = ""
-            else:
-                rtn = value
+            #print('getFormatValue, rtn=' + str(rtn))    
         elif col.attribute.searchable == 'T' and  col.attribute.editable == 'F':  
             sname = col.name + "Search"
             lookfor = self.nargs[sname]
@@ -172,7 +166,8 @@ class FlaskHelper(Constants):
 
         col.query.filter(UserColumn.user_id == self.user.id, UserColumn.name == colName).update({
             UserColumn.label: dflt.label,
-            UserColumn.width: dflt.width,
+            UserColumn.cols: dflt.cols,
+            UserColumn.rows: dflt.rows,
             UserColumn.vis: dflt.vis
             })
 
@@ -190,7 +185,8 @@ class FlaskHelper(Constants):
         for dflt in dfltColumns:
             UserColumn.query.filter(UserColumn.user_id == self.user.id, UserColumn.name == dflt.name).update({
                 UserColumn.label: dflt.label,
-                UserColumn.width: dflt.width,
+                UserColumn.cols: dflt.cols,
+                UserColumn.rows: dflt.rows,
                 UserColumn.vis: dflt.vis,
                 UserColumn.srt: dflt.srt})
 

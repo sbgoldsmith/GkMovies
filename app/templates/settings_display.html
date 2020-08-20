@@ -1,4 +1,4 @@
-<div class="helv" width="500px" >
+<div class="helv" >
 Use this table to customize your Display Movies.  You can change the Label or Width of any column, hide or show columns, and change the order for which columns are shown. 
 <P>
 Click on a row to see more options for that row.  There is no submit button, all changes are made in real time.
@@ -8,7 +8,7 @@ Be careful not to make columns too narrow, they might not align with the headers
 
 </div>
 
-<table id="table">
+<table id="table" cellspacing="0" cellpadding="5">
 <tr>
 <th>Show</th>
 <th>Name</th>
@@ -23,8 +23,8 @@ Be careful not to make columns too narrow, they might not align with the headers
 	
 	<td>{{ col.name }}</td>
 	<td><input type="text" id="{{ col.name }}_label" name="{{ col.name }}_label" value="{{ col.label }}" size="10" onkeyup="changeSettingsDisplayInput(this, '{{ col.name }}', 'label', 'text')" ></td>
-	<td><input type="text" id="{{ col.name }}_cols" name="{{ col.name }}_cols" value="{{ col.cols }}" size="3" onkeyup="changeSettingsDisplayInput(this, '{{ col.name }}', 'cols', 'int')"></td>
-	<td><input type="text" id="{{ col.name }}_rows" name="{{ col.name }}_rows" value="{{ col.rows }}" size="3" onkeyup="changeSettingsDisplayInput(this, '{{ col.name }}', 'rows', 'int')"></td>
+	<td><input type="text" id="{{ col.name }}_cols" name="{{ col.name }}_cols" value="{{ col.cols }}" size="3" onkeyup="changeSettingsDisplayInput(this, '{{ col.name }}', 'cols', 'number')"></td>
+	<td><input type="text" id="{{ col.name }}_rows" name="{{ col.name }}_rows" value="{{ col.rows }}" size="3" onkeyup="changeSettingsDisplayInput(this, '{{ col.name }}', 'rows', 'number')"></td>
 	<td>
 	{% if col.name.startswith('user') %}
 	<select name="{{ col.name }}_dataFormat" id="{{ col.name }}_dataFormat" onchange="changeSettingsDisplayInput(this, '{{ col.name }}', 'dataFormat', 'text')" }}>
@@ -39,11 +39,12 @@ Be careful not to make columns too narrow, they might not align with the headers
 	</td>
 	
 	
-	<td id="arrow_{{ col.name }}" style="display:none;">
-		<a href="Javascript:upCol('{{ col.name }}' )"><img src="{{url_for('static', filename='images/upArrow.jpg')}}" width="15px"></a>
+	<td id="arrow_{{ col.name }}"  style="display:none;"">
+		<a href="Javascript:upCol('{{ col.name }}' )"><img src="{{url_for('static', filename='images/upArrow.jpg')}}" width="15px" style="margin-top: 10px;"></a>
 		<a href="Javascript:dnCol('{{ col.name }}' )"><img src="{{url_for('static', filename='images/dnArrow.jpg')}}" width="15px"></a>
-		&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;
 		<a href="Javascript:resetCol('{{ col.name }}' )" class="helv_small">Reset</a>
+		
 	</td>
 		
 </tr>

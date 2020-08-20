@@ -3,7 +3,7 @@ import os
 class Constants:
     
     if os.name == 'nt':
-        posterPath = "C:/Users/sgold/eclipse-workspace/Flasker/app/static/posters/"
+        posterPath = "D:/GkMovies/GkMovies/app/static/posters/"
     else:
         posterPath = "/var/www/html/GkMovies/app/static/posters/"
         
