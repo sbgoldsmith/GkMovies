@@ -109,14 +109,16 @@ class Adder(Constants):
     def addMovieToUser(self, imovie):       
         umovie = UserMovie(user_id = current_user.id,
                            imdb_movie_id = imovie.id,
-                           seen = '0000-00-00',
-                           stars = 0,
-                           review = "",
                            user01 = '',
                            user02 = '',
                            user03 = '',
                            user04 = '',
-                           user05 = '')
+                           user05 = '',
+                           user06 = '',
+                           user07 = '',
+                           user08 = '',
+                           user09 = '',
+                           user10 = '')
                                
         db.session.add(umovie)
         db.session.commit()

@@ -10,7 +10,6 @@ class AddMoviesForm(FlaskForm):
     
 class DisplayMoviesForm(FlaskForm):
     titleSearch = StringField('', validators=[DataRequired()])
-    reviewSearch = StringField('', validators=[DataRequired()])
     genreSearch = StringField('', validators=[DataRequired()])
     actorSearch = StringField('', validators=[DataRequired()])
     plotSearch = StringField('', validators=[DataRequired()])
@@ -19,7 +18,13 @@ class DisplayMoviesForm(FlaskForm):
     user03Search = StringField('', validators=[DataRequired()])
     user04Search = StringField('', validators=[DataRequired()])
     user05Search = StringField('', validators=[DataRequired()])
-                    
+    user06Search = StringField('', validators=[DataRequired()])
+    user07Search = StringField('', validators=[DataRequired()])
+    user08Search = StringField('', validators=[DataRequired()])
+    user09Search = StringField('', validators=[DataRequired()])
+    user10Search = StringField('', validators=[DataRequired()])
+ 
+      
 class LoginForm(FlaskForm):
     login = StringField('Login', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])

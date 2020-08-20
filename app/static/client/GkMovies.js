@@ -1,6 +1,6 @@
 var xhr;
 
-var searches = ["title", "review", "genre", "actor", "plot", "user01", "user02", "user03", "user04", "user05"];
+var searches = ["title", "genre", "actor", "plot", "user01", "user02", "user03", "user04", "user05", "user06", "user07", "user08", "user09", "user10"];
 
 function getSearchParams() {
 	//alert('getSearchParams starts')
