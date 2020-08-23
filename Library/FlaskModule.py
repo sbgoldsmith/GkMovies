@@ -6,7 +6,7 @@ from flask import Markup
 from app.models import UserColumn
 from app import db
 from datetime import datetime
-from dominate.tags import col
+
 
 #.DEBUG move to Imdb or vs
 
