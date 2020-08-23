@@ -2,21 +2,27 @@
 
 {% block content %}
 
+<div class="helv_small_color" >
+{% if message %}
+{{ message }}
+{% else %}
+&nbsp;<br>
+{% endif %}
+</div>
+<P>	
+
 <div class="helv_section">
 
 <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
 
-    {{ form.fromMovie.label }}&nbsp;{{ form.fromMovie(size=5) }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ form.toMovie.label }}&nbsp;{{ form.toMovie(size=5) }}
+    {{ form.login.label }}&nbsp;{{ form.login(size=5) }}
  
 <p>{{ form.submit() }}</p>    
 
 </form>
 
-<P>
-{{ message }}
-
+      
 </div>
-
 {% endblock %}
 

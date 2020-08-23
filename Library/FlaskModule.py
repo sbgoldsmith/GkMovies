@@ -6,6 +6,7 @@ from flask import Markup
 from app.models import UserColumn
 from app import db
 from datetime import datetime
+from dominate.tags import col
 
 #.DEBUG move to Imdb or vs
 
@@ -44,11 +45,11 @@ class FlaskHelper(Constants):
     def getArrow(self, thisCol):
         if self.user.order_by == thisCol:
             if self.user.order_dir == 'asc':
-                return "/static/images/upArrow.jpg"
+                return "/static/images/upArrow.png"
             else:
-                return "/static/images/dnArrow.jpg"
+                return "/static/images/dnArrow.png"
         else:
-            return "/static/images/upArrow.jpg"
+            return "/static/images/upArrow.png"
         
      
     def getVisibility(self, thisCol):
@@ -74,6 +75,13 @@ class FlaskHelper(Constants):
             return ""
     
     def getFormatValue(self, movie, col):
+        try:
+            return self.tryFormatValue(movie, col)
+        except:
+            return "#ERR"
+        
+        
+    def tryFormatValue(self, movie, col):
         value = self.getValue(movie, col)
         
         if value == None or value == '':
@@ -109,15 +117,6 @@ class FlaskHelper(Constants):
         rtn = highlight(strg, lookfor)
         return rtn
 
-    '''
-    def getAreaCols(self, col):
-        idx = col.attribute.inputCols.find(":")
-        return col.attribute.inputCols[0:idx]
-    
-    def getAreaRows(self, col):
-        idx = col.attribute.inputCols.find(":")
-        return col.attribute.inputCols[idx+1]
-    '''
    
     def strong(self, called, line, label):
         if called == line:

@@ -10,7 +10,7 @@ from flask_login import current_user
 import urllib
 import os 
 import requests
-
+from datetime import datetime
  
 def makeTime(strg):
     index1 = str.find(strg, " min")
@@ -109,6 +109,7 @@ class Adder(Constants):
     def addMovieToUser(self, imovie):       
         umovie = UserMovie(user_id = current_user.id,
                            imdb_movie_id = imovie.id,
+                           add_date = datetime.utcnow(),
                            user01 = '',
                            user02 = '',
                            user03 = '',

@@ -25,6 +25,11 @@ class Style:
         font-size: 13px;
     }
     
+    a.helv {
+        font-family: Helvetica;
+        font-size: 14px;
+    }
+    
     div.helv {
         font-family: Helvetica;
         font-size: 14px;
@@ -52,11 +57,14 @@ class Style:
         font-family: Helvetica;
         font-size: 14px;
     }
+    
 
     div.button_height {
+        font-family: Helvetica;
+        font-size: 14px;
         display: inline-block;
-        padding-top: 2px;
-        padding-bottom: 2px;
+        padding-top: 9px;
+        padding-bottom: 8px;
     }
     
     """
@@ -202,12 +210,13 @@ class Style:
     }
     
     .title_table {
-        height: 60px;
+        height: 40px;
         width: """ + str(tableWidth) + """px;
         background-color: #cffffb;
         color: #222222;
         vertical-align: center;
-        text-align: center;
+        text-align: left;
+        text-indent: 75px;
         border-collapse: collapse;  
         border-top: 1px solid #222222;
         border-left: 1px solid #222222;

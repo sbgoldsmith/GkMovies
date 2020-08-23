@@ -1,7 +1,10 @@
 from flask import render_template
-from app import app
 from flask_mail import Message
+from app import app
 from app import mail
+
+import logging
+import logging.handlers
 
 def send_email(subject, sender, recipients, text_body, html_body):
     #print('send_email starts')
@@ -24,5 +27,8 @@ def send_password_reset_email(user):
                                          user=user, token=token),
                html_body=render_template('email/reset_password.html',
                                          user=user, token=token))
-    
-    
+
+        
+            
+
+               

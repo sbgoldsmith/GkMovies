@@ -77,7 +77,11 @@ class UpdateForm(FlaskForm):
     fromMovie = IntegerField('From:')
     toMovie = IntegerField('To:')
     submit = SubmitField('Update Imdb Movies')
-    
+  
+class AsUserForm(FlaskForm):
+    login = StringField('login:', validators=[DataRequired()])
+    submit = SubmitField('Login As User')
+      
 class ResetPasswordRequestForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Request Password Reset')

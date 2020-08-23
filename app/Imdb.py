@@ -23,7 +23,7 @@ def reverse(orderDir):
     
     
 def getSort(user, sortButton):
-
+    #print('Imdb.getSort, sortButton=' + sortButton)
         
     if sortButton != None:
         #Sort button pressed.  Determine new sort and update User table

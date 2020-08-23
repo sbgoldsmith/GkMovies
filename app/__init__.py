@@ -4,6 +4,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from datetime import timedelta
 from flask_mail import Mail
+from flask_mail import Message
+
+import logging
+from logging.handlers import SMTPHandler
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -12,11 +16,79 @@ login = LoginManager(app)
 login.login_view = 'index'
 mail = Mail(app)
 
-from app import routes, models
+    
+class MySMTPHandler(logging.handlers.SMTPHandler):
+    def emit(self, record):
+        """
+        Emit a record.
+ 
+        Format the record and send it to the specified addressees.
+        """
+        try:
+            import smtplib
+            import string # for tls add this line
+            try:
+                from email.utils import formatdate
+            except ImportError:
+                formatdate = self.date_time
+            port = self.mailport
+            if not port:
+                port = smtplib.SMTP_PORT
+            smtp = smtplib.SMTP_SSL(self.mailhost, port)
+            msg = self.format(record)
+            msg = "From: %s\r\nTo: %s\r\nSubject: %s\r\nDate: %s\r\n\r\n%s" % (
+                            self.fromaddr,
+                            #string.join(self.toaddrs, ","),
+                            self.toaddrs[0],
+                            self.getSubject(record),
+                            formatdate(), msg)
+            if self.username:
+                smtp.login(self.username, self.password)
+            smtp.sendmail(self.fromaddr, self.toaddrs, msg)
+            smtp.quit()
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except:
+            self.handleError(record)
+            
+
+logger = logging.getLogger()
+ 
+#gm = TlsSMTPHandler(("smtp.gmail.com", 465), 'steven.bl.goldsmith@gmail.com', ['sgoldsmith@goldkeys.com'], 'Error found!', ('steven.bl.goldsmith@gmail.com', 'Tgh2BCFneC8Z'))
+
+mail_handler = MySMTPHandler((app.config['MAIL_SERVER'], app.config['MAIL_PORT']), 
+                             app.config['MAIL_USERNAME'], 
+                             app.config['ADMINS'],
+                             'Goldkeys Movies Error', 
+                             (app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD']))
+
+
+mail_handler.setLevel(logging.ERROR)
+logger.addHandler(mail_handler)
+
+
+
+#
+# Initialize Error Mail Handler
+#
+
+
+
+
+from app import routes, models, errors
 
 #---------------------+
-
 '''
+
+
+try:
+    raise Exception()
+except Exception as e:
+    app.logger.exception('Unhandled Exception')
+    
+
+             
+
 from app.models import User, UserColumn, ImdbMovie
 from app.Imdb import ImdbFind
 args = {'sortButton':'user01', 'titleSearch': '',  'reviewSearch': '', 'genreSearch': '', 'actorSearch':'', 'plotSearch':'', 'user01Search':'', 'user02Search':'', 'user03Search':'', 'user04Search':'', 'user05Search':''}

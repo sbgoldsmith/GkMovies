@@ -21,13 +21,13 @@
 	<IMG src="{{ flasker.getArrow(col.name) }}" width="20" style="visibility: {{ flasker.getVisibility(col.name) }}; ">
 	<br>
 	{% if col.attribute.sortable == 'T' %}
-	<BUTTON  name="{{ col.name }}" type="submit" class="" onclick="doButton('{{ col.name }}')">{{ col.label }}</BUTTON>
+		<BUTTON  name="{{ col.name }}" type="submit" style="height:34px;" onclick="doButton('{{ col.name }}')">{{ col.label }}</BUTTON>
 	{% else %}
-	<div class="button_height">{{ col.label }}</div>
+		<div class="button_height">{{ col.label }}</div>
 	{% endif %}
 	<br>
 	{% if col.attribute.searchable == 'T' %}
-	<INPUT  id="{{ col.name }}Search" name="{{ col.name }}Search" type="search"  value="{{ flasker.getArgValue(col.name) }}" style="width:{{ col.getWidth() }}px"  oninput="doSearch('{{ col.name }}')">
+		<INPUT  id="{{ col.name }}Search" name="{{ col.name }}Search" type="search"  value="{{ flasker.getArgValue(col.name) }}" style="width:{{ col.getWidth() }}px; margin-top: 2px;"  oninput="doSearch('{{ col.name }}')">
 	{% endif %}
 	<br>
 	</TD>
@@ -46,7 +46,7 @@
 		{% if col.attribute.dataType == "poster" %}
 			<a href="https://www.imdb.com/title/{{ movie.imdb_movie.tt }}" target="_blank"><img src="{{url_for('static', filename='posters')}}/{{ movie.imdb_movie.tt }}.jpg" width="50px"  /></a>
 		{% elif col.attribute.dataType == "img" %}
-			<a href="Javascript:{{ col.name }}('{{ movie.imdb_movie.id }}', '{{ movie.imdb_movie.title }}' )"><img src="/static/images/{{ col.name }}.jpg" width="{{ col.getWidth() }}px"  ></a>
+			<a href="Javascript:{{ col.name }}('{{ movie.imdb_movie.id }}', '{{ movie.imdb_movie.title }}' )"><img src="/static/images/{{ col.name }}.png" width="{{ col.getWidth() }}px"  ></a>
 		{% elif col.attribute.editable == 'T' and col.rows < 2 %}
 			<input type="text"  id="{{ col.name }}_{{ movie.imdb_movie.id }}" name="{{ col.name }}_{{ movie.imdb_movie.id }}" value="{{ flasker.getFormatValue(movie, col) }}" style="width:{{ col.getWidth() }}px" onkeyup="changeInput('{{ col.name }}', '{{ movie.imdb_movie.id }}', '{{ col.dataFormat }}')" >
 		{% elif col.attribute.editable == "T" and col.rows > 1 %}

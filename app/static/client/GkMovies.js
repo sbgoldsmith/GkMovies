@@ -142,7 +142,7 @@ function updateMovies() {
 
 function deleteMovie(imdb_movie_id, title) {
 	
-	var r = confirm("Are you usre you want to delete '" + title + "'?");
+	var r = confirm("Are you sure you want to delete '" + title + "'?");
 	if (r == false) {
 		return;
 	}
@@ -165,18 +165,35 @@ function dnCol(colName) {
 }
 
 function resetCol(colName) {
+	var r = confirm("Are you sure you want to reset column '" + colName + "'?");
+	if (r == false) {
+		return;
+	}
+	
+	
 	var url = "settings_display_resetCol?name=" + colName 
 	//alert("url=" + url)
 	window.open(url, "_self");
 }
 
 function resetSort() {
+	var r = confirm("Are you sure you want to reset all column sorts?");
+	if (r == false) {
+		return;
+	}
+	
+	
 	var url = "settings_display_resetSort"
 	//alert("url=" + url)
 	window.open(url, "_self");
 }
 
 function resetAll() {
+	var r = confirm("Are you sure you want to reset all column displays?");
+	if (r == false) {
+		return;
+	}
+	
 	var url = "settings_display_resetAll" 
 	//alert("url=" + url)
 	window.open(url, "_self");

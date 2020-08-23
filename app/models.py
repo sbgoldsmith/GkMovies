@@ -65,6 +65,15 @@ class User(UserMixin, db.Model):
         return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+            
+    def log(self, route, action, arg):   
+        user_log = UserLog(login=self.login, 
+                    route=route,
+                    action=action,
+                    arg=str(arg),
+                    log_time = datetime.utcnow())
+        db.session.add(user_log)
+        db.session.commit()
 
     @staticmethod
     def verify_reset_password_token(token):
@@ -77,7 +86,19 @@ class User(UserMixin, db.Model):
     
     def __repr__(self):
         return '<User {}, Email is {}>'.format(self.login, self.email)
-    
+
+
+def load_user_log(id):
+    return UserLog.query.get(int(id))
+
+class UserLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    login = db.Column(db.String(16))
+    route = db.Column(db.String(64))
+    action = db.Column(db.String(64))
+    arg = db.Column(db.String(64))
+    log_time = db.Column(db.DateTime())
+
 
 def load_adder_column(id):
     return AdderColumn.query.get(int(id))
@@ -98,6 +119,7 @@ class UserMovie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True)
     imdb_movie_id = db.Column(db.Integer, db.ForeignKey('imdb_movie.id'), index=True)
+    add_date = db.Column(db.DateTime())
     user01 = db.Column(db.Text())
     user02 = db.Column(db.Text())
     user03 = db.Column(db.Text())

@@ -1,7 +1,7 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, session
 from app import app
 from app import db
-from app.forms import LoginForm, RegistrationForm, SettingsAccountForm, ResetPasswordRequestForm, ResetPasswordChangeForm, AddMoviesForm, DisplayMoviesForm, UpdateForm
+from app.forms import LoginForm, RegistrationForm, SettingsAccountForm, ResetPasswordRequestForm, ResetPasswordChangeForm, AddMoviesForm, DisplayMoviesForm, UpdateForm, AsUserForm
 from app.models import User, AdderColumn
 from flask_login import current_user, login_user, logout_user
 from flask_login.utils import login_required
@@ -27,6 +27,7 @@ def index():
     title = 'Welcome to Goldkeys Movies'
     
     if current_user.is_authenticated:
+        current_user.log('index', 'home', '')
         return redirect(url_for('home'))
     
     form = LoginForm()
@@ -63,15 +64,16 @@ def home():
     style = Style()
     sstyle = style.getHomeStyle()
     
-    user = User.query.filter_by(login = current_user.login).first() 
-    user.setLastVisit()
+    current_user.log('home', '', '')
+    current_user.setLastVisit()
     
-    print(user.last_visit)
-    return render_template('home.html', title='Home Page', sstyle=sstyle, user=user)
+    print(current_user.last_visit)
+    return render_template('home.html', title='Home Page', sstyle=sstyle, user=current_user)
 
 
 @app.route('/logout')
 def logout():
+    current_user.log('logout', '', '')
     logout_user()
     return redirect(url_for('index'))
 
@@ -104,7 +106,7 @@ def register():
         
 
         addUserColumns(user)
-        
+        user.log('register', 'success', '')
         flash('Congratulations, you are now a registered user! Please login.')
         
         return redirect(url_for('index'))
@@ -156,14 +158,15 @@ def reset_password_change(token):
 @app.route('/addMovies', methods=['GET', 'POST'])
 @login_required
 def addMovies():
-    user = User.query.filter_by(login = current_user.login).first()  
+
     if request.args.get('titleSearch') == None:
         titleSearch = ""
     else:
         titleSearch = str(request.args.get('titleSearch'))
-
+        
+    current_user.log('addMovies', 'titleSearch', titleSearch)
     imdbFind = ImdbFind()
-    movies = imdbFind.findMovies(user, titleSearch)
+    movies = imdbFind.findMovies(current_user, titleSearch)
 
     style = Style()
     sstyle = style.getAdderStyle()
@@ -174,6 +177,7 @@ def addMovies():
 @app.route('/addMovie', methods=['GET', 'POST'])
 @login_required
 def addMovie():
+    current_user.log('addmovie', 'tt', request.form['tt'])
     adder = Adder()
     message = adder.addMovie(request.form['tt'])
     
@@ -184,53 +188,43 @@ def addMovie():
 @login_required
 def displayMovies():     
     timer = Timer()
-
+    print("**** routes.displayMovies, args=")
     print(request.args)
       
-    user = User.query.filter_by(login = current_user.login).first()  
+
+    
     imdbFind = ImdbFind()
     
     if 'imdb_movie_id' in request.args:
-        print ("doo delete on " + request.args.get('imdb_movie_id'))
-        imdbFind.deleteMovie(user, request.args.get('imdb_movie_id'))
-
+        current_user.log('displayMovies', 'delete', request.args.get('imdb_movie_id'))
+        imdbFind.deleteMovie(current_user, request.args.get('imdb_movie_id'))
+    
+    
+    
+    
     style = Style()
-    sstyle = style.getDisplayStyle(user)
+    sstyle = style.getDisplayStyle(current_user)
     timer.elapse('Got style')
 
 
-    movies = imdbFind.displayMovies(user, request.args)  
+    movies = imdbFind.displayMovies(current_user, request.args)  
     timer.elapse('Got movies')
 
     flasker = FlaskHelper()
-    flasker.setArgs(user, request.args)
+    flasker.setArgs(current_user, request.args)
     form = DisplayMoviesForm()
     timer.elapse('Got DisplayMoviesForm')
     
     thisSearch = request.args.get('thisSearch')
+    logArg = str(thisSearch) + '=' + str(request.args.get(thisSearch)) + ' order ' + str(request.args.get('sortButton'))
 
-    render = render_template('displayMovies.html', title='Display My Movies', thisSearch=thisSearch, form=form, flasker=flasker, user=user, movies=movies, sstyle=sstyle)
+    current_user.log('displayMovies', 'thisSearch',  logArg)
+    
+    
+    render = render_template('displayMovies.html', title='Display My Movies', thisSearch=thisSearch, form=form, flasker=flasker, user=current_user, movies=movies, sstyle=sstyle)
     timer.elapse('Got render')
     return render
 
-
-
-
-@app.route('/updateMovies', methods=['GET', 'POST'])
-@login_required
-def updateMovies():
-    print("updateMovies starts")
-    style = Style()
-    sstyle = style.getCommonStyle();
-    message=''
-
-    
-    form = UpdateForm()
-    if 'csrf_token' in request.form:
-        imdbFind = ImdbFind()
-        message = imdbFind.updateMovies(form.fromMovie, form.toMovie)
-        
-    return render_template('updateMovies.html', title='Update Movies', form=form, sstyle=sstyle, message=message)
 
 
 @app.route('/inputField', methods=['GET', 'POST'])
@@ -250,9 +244,8 @@ def inputSettingsDisplayField():
     print ('inputSettingsDisplayField called')
     print(request.form)
     
-    user = User.query.filter_by(login = current_user.login).first()  
     inputter = Inputter()
-    message = inputter.processSettingsDisplayInput(user, 
+    message = inputter.processSettingsDisplayInput(current_user, 
                         request.form['name'],
                         request.form['colAttribute'],
                         request.form['dataType'],
@@ -261,39 +254,56 @@ def inputSettingsDisplayField():
     return message
 
 
-
-@app.route('/settings')
+@app.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
-    style = Style()
-    sstyle = style.getCommonStyle();
-    
-    flasker = FlaskHelper()
-        
-    return render_template('settings.html', title='Settings', sstyle=sstyle, flasker=flasker, settings='none')
 
+    if 'settings' not in session or 'settings-expire' not in session:
+        session['settings'] = 'none'
+        session['settings-expire'] = datetime.now() - timedelta(minutes=1)
+                  
+    if datetime.now() > session['settings-expire']:
+        session['settings'] = 'none'
+
+    if session['settings'] == 'account':
+        return settings_account()
+    elif session['settings'] == 'display':
+        return settings_display()
+    else:
+        current_user.log('settings', '', '')
+        style = Style()
+        sstyle = style.getCommonStyle();
+    
+        flasker = FlaskHelper()
+        
+        return render_template('settings.html', title='Settings', sstyle=sstyle, flasker=flasker, settings='none')
+       
 @app.route('/settings_account', methods=['GET', 'POST'])
 @login_required
 def settings_account():
 
-        
+            
+    session['settings'] = 'account'
+    session['settings-expire'] = datetime.now() + timedelta(hours=1)
+    
     style = Style()
     sstyle = style.getCommonStyle();
-    user = User.query.filter_by(login = current_user.login).first()
     
     flasker = FlaskHelper()
-    flasker.setArgs(user, None)
+    flasker.setArgs(current_user, None)
     form = SettingsAccountForm()
 
     if form.validate_on_submit():
+        current_user.log('settings', 'account', 'submit')
         flasker.updateUser(form)
         flash('Your account settings have been changed.')
                 
     else:
-        form.firstName.data = user.firstName
-        form.lastName.data = user.lastName
-        form.login.data = user.login
-        form.email.data = user.email
+        current_user.log('settings', 'account', 'form')
+        form.firstName.data = current_user.firstName
+        form.lastName.data = current_user.lastName
+        form.login.data = current_user.login
+        form.email.data = current_user.email
         form.password.data = 'NothingToSee'
         form.password2.data = 'NothingToSee'
         
@@ -303,14 +313,17 @@ def settings_account():
 @app.route('/settings_display')
 @login_required
 def settings_display():
+    session['settings'] = 'display'
+    session['settings-expire'] = datetime.now() + timedelta(hours=1)
+    
     style = Style()
     sstyle = style.getCommonStyle();
     
-    user = User.query.filter_by(login = current_user.login).first()  
+    current_user.log('settings', 'display', '')
     flasker = FlaskHelper()
     
         
-    return render_template('settings.html', title='Display Settings', sstyle=sstyle,  flasker=flasker, user=user, settings='display')
+    return render_template('settings.html', title='Display Settings', sstyle=sstyle,  flasker=flasker, user=current_user, settings='display')
 
 
 @app.route('/settings_display_upCol')
@@ -322,13 +335,13 @@ def settings_display_upCol():
     sstyle = style.getCommonStyle();
     
     selectCol = request.args.get('name')
-    user = User.query.filter_by(login = current_user.login).first()  
+
     flasker = FlaskHelper()
-    flasker.setArgs(user, None)
+    flasker.setArgs(current_user, None)
     flasker.upCol(selectCol)
     
         
-    return render_template('settings.html', title='Display Settings', sstyle=sstyle,  flasker=flasker, user=user, settings='display', selectCol=selectCol)
+    return render_template('settings.html', title='Display Settings', sstyle=sstyle,  flasker=flasker, user=current_user, settings='display', selectCol=selectCol)
 
 @app.route('/settings_display_dnCol')
 @login_required
@@ -337,13 +350,13 @@ def settings_display_dnCol():
     sstyle = style.getCommonStyle();
     
     selectCol = request.args.get('name')
-    user = User.query.filter_by(login = current_user.login).first()  
+
     flasker = FlaskHelper()
-    flasker.setArgs(user, None)
+    flasker.setArgs(current_user, None)
     flasker.dnCol(selectCol)
     
         
-    return render_template('settings.html', title='Display Settings', sstyle=sstyle,  flasker=flasker, user=user, settings='display', selectCol=selectCol)
+    return render_template('settings.html', title='Display Settings', sstyle=sstyle,  flasker=flasker, user=current_user, settings='display', selectCol=selectCol)
 
 
 @app.route('/settings_display_resetCol')
@@ -356,14 +369,12 @@ def settings_display_resetCol():
     selectCol = request.args.get('name')
     print('settings_display_resetCol starts, name=' + selectCol)
     
-    
-    user = User.query.filter_by(login = current_user.login).first()  
     flasker = FlaskHelper()
-    flasker.setArgs(user, None)
+    flasker.setArgs(current_user, None)
     flasker.resetCol(selectCol)
     
         
-    return render_template('settings.html', title='Display Settings', sstyle=sstyle,  flasker=flasker, user=user, settings='display', selectCol=selectCol)
+    return render_template('settings.html', title='Display Settings', sstyle=sstyle,  flasker=flasker, user=current_user, settings='display', selectCol=selectCol)
 
 @app.route('/settings_display_resetSort')
 @login_required
@@ -373,14 +384,13 @@ def settings_display_resetSort():
     sstyle = style.getCommonStyle();
     
     selectCol = ""
-    
-    user = User.query.filter_by(login = current_user.login).first()  
+     
     flasker = FlaskHelper()
-    flasker.setArgs(user, None)
+    flasker.setArgs(current_user, None)
     flasker.resetSort()
     
         
-    return render_template('settings.html', title='Display Settings', sstyle=sstyle,  flasker=flasker, user=user, settings='display', selectCol=selectCol)
+    return render_template('settings.html', title='Display Settings', sstyle=sstyle,  flasker=flasker, user=current_user, settings='display', selectCol=selectCol)
 
 
 @app.route('/settings_display_resetAll')
@@ -392,13 +402,58 @@ def settings_display_resetAll():
     
     selectCol = ""
     
-    user = User.query.filter_by(login = current_user.login).first()  
     flasker = FlaskHelper()
-    flasker.setArgs(user, None)
+    flasker.setArgs(current_user, None)
     flasker.resetAll()
     
         
-    return render_template('settings.html', title='Display Settings', sstyle=sstyle,  flasker=flasker, user=user, settings='display', selectCol=selectCol)
+    return render_template('settings.html', title='Display Settings', sstyle=sstyle,  flasker=flasker, user=current_user, settings='display', selectCol=selectCol)
+
+
+@app.route('/updateMovies', methods=['GET', 'POST'])
+@login_required
+def updateMovies():
+    print("updateMovies starts")
+    style = Style()
+    sstyle = style.getCommonStyle();
+    message=''
+    current_user.log('updateMovies', '', '')
+    
+    form = UpdateForm()
+    if 'csrf_token' in request.form:
+        current_user.log('updateMovies', 'range', form.fromMovie.data + " > " + form.toMovie.data)
+        imdbFind = ImdbFind()
+        message = imdbFind.updateMovies(form.fromMovie, form.toMovie)
+        
+    return render_template('updateMovies.html', title='Update Movies', form=form, sstyle=sstyle, message=message)
+
+
+@app.route('/asUser', methods=['GET', 'POST'])
+@login_required
+def asUser():
+    print("asUser starts")
+    print(current_user.__dict__)
+    style = Style()
+    sstyle = style.getCommonStyle();
+    message = ''
+    form = AsUserForm()
+    if 'csrf_token' in request.form:
+        print("found csrf")
+        print(current_user.__dict__)
+        user = User.query.filter_by(login=form.login.data).first()
+        if user is None:
+            print("user is none")
+            current_user.log('asUser', 'login fail', form.login.data)
+            message = "login '" + form.login.data + "' is not a valid login"
+        else:
+            print("user is ok")
+            current_user.log('asUser', 'login success', form.login.data)
+            message = "You are now logged in as '" + form.login.data + "'"
+            login_user(user)
+        
+    return render_template('asUser.html', title='Login As User', form=form, sstyle=sstyle, message=message)
+
+
 
 @app.route('/test')
 @login_required
