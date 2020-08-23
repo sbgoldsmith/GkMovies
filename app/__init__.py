@@ -27,12 +27,15 @@ class MySMTPHandler(logging.handlers.SMTPHandler):
         Format the record and send it to the specified addressees.
         """
         try:
+            print("**** Starting MySMTPHandler")
             import smtplib
             import string # for tls add this line
             try:
                 from email.utils import formatdate
             except ImportError:
                 formatdate = self.date_time
+                
+
             port = self.mailport
             if not port:
                 port = smtplib.SMTP_PORT
