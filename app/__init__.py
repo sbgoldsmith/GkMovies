@@ -46,7 +46,9 @@ class MySMTPHandler(logging.handlers.SMTPHandler):
                             formatdate(), msg)
             if self.username:
                 smtp.login(self.username, self.password)
+            print("**** Attempting to send mail")
             smtp.sendmail(self.fromaddr, self.toaddrs, msg)
+            print("**** Now quitting")
             smtp.quit()
         except (KeyboardInterrupt, SystemExit):
             raise
