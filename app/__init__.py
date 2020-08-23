@@ -16,7 +16,9 @@ login = LoginManager(app)
 login.login_view = 'index'
 mail = Mail(app)
 
-    
+#
+# Initialize Error Mail Handler
+#  
 class MySMTPHandler(logging.handlers.SMTPHandler):
     def emit(self, record):
         """
@@ -53,8 +55,6 @@ class MySMTPHandler(logging.handlers.SMTPHandler):
             
 
 logger = logging.getLogger()
- 
-#gm = TlsSMTPHandler(("smtp.gmail.com", 465), 'steven.bl.goldsmith@gmail.com', ['sgoldsmith@goldkeys.com'], 'Error found!', ('steven.bl.goldsmith@gmail.com', 'Tgh2BCFneC8Z'))
 
 mail_handler = MySMTPHandler((app.config['MAIL_SERVER'], app.config['MAIL_PORT']), 
                              app.config['MAIL_USERNAME'], 
@@ -67,27 +67,18 @@ mail_handler.setLevel(logging.ERROR)
 logger.addHandler(mail_handler)
 
 
-
-#
-# Initialize Error Mail Handler
-#
-
-
-
-
 from app import routes, models, errors
 
 #---------------------+
+from app.models import User
+from app.Imdb import ImdbFind
 '''
-
-
-try:
-    raise Exception()
-except Exception as e:
-    app.logger.exception('Unhandled Exception')
-    
-
+user = User.query.filter_by(login = 'sbg').first()
+imdbFind = ImdbFind()
+imdbFind.findMovies(user, 'The Godfather')
+stop = 1
              
+
 
 from app.models import User, UserColumn, ImdbMovie
 from app.Imdb import ImdbFind
@@ -108,10 +99,7 @@ from sqlalchemy.orm import selectinload, joinedload, query
 from app.email import send_email, send_password_reset_email
 
 
-user = User.query.filter_by(login = 'sbg').first()
-imdbFind = ImdbFind()
-imdbFind.findMovies(user, 'The Godfather')
-stop = 1
+
 
         
         

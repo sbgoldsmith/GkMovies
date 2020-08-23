@@ -421,7 +421,7 @@ def updateMovies():
     
     form = UpdateForm()
     if 'csrf_token' in request.form:
-        current_user.log('updateMovies', 'range', form.fromMovie.data + " > " + form.toMovie.data)
+        current_user.log('updateMovies', 'range', str(form.fromMovie.data) + " > " + str(form.toMovie.data))
         imdbFind = ImdbFind()
         message = imdbFind.updateMovies(form.fromMovie, form.toMovie)
         
