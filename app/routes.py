@@ -414,7 +414,6 @@ def settings_display_resetAll():
 @login_required
 def updateMovies():
     print("updateMovies starts")
-    print(force.execption)
     style = Style()
     sstyle = style.getCommonStyle();
     message=''

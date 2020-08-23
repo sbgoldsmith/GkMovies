@@ -39,6 +39,7 @@ class MySMTPHandler(logging.handlers.SMTPHandler):
             port = self.mailport
             if not port:
                 port = smtplib.SMTP_PORT
+            print("**** Starting smtplib.SMTP_SSL")
             smtp = smtplib.SMTP_SSL(self.mailhost, port)
             msg = self.format(record)
             msg = "From: %s\r\nTo: %s\r\nSubject: %s\r\nDate: %s\r\n\r\n%s" % (
@@ -49,7 +50,7 @@ class MySMTPHandler(logging.handlers.SMTPHandler):
                             formatdate(), msg)
             if self.username:
                 smtp.login(self.username, self.password)
-            print("**** Attempting to send mail")
+            print("**** Attempting smtp.sendmail")
             smtp.sendmail(self.fromaddr, self.toaddrs, msg)
             print("**** Now quitting")
             smtp.quit()
@@ -75,9 +76,10 @@ logger.addHandler(mail_handler)
 from app import routes, models, errors
 
 #---------------------+
+'''
 from app.models import User
 from app.Imdb import ImdbFind
-'''
+
 user = User.query.filter_by(login = 'sbg').first()
 imdbFind = ImdbFind()
 imdbFind.findMovies(user, 'The Godfather')
