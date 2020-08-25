@@ -3,8 +3,7 @@ from config import Config
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from datetime import timedelta
-from flask_mail import Mail
-from flask_mail import Message
+from flask_mail import Mail, Message
 
 import logging
 from logging.handlers import SMTPHandler
@@ -15,7 +14,8 @@ db = SQLAlchemy(app)
 login = LoginManager(app)
 login.login_view = 'index'
 mail = Mail(app)
-
+logging.addLevelName(15, 'TIMER')
+logging.basicConfig(level=logging.DEBUG, format='gkm %(asctime)s %(levelname)s %(module)s line %(lineno)d %(message)s')
 #
 # Initialize Error Mail Handler
 #  
@@ -27,7 +27,7 @@ class MySMTPHandler(logging.handlers.SMTPHandler):
         Format the record and send it to the specified addressees.
         """
         try:
-            print("**** Starting MySMTPHandler")
+            print("Starting MySMTPHandler")
             import smtplib
             import string # for tls add this line
             try:
@@ -39,7 +39,7 @@ class MySMTPHandler(logging.handlers.SMTPHandler):
             port = self.mailport
             if not port:
                 port = smtplib.SMTP_PORT
-            print("**** Starting smtplib.SMTP_SSL")
+            print("Starting smtplib.SMTP_SSL")
             smtp = smtplib.SMTP_SSL(self.mailhost, port)
             msg = self.format(record)
             msg = "From: %s\r\nTo: %s\r\nSubject: %s\r\nDate: %s\r\n\r\n%s" % (
@@ -50,16 +50,14 @@ class MySMTPHandler(logging.handlers.SMTPHandler):
                             formatdate(), msg)
             if self.username:
                 smtp.login(self.username, self.password)
-            print("**** Attempting smtp.sendmail")
+            print("Starting smtp.sendmail")
             smtp.sendmail(self.fromaddr, self.toaddrs, msg)
-            print("**** Now quitting")
             smtp.quit()
         except (KeyboardInterrupt, SystemExit):
             raise
         except:
             self.handleError(record)
             
-
 logger = logging.getLogger()
 
 mail_handler = MySMTPHandler((app.config['MAIL_SERVER'], app.config['MAIL_PORT']), 
@@ -75,25 +73,38 @@ logger.addHandler(mail_handler)
 
 from app import routes, models, errors
 
-#---------------------+
 '''
 from app.models import User
-from app.Imdb import ImdbFind
+from Library.AdderModuleF import Adder
+from flask_login import current_user, login_user
+
+user = User.query.filter_by(login = 'sbg').first()
+adder = Adder()
+message = adder.addMovie('tt2488496')
+
+
+args = {'sortButton':'title', 'titleSearch': 'Star Wars',  'reviewSearch': '', 'genreSearch': '', 'actorSearch':'', 'plotSearch':'',\
+        'user01Search':'', 'user02Search':'', 'user03Search':'', 'user04Search':'', 'user05Search':'', \
+        'user06Search':'', 'user07Search':'', 'user08Search':'', 'user09Search':'', 'user10Search':''}
+user = User.query.filter_by(login = 'sbg').first() 
+
+imdb = ImdbFind()
+imdb.displayMovies(user, args)
+stop = 1
 
 user = User.query.filter_by(login = 'sbg').first()
 imdbFind = ImdbFind()
-imdbFind.findMovies(user, 'The Godfather')
-stop = 1
+imdbFind.findMovies(user, 'Star Wars')
+
              
+
+    
+#---------------------+
 
 
 from app.models import User, UserColumn, ImdbMovie
 from app.Imdb import ImdbFind
-args = {'sortButton':'user01', 'titleSearch': '',  'reviewSearch': '', 'genreSearch': '', 'actorSearch':'', 'plotSearch':'', 'user01Search':'', 'user02Search':'', 'user03Search':'', 'user04Search':'', 'user05Search':''}
-user = User.query.filter_by(login = 'tara').first() 
 
-imdb = ImdbFind()
-imdb.displayMovies(user, args)
 
 
 

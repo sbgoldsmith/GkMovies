@@ -11,7 +11,8 @@ import urllib
 import os 
 import requests
 from datetime import datetime
- 
+import logging
+
 def makeTime(strg):
     index1 = str.find(strg, " min")
     if index1 == 0 or strg == "N/A":
@@ -106,7 +107,7 @@ class Adder(Constants):
             srt += 1    
 
 
-    def addMovieToUser(self, imovie):       
+    def addMovieToUser(self, imovie):    
         umovie = UserMovie(user_id = current_user.id,
                            imdb_movie_id = imovie.id,
                            add_date = datetime.utcnow(),
@@ -165,12 +166,12 @@ class Adder(Constants):
         
         else: 
             try:
-                print("*** addMoviePoster, trying download to " + imagePath)
+                logging.getLogger('gk').info('addMoviePoster: downloading to ' + imagePath)
                 urllib.request.urlretrieve(dmovie['Poster'], imagePath)
                 valid = 'T'
                 rtn = 1
             except:
-                print(dmovie['Poster'])
+                logging.getLogger('gk').info('addMoviePoster: Could not download ' + dmovie['Poster'])
                 valid = 'F'
               
         if imovie != None:

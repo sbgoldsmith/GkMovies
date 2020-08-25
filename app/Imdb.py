@@ -6,7 +6,7 @@ from Library.AdderModuleF import Adder
 from Library.ConstantsModuleF import Constants
 from flask_login import current_user
 from app import db
-
+import logging
 
 
 def like(args, strg):
@@ -22,9 +22,7 @@ def reverse(orderDir):
         return 'asc'
     
     
-def getSort(user, sortButton):
-    #print('Imdb.getSort, sortButton=' + sortButton)
-        
+def getSort(user, sortButton):   
     if sortButton != None:
         #Sort button pressed.  Determine new sort and update User table
         if sortButton == user.order_by:
@@ -38,8 +36,6 @@ def getSort(user, sortButton):
                 orderDir = 'desc'
         
         user.query.filter_by(id = user.id).update({User.order_by: sortButton, User.order_dir: orderDir})
-        #user.query.filter_by(login = current_user.login).update({User.order_by: sortButton, User.order_dir: orderDir})
-        #user.query.filter_by(login = 'tara').update({User.order_by: sortButton, User.order_dir: orderDir})
         db.session.commit()
     else:
         #Nothing pressed, use values from User table
@@ -57,9 +53,8 @@ def getSort(user, sortButton):
     else:
         dbType = db.String()
         
-        
-    print("In Imdb, Cast = ")
-    print(dbType)
+    logging.getLogger('gk').info('Cast=' + str(dbType))
+
     if user.order_dir == 'desc':
         columnSorted = db.cast(getattr(table, sortButton), dbType).desc()
     else:
@@ -75,7 +70,8 @@ class ImdbFind(Constants):
         adder = Adder()
         
         movies = []
-        print("==== in findMovies, titleSearch=" + str(titleSearch))
+        logging.getLogger('gk').info('titleSearch=' + str(titleSearch))
+
         if len(titleSearch) < 3:
             return movies;
         
@@ -142,7 +138,8 @@ class ImdbFind(Constants):
             order_by(ImdbMovie.title).\
             all()
 
-        print("in Imdb.display, titleSearch = :" + titleSearch + ":, movies = " +  str(len(movies)))
+        #print (str(movies.statement.compile()))
+        logging.getLogger('gk').info('Found # Movies=' + str(len(movies)))
 
         return movies
     

@@ -62,13 +62,9 @@ class SettingsAccountForm(FlaskForm):
     lastName = StringField('Last Name', validators=[DataRequired()])
     submit = SubmitField('Update')
 
-    def validate_email(self, email):
-        print('**** in validate')
-        
+    def validate_email(self, email):    
         me = User.query.filter(User.id == current_user.id).first()
         other = User.query.filter(User.email == email.data).first()
-        
-        print(me)
         
         if other != None and other.login != me.login:    
             raise ValidationError('Email address used.  Please choose another.')

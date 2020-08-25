@@ -8,6 +8,9 @@ from Library.ConstantsModuleF import Constants
 from time import time
 import jwt
 from app import app
+from flask_sqlalchemy import SQLAlchemy
+
+#db = SQLAlchemy(app)
 
 @login.user_loader
 def load_user(id):

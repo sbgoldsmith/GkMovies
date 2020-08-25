@@ -1,5 +1,8 @@
 import time
-  
+import logging
+
+TIMER = 15
+
 class Timer:
     def __init__(self):
         self.time = int(round(time.time() * 1000))
@@ -8,8 +11,8 @@ class Timer:
         newTime = int(round(time.time() * 1000))
         elapsed = newTime - self.time
         self.time = newTime
-        print('TIMER ' + strg + ': ' + str(elapsed))
-        
+        logging.getLogger('gk').log(TIMER, strg + ': ' + str(elapsed))
+
         
         
         

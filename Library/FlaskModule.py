@@ -93,14 +93,11 @@ class FlaskHelper(Constants):
         elif col.dataFormat == "time":
             rtn = str(value)[1:5]
         elif col.dataFormat == "date":
-
             if value == '0000-00-00' or value == '':
                 rtn = ''
             else:
-                #print('Creating date_object, col.name=' + col.name + ', movie_id=' + str(movie.imdb_movie_id) + ', value=' + value)
                 date_object = datetime.strptime(value, '%Y-%m-%d')
                 rtn = '{d.month}/{d.day}/{d.year}'.format(d=date_object)
-            #print('getFormatValue, rtn=' + str(rtn))    
         elif col.attribute.searchable == 'T' and  col.attribute.editable == 'F':  
             sname = col.name + "Search"
             lookfor = self.nargs[sname]
@@ -108,7 +105,6 @@ class FlaskHelper(Constants):
 
         else:
             rtn = value
-        #print('getFormatValue, returning rtn=' + str(rtn))    
         return rtn
 
     def getFormatString(self, strg, col):       
@@ -191,9 +187,7 @@ class FlaskHelper(Constants):
 
         db.session.commit()    
         
-    def updateUser(self, form):
-        print('in flasker first=' + form.firstName.data)
-                
+    def updateUser(self, form):                
         self.user.login = form.login.data
         self.user.email = form.email.data    
         self.user.firstName = form.firstName.data 
