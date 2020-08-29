@@ -60,7 +60,7 @@ def getSort(user, sortButton):
     else:
         columnSorted = db.cast(getattr(table, sortButton), dbType)
 
-            
+    #columnSorted = getattr(table, sortButton);  
     return columnSorted
 
 
@@ -124,7 +124,7 @@ class ImdbFind(Constants):
             if uSearch not in ['%', '%%']:
                 column = getattr(UserMovie, userColumn)
                 query = query.filter(column.like(uSearch))
-
+   
         movies = query.\
             join(ImdbMovie).\
             filter(ImdbMovie.title.like(titleSearch)).\
@@ -138,7 +138,18 @@ class ImdbFind(Constants):
             order_by(ImdbMovie.title).\
             all()
 
-        #print (str(movies.statement.compile()))
+        '''
+        movies = query.\
+            join(ImdbMovie).\
+            join(GenreMovie).\
+            join(ActorMovie).\
+            join(Actor).\
+            order_by(ImdbMovie.title).\
+            all()
+        print (str(movies.statement.compile()))
+        '''            
+            
+
         logging.getLogger('gk').info('Found # Movies=' + str(len(movies)))
 
         return movies

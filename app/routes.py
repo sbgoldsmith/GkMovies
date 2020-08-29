@@ -13,11 +13,12 @@ from Library.FlaskModule import FlaskHelper
 from Library.TimerModule import Timer
 from Library.ModelModule import addUserColumns
 from Library.ServerModule import Inputter
+from Library.PagerModule import Pager
 from datetime import datetime, timedelta
 from app.Imdb import ImdbFind
 from app.email import send_password_reset_email
 import logging
-
+import jsonpickle
 
 def info(message):
     logging.getLogger('gk').info(message)
@@ -181,6 +182,7 @@ def addMovie():
 @login_required
 def displayMovies():
     init('displayMovies')
+    print(request.args)
     timer = Timer()
     imdbFind = ImdbFind()
     
@@ -195,6 +197,10 @@ def displayMovies():
 
 
     movies = imdbFind.displayMovies(current_user, request.args)  
+    for m in range(5):
+        print(movies[m].imdb_movie.title)
+  
+  
     timer.elapse('Got movies')
 
     flasker = FlaskHelper()
@@ -204,10 +210,21 @@ def displayMovies():
     
     thisSearch = request.args.get('thisSearch')
     logArg = str(thisSearch) + '=' + str(request.args.get(thisSearch)) + ' order ' + str(request.args.get('sortButton'))
+            
+    if 'pager' in session:
+        pager = jsonpickle.decode(session['pager']) 
+        
+    else:
+        pager = Pager()
 
+    print('@@@@@ about to set args')
+    pager.setArgs(request.args, len(movies))    
+    session['pager'] = jsonpickle.encode(pager)
+
+    
     current_user.log('displayMovies', 'thisSearch',  logArg)
     
-    render = render_template('displayMovies.html', title='Display My Movies', sstyle=sstyle, form=form, user=current_user, flasker=flasker, thisSearch=thisSearch, movies=movies)
+    render = render_template('displayMovies.html', title='Display My Movies', sstyle=sstyle, form=form, user=current_user, flasker=flasker, pager=pager, thisSearch=thisSearch, movies=movies)
 
     timer.elapse('Got render')
     return render
@@ -405,6 +422,17 @@ def asUser():
             login_user(user)
         
     return render_template('asUser.html', title='Login As User', sstyle=session['sstyle'], form=form, message=message)
+
+
+@app.route('/reset_session')
+@login_required
+def reset_session():
+    init('reset_session')
+    pager = Pager()
+    session['pager'] = jsonpickle.encode(pager)
+
+
+    return render_template('home.html', title='Home Page', sstyle=session['sstyle'], user=current_user)
 
 
 

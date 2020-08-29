@@ -72,8 +72,80 @@ logger.addHandler(mail_handler)
 
 
 from app import routes, models, errors
+#---------------------+
+
 
 '''
+from collections import namedtuple
+from Library.PagerModule import Pager
+import json
+import jsonpickle
+from json import JSONEncoder
+
+args = {'pageSelected':4}
+session = {}
+
+print('@@@@@ new object')
+pager = Pager()
+pager.setArgs(args, 930)    
+session['pager'] = jsonpickle.encode(pager)
+
+print('@@@@@ is session')
+pager2 = jsonpickle.decode(session['pager'])
+print('@@@@@ about to print perPageSelected')
+print(pager.getPerPageSelected(5))
+        
+        
+pager = Pager()
+j = json.dumps(pager.toJson())
+j2 = json.loads(j)
+
+j3 = jsonpickle.encode(pager)
+#pager = json.loads(j2, object_hook=pagerDecoder)
+pager = jsonpickle.decode(j3)
+
+
+print(pager.getNumPages())
+stop = 1;
+
+
+
+
+from app.models import User, UserColumn, ImdbMovie
+from app.Imdb import ImdbFind
+
+args = {'sortButton':'title', 'titleSearch': '',  'reviewSearch': '', 'genreSearch': '', 'actorSearch':'', 'plotSearch':'',\
+        'user01Search':'', 'user02Search':'', 'user03Search':'', 'user04Search':'', 'user05Search':'', \
+        'user06Search':'', 'user07Search':'', 'user08Search':'', 'user09Search':'', 'user10Search':''}
+user = User.query.filter_by(login = 't1').first() 
+
+imdb = ImdbFind()
+movies = imdb.displayMovies(user, args)
+for movie in movies:
+   print(movie.imdb_movie.title)
+    
+
+
+
+    
+
+
+def getPageRange(page, per_page, total):
+    start = (page - 1) * per_page
+    end = start + per_page
+    return range(start, end)
+    
+r = getPageRange(1, 10, 900)
+
+
+
+
+
+
+
+
+
+
 from app.models import User
 from Library.AdderModuleF import Adder
 from flask_login import current_user, login_user
@@ -83,14 +155,7 @@ adder = Adder()
 message = adder.addMovie('tt2488496')
 
 
-args = {'sortButton':'title', 'titleSearch': 'Star Wars',  'reviewSearch': '', 'genreSearch': '', 'actorSearch':'', 'plotSearch':'',\
-        'user01Search':'', 'user02Search':'', 'user03Search':'', 'user04Search':'', 'user05Search':'', \
-        'user06Search':'', 'user07Search':'', 'user08Search':'', 'user09Search':'', 'user10Search':''}
-user = User.query.filter_by(login = 'sbg').first() 
 
-imdb = ImdbFind()
-imdb.displayMovies(user, args)
-stop = 1
 
 user = User.query.filter_by(login = 'sbg').first()
 imdbFind = ImdbFind()
@@ -99,7 +164,7 @@ imdbFind.findMovies(user, 'Star Wars')
              
 
     
-#---------------------+
+
 
 
 from app.models import User, UserColumn, ImdbMovie

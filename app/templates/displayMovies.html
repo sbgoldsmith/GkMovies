@@ -4,9 +4,57 @@
 
 <TABLE  class="title_table" cellspacing="0">
 <TR>
-<TD >
-<SPAN  class="found_text">{{ movies|length }} Movies Found</SPAN>
+<TD class="found_cell">
+<SPAN  class="found_text">{{ movies|length }} Movies Found</SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </TD>
+
+
+
+
+<TD class="page_cell">
+	<table border=0>
+	<tr>
+		<td class="per_page_cell">
+		<div class="helv">
+		Movies per Page: 
+		<select name="perPage" id="perPage" onchange="changePerPage()" }}>
+  		<option value="10" {{ pager.getPerPageSelected(10) }}>10</option>
+  		<option value="25" {{ pager.getPerPageSelected(25) }}>25</option>
+  		<option value="50" {{ pager.getPerPageSelected(50) }}>50</option>
+  		<option value="100" {{ pager.getPerPageSelected(100) }}>100</option>
+  		<option value="250" {{ pager.getPerPageSelected(250) }}>250</option>
+  		<option value="500" {{ pager.getPerPageSelected(500) }}>500</option>
+  		<option value="1000" {{ pager.getPerPageSelected(1000) }}>1000</option>
+  		<option value="All" {{ pager.getPerPageSelected('All') }}>All</option>
+		</select>
+		</div>
+		</td>
+		
+		{% if pager.getNumPages() > 1 %}
+			<td class="arrow_page_cell" >
+			<a href="{{ url_for('displayMovies', pageArrow='p2') }}"><img src="{{ url_for('static', filename='images/page_prev_2.png') }}" width="25" style="visibility: {{ pager.getVisibility('p2') }}; "></a>
+			<a href="{{ url_for('displayMovies', pageArrow='p1') }}" style="pointer-events: {{ pager.getPointerEvents('p1') }}"><img src="{{ url_for('static', filename='images/page_prev_1.png') }}" width="25" style="opacity: {{ pager.getOpacity('p1') }}; "></a>
+			</td>
+			{% for p in pager.getGroupRange() %}
+			<td class="page_number_cell">
+			<a href="{{ url_for('displayMovies', pageSelected=p) }}" class="page_text" >{{pager.strong(p)}}</a>
+			</td>
+			{% endfor %}
+			<td class="arrow_page_cell">
+			<a href="{{ url_for('displayMovies', pageArrow='n1') }}" style="pointer-events: {{ pager.getPointerEvents('n1') }}"><img src="{{ url_for('static', filename='images/page_next_1.png') }}" width="25" style="opacity: {{ pager.getOpacity('n1') }}; "></a>
+			<a href="{{ url_for('displayMovies', pageArrow='n2') }}"><img src="{{ url_for('static', filename='images/page_next_2.png') }}" width="25" style="visibility: {{ pager.getVisibility('n2') }}; "></a>
+			</td>
+			
+			
+		{% endif %}
+	</tr>
+	</table>
+</td>
+
+
+
+
+
 </TR>
 </TABLE>
 
@@ -37,36 +85,37 @@
 </TR>
 </THEAD>
 <TBODY>
-{% for movie in movies %}
+{% for i in pager.getMovieRange() %}
+
 	<tr>
 	{% for col in user.columns %}
 	
 		{% if col.vis == 'T' %}
 		<td>
 		{% if col.attribute.dataType == "poster" %}
-			<a href="https://www.imdb.com/title/{{ movie.imdb_movie.tt }}" target="_blank"><img src="{{url_for('static', filename='posters')}}/{{ movie.imdb_movie.tt }}.jpg" width="50px"  /></a>
+			<a href="https://www.imdb.com/title/{{ movies[i].imdb_movie.tt }}" target="_blank"><img src="{{url_for('static', filename='posters')}}/{{ movies[i].imdb_movie.tt }}.jpg" width="50px"  /></a>
 		{% elif col.attribute.dataType == "img" %}
-			<a href="Javascript:{{ col.name }}('{{ movie.imdb_movie.id }}', '{{ movie.imdb_movie.title }}' )"><img src="/static/images/{{ col.name }}.png" width="{{ col.getWidth() }}px"  ></a>
+			<a href="Javascript:{{ col.name }}('{{ movies[i].imdb_movie.id }}', '{{ movies[i].imdb_movie.title }}' )"><img src="/static/images/{{ col.name }}.png" width="{{ col.getWidth() }}px"  ></a>
 		{% elif col.attribute.editable == 'T' and col.rows < 2 %}
-			<input type="text"  id="{{ col.name }}_{{ movie.imdb_movie.id }}" name="{{ col.name }}_{{ movie.imdb_movie.id }}" value="{{ flasker.getFormatValue(movie, col) }}" style="width:{{ col.getWidth() }}px" onkeyup="changeInput('{{ col.name }}', '{{ movie.imdb_movie.id }}', '{{ col.dataFormat }}')" >
+			<input type="text"  id="{{ col.name }}_{{ movies[i].imdb_movie.id }}" name="{{ col.name }}_{{ movies[i].imdb_movie.id }}" value="{{ flasker.getFormatValue(movies[i], col) }}" style="width:{{ col.getWidth() }}px" onkeyup="changeInput('{{ col.name }}', '{{ movies[i].imdb_movie.id }}', '{{ col.dataFormat }}')" >
 		{% elif col.attribute.editable == "T" and col.rows > 1 %}
-<textarea id="{{ col.name }}_{{ movie.imdb_movie.id }}" name="{{ col.name }}_{{ movie.imdb_movie.id }}" style="width:{{ col.getWidth() }}px" rows="{{ col.rows }}"  onkeyup="changeInput('{{ col.name }}', '{{ movie.imdb_movie.id }}', '{{ col.dataFormat }}')" >{{ flasker.getFormatValue(movie, col) }}</textarea>
+<textarea id="{{ col.name }}_{{ movies[i].imdb_movie.id }}" name="{{ col.name }}_{{ movies[i].imdb_movie.id }}" style="width:{{ col.getWidth() }}px" rows="{{ col.rows }}"  onkeyup="changeInput('{{ col.name }}', '{{ movies[i].imdb_movie.id }}', '{{ col.dataFormat }}')" >{{ flasker.getFormatValue(movies[i], col) }}</textarea>
 		{% elif col.attribute.scrollable == 'T' %}
 		<div class="scrollable">
-{{ flasker.getFormatValue(movie, col) }}
+{{ flasker.getFormatValue(movies[i], col) }}
 		</div>
 		{% elif col.name == 'title' %}
-			<a href="https://www.imdb.com/title/{{ movie.imdb_movie.tt }}" target="_blank">{{ flasker.getFormatValue(movie, col) }}</a>
+			<a href="https://www.imdb.com/title/{{ movies[i].imdb_movie.tt }}" target="_blank">{{ flasker.getFormatValue(movies[i], col) }}</a>
 		{% elif col.name == 'genre' %}
-			{% for genre in movie.imdb_movie.genres %}
+			{% for genre in movies[i].imdb_movie.genres %}
 				{{ flasker.getFormatString(genre.genre, col) }}<br>
 			{% endfor %}
 		{% elif col.name == 'actor' %}
-			{% for actor in movie.imdb_movie.actor_movies %}
+			{% for actor in movies[i].imdb_movie.actor_movies %}
 				<a href="https://www.imdb.com/name/{{ actor.nm }}">{{ flasker.getFormatString(actor.actor.actor, col) }}</a><br>
 			{% endfor %}
 		{% else %}
-			{{ flasker.getFormatValue(movie, col) }}
+			{{ flasker.getFormatValue(movies[i], col) }}
         {% endif %}
         </td>
         {% endif %}

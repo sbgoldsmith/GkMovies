@@ -6,7 +6,7 @@ from flask import Markup
 from app.models import UserColumn
 from app import db
 from datetime import datetime
-
+import math
 
 #.DEBUG move to Imdb or vs
 
@@ -37,7 +37,7 @@ class FlaskHelper(Constants):
             
         stop = 1
 
-            
+    
     def getArgValue(self, thisSearch):
         rtn = self.nargs[thisSearch + 'Search']
         return rtn;
@@ -125,8 +125,6 @@ class FlaskHelper(Constants):
             return 'checked'
         else:
             return ''
-
-
 
     def upCol(self, colName):
         col = UserColumn.query.filter(UserColumn.user_id == self.user.id, UserColumn.name == colName).first()

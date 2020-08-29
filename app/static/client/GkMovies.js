@@ -267,3 +267,11 @@ function setColor(element, onoff) {
 		
 		
 }
+
+function changePerPage() {
+	var perPage = document.getElementById('perPage');
+	//alert('perPage' + perPage.value)
+	var url = "displayMovies?perPage=" + perPage.value 
+	window.open(url, "_self");
+	
+}

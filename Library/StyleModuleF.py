@@ -209,20 +209,62 @@ class Style:
         overflow: auto;
     }
     
-    .title_table {
+    table.title_table {
         height: 40px;
         width: """ + str(tableWidth) + """px;
         background-color: #cffffb;
         color: #222222;
         vertical-align: center;
         text-align: left;
-        text-indent: 75px;
         border-collapse: collapse;  
         border-top: 1px solid #222222;
         border-left: 1px solid #222222;
         border-right: 1px solid #222222;
         border-bottom: 0px solid #222222;
     }
+    
+    td.found_cell {
+        width: 300px;
+        text-indent: 75px;
+        border-right: 0px;
+    }
+    
+    td.page_cell {
+        text-align: left;
+        border-left: 0px;
+        border-right: 0px;
+
+    }
+    
+    td.page_number_cell {
+        width: 25px;
+        text-align: center;
+        border-top: 1px solid #00008B;
+        border-bottom: 1px solid #00008B;
+        border-left: 1px solid #00008B;
+        border-right: 1px solid #00008B;
+    }
+    
+    td.per_page_cell {
+        width: 100x;
+        border-top: 0px;
+        border-bottom: 0px;
+        border-left: 0px;
+        border-right: 0px;
+    }
+    
+    td.arrow_page_cell {
+        border-top: 0px;
+        border-bottom: 0px;
+        border-left: 0px;
+        border-right: 0px;
+    }
+    
+    a.page_text {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 17px;
+    }
+    
     .title_text {
         font-family: Arial, Helvetica, sans-serif;
         font-size: 24px;
@@ -231,6 +273,8 @@ class Style:
         font-family: Arial, Helvetica, sans-serif;
         font-size: 18px;
     }
+    
+    
     .fixed_headers {
         width: """ + str(tableWidth) + """px;
         table-layout: fixed; 
