@@ -1,24 +1,9 @@
 var xhr;
 
-var searches = ["title", "genre", "actor", "plot", "user01", "user02", "user03", "user04", "user05", "user06", "user07", "user08", "user09", "user10"];
-
-function getSearchParams() {
-	//alert('getSearchParams starts')
-	var searchParams = "";
-	for (i = 0; i < searches.length; i++) {
-		elementName = searches[i] + "Search";
-		var element = document.getElementById(elementName);
-		if ( element != null ) {
-			searchParams += "&" + elementName + "=" + element.value;
-		}
-	}
-	return searchParams;
-	
-
-}
-function doSearch(element) {
-
-	var url = "displayMovies?thisSearch=" + element + "Search" + getSearchParams();
+function doSearch(elementName) {
+	elementName += 'Search';
+	var element = document.getElementById(elementName);
+	var url = "displayMovies?" + elementName + '=' + element.value;
 	//alert("in doSearch, url=" + url);
 	window.open(url, "_self");
 }
@@ -34,7 +19,7 @@ function doAdderSearch() {
 
 function doButton(element) {
 
-	var url = "displayMovies?sortButton=" + element + getSearchParams();
+	var url = "displayMovies?sortButton=" + element;
 	//alert("in doButton, url=" + url);
 	window.open(url, "_self");
 }
@@ -147,7 +132,7 @@ function deleteMovie(imdb_movie_id, title) {
 		return;
 	}
 
-	var url = "displayMovies?imdb_movie_id=" + imdb_movie_id + getSearchParams();
+	var url = "displayMovies?imdb_movie_id=" + imdb_movie_id
 	//alert("url=" + url)
 	window.open(url, "_self");
 }
@@ -273,5 +258,13 @@ function changePerPage() {
 	//alert('perPage' + perPage.value)
 	var url = "displayMovies?perPage=" + perPage.value 
 	window.open(url, "_self");
+	
+}
+function help(path) {
+	
+	var url = "help?path=" + path.substring(1);
+	//alert(url)
+	window.open(url, "helpWindow", "height=500,width=800,menubar=no");	
+	
 	
 }

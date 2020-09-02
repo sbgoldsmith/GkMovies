@@ -1,0 +1,57 @@
+<div class="helv" >
+Portions of the application can sometimes get out of sync.  But it's not the author's fault.  
+If you are experiencing problems with certain features, I may ask you to reset one or more of these settings to debug the problem. 
+</div>
+
+<table>
+<tr>
+<td style="height:50px;">
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+	<div class="helv_small_color" >
+    {% for message in messages %}
+    {{ message }}<br>
+    {% endfor %}
+	</div>
+{% endif %}
+{% endwith %}
+</td>
+</tr>
+</table>
+
+
+<table>
+<tr>
+<td valign="top" style="width:100px;">
+<a href="{{ url_for('settings_reset', sess='pager') }}" class="helv">Paging</a>
+</td>
+<td>
+<div class="helv" >
+Resets parts of the Display Movies that manages multiple pages.<P>&nbsp;
+</div>
+</td>
+</tr>
+
+
+<tr>
+<td valign="top" style="width:100px;">
+<a href="{{ url_for('settings_reset', sess='searcher') }}" class="helv">Searching</a>
+</td>
+<td>
+Resets parts of the Display Movies that remembers search parameters.<P>&nbsp;
+</td>
+</tr>
+
+
+<tr>
+<td valign="top" style="width:100px;">
+<a href="{{ url_for('settings_reset', sess='all') }}" class="helv">All</a>&nbsp;
+</td>
+<td>
+Go for broke and reset everything.<P>
+</td>
+</tr>
+
+
+</table>
+</div>

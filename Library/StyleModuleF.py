@@ -1,10 +1,7 @@
 from app import db
 from app.models import User, AdderColumn, UserColumn
-from sqlalchemy.sql import func
 from flask_login import current_user
-import math
-
-
+from sqlalchemy.sql import func
     
 class Style:
     
@@ -20,14 +17,32 @@ class Style:
         font-size: 13px;
     }
 
-    a.helv_small {
-        font-family: Helvetica;
-        font-size: 13px;
-    }
-    
     a.helv {
         font-family: Helvetica;
         font-size: 14px;
+        text-decoration: none;
+        color:blue;
+    }
+    
+    a.imdb:link {
+        font-family: Helvetica;
+        font-size: 14px;
+        text-decoration: none;
+        color:blue;
+    }
+    
+    a.imdb:visited {
+        font-family: Helvetica;
+        font-size: 14px;
+        text-decoration: none;
+        color:purple;
+    }
+    
+    a.helv_small {
+        font-family: Helvetica;
+        font-size: 13px;
+        text-decoration: none;
+        color:blue;
     }
     
     div.helv {
@@ -58,7 +73,18 @@ class Style:
         font-size: 14px;
     }
     
-
+    
+    td.noborder {
+        border-bottom: 0px;
+        border-left: 0px;
+        border-right: 0px;
+    }
+    
+    div.tight {
+        margin-top: -9px;
+        margin-bottom: -9px;
+    }
+    
     div.button_height {
         font-family: Helvetica;
         font-size: 14px;
@@ -72,9 +98,6 @@ class Style:
 
     def getHomeStyle(self):
         style = self.getCommonStyle() + """
-        
-
-
 
     table.home, td.home  {
         font-family: Helvetica;
@@ -203,7 +226,6 @@ class Style:
         
     div.scrollable {
         width: 100%;
-        height: 76px;
         margin: 0;
         padding: 0;
         overflow: auto;
@@ -222,6 +244,8 @@ class Style:
         border-right: 1px solid #222222;
         border-bottom: 0px solid #222222;
     }
+
+    
     
     td.found_cell {
         width: 300px;
@@ -260,9 +284,19 @@ class Style:
         border-right: 0px;
     }
     
-    a.page_text {
+    a.page_text:visited {
         font-family: Arial, Helvetica, sans-serif;
         font-size: 17px;
+        text-decoration: none;
+        color:blue;
+    }
+    
+    a.page_text:link {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 17px;
+        text-decoration: none;
+        color:blue;
+
     }
     
     .title_text {

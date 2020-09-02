@@ -8,13 +8,6 @@ from flask_login import current_user
 from app import db
 import logging
 
-
-def like(args, strg):
-    if strg in args:
-        return "%" + args[strg] + "%"
-    else:
-        return "%"
-
 def reverse(orderDir):
     if orderDir == 'asc':
         return 'desc'
@@ -46,21 +39,25 @@ def getSort(user, sortButton):
     table = getTable(sortButton)
     column = UserColumn.query.filter(UserColumn.user_id == user.id, UserColumn.name == sortButton).first();
 
+    dbType = None
     if column.dataFormat in ["number", "currency", "comma"]:
         dbType = db.Numeric()
     elif column.dataFormat == 'date':
         dbType = db.DateTime()
-    else:
-        dbType = db.String()
+
         
     logging.getLogger('gk').info('Cast=' + str(dbType))
 
-    if user.order_dir == 'desc':
+    if dbType and user.order_dir == 'desc':
         columnSorted = db.cast(getattr(table, sortButton), dbType).desc()
-    else:
+    elif dbType and user.order_dir == 'asc':
         columnSorted = db.cast(getattr(table, sortButton), dbType)
+    elif not dbType and user.order_dir == 'desc':
+        columnSorted = getattr(table, sortButton).desc()
+    elif not dbType and user.order_dir == 'asc':
+        columnSorted = getattr(table, sortButton)
 
-    #columnSorted = getattr(table, sortButton);  
+    #columnSorted = get(table, sortButton);  
     return columnSorted
 
 
@@ -106,38 +103,39 @@ class ImdbFind(Constants):
     
     
 
-    def displayMovies(self, user, args):
-        sortButton = args.get('sortButton')
-        
-        titleSearch = like(args, 'titleSearch')
-        genreSearch = like(args, 'genreSearch')
-        actorSearch = like(args, 'actorSearch')
-        plotSearch = like(args, 'plotSearch')
-        
+    def displayMovies(self, user, searcher, sortButton):
+   
         columnSort = getSort(user, sortButton)
 
-
         query = UserMovie.query.filter(UserMovie.user_id == user.id)
+        
         for userColumn in self.userColumns:
-            sname = userColumn + 'Search'
-            uSearch = like(args, sname)
-            if uSearch not in ['%', '%%']:
+            uSearch = searcher.like(userColumn)
+            
+            if uSearch:
                 column = getattr(UserMovie, userColumn)
                 query = query.filter(column.like(uSearch))
    
         movies = query.\
             join(ImdbMovie).\
-            filter(ImdbMovie.title.like(titleSearch)).\
-            filter(ImdbMovie.plot.like(plotSearch)).\
             join(GenreMovie).\
-            filter(GenreMovie.genre.like(genreSearch)).\
             join(ActorMovie).\
-            join(Actor).\
-            filter(Actor.actor.like(actorSearch)).\
-            order_by(columnSort).\
+            join(Actor)
+
+        if searcher.like('title'):
+            movies = movies.filter(ImdbMovie.title.like(searcher.like('title')))
+        if searcher.like('plot'):
+            movies = movies.filter(ImdbMovie.plot.like(searcher.like('plot')))
+        if searcher.like('genre'):
+            movies = movies.filter(GenreMovie.genre.like(searcher.like('genre')))
+        if searcher.like('actor'):   
+            movies = movies.filter(Actor.actor.like(searcher.like('actor')))
+
+            
+        movies = movies.order_by(columnSort).\
             order_by(ImdbMovie.title).\
             all()
-
+            
         '''
         movies = query.\
             join(ImdbMovie).\

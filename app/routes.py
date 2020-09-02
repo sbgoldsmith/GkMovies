@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, session
 from app import app
 from app import db
-from app.forms import LoginForm, RegistrationForm, SettingsAccountForm, ResetPasswordRequestForm, ResetPasswordChangeForm, AddMoviesForm, DisplayMoviesForm, UpdateForm, AsUserForm
+from app.forms import LoginForm, RegistrationForm, SettingsAccountForm, ResetPasswordRequestForm, ResetPasswordChangeForm, AddMoviesForm, DisplayMoviesForm, UpdateForm, AsUserForm, ContactForm
 from app.models import User, AdderColumn
 from flask_login import current_user, login_user, logout_user
 from flask_login.utils import login_required
@@ -14,28 +14,55 @@ from Library.TimerModule import Timer
 from Library.ModelModule import addUserColumns
 from Library.ServerModule import Inputter
 from Library.PagerModule import Pager
+from Library.SearchModule import Searcher
+from Library.ContactModule import Contacter
 from datetime import datetime, timedelta
 from app.Imdb import ImdbFind
 from app.email import send_password_reset_email
 import logging
 import jsonpickle
 
+version = '1.2'
+titles = {'home':'Home Page', 'addMovies':'Add to My Movies', 'displayMovies':'Display My Movies', 'settings':'Settings'}
+
+
+
 def info(message):
     logging.getLogger('gk').info(message)
+
+def skey(key):
+    if hasattr(current_user, 'id'):
+        return key + '_' + str(current_user.id)
+    else:
+        return key
     
-    
+def initJsonSession(name, obj):  
+    if skey(name) not in session or session[skey('version')] != version:
+        info('Initialize Json session ' + skey(name))
+        session[skey(name)] = jsonpickle.encode(obj)
+ 
+def initSimpSession(name, obj):       
+    if skey(name) not in session or session[skey('version')] != version:   
+        info('Initialize Simp session ' + skey(name))
+        session[skey(name)] = obj
+        
+        
 def init(defName):
-    if 'sstyle' not in session:
-        style = Style()
-        session['sstyle'] = style.getCommonStyle()
+    info(defName + ' init')
+
+    initSimpSession('version', version)
+    #place ini initJsonSession Pager() & Searcher()
+    initJsonSession('pager', Pager())        
+    initJsonSession('searcher', Searcher())  
+    initSimpSession('sstyle', Style().getCommonStyle())
         
     if current_user and current_user.is_authenticated:
         current_user.log(defName, 'init', '')
         current_user.setLastVisit()
-    
-    info(defName + ' init')
+        
+def sstyle():
+    return session[skey('sstyle')]
 
-    
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def index():
@@ -51,7 +78,7 @@ def index():
             # Submit button pressed
             flash('Please enter a login and password')
             
-        return render_template('index.html', title='Welcome to Goldkeys Movies', sstyle=session['sstyle'], form=form)
+        return render_template('index.html', title='Welcome to Goldkeys Movies', sstyle=sstyle(), form=form)
     
     
     user = User.query.filter_by(login=form.login.data).first()
@@ -59,7 +86,7 @@ def index():
         info("Invalid user or password")
         flash('Sorry, the login / password combination was not recognized')
 
-        return render_template('index.html', title='Welcome to Goldkeys Movies', sstyle=session['sstyle'], form=form)
+        return render_template('index.html', title='Welcome to Goldkeys Movies', sstyle=sstyle(), form=form)
     
   
     login_user(user)
@@ -114,7 +141,7 @@ def register():
         
         return redirect(url_for('index'))
 
-    return render_template('register.html', title='Register', sstyle=session['sstyle'], form=form)
+    return render_template('register.html', title='Register', sstyle=sstyle(), form=form)
 
 @app.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
@@ -128,7 +155,7 @@ def reset_password_request():
             send_password_reset_email(user)
         flash('Check your email for the instructions to reset your password')
         return redirect(url_for('index'))
-    return render_template('reset_password_request.html', title='Request Password Reset', sstyle=session['sstyle'], form=form)
+    return render_template('reset_password_request.html', title='Request Password Reset', sstyle=sstyle(), form=form)
     
 @app.route('/reset_password_change/<token>', methods=['GET', 'POST'])
 def reset_password_change(token):   
@@ -148,7 +175,7 @@ def reset_password_change(token):
         flash('Your password has been reset.  Please login to confirm.')
         return redirect(url_for('index'))
     
-    return render_template('reset_password_change.html', title='Reset Your Password', sstyle=session['sstyle'], form=form)
+    return render_template('reset_password_change.html', title='Reset Your Password', sstyle=sstyle(), form=form)
 
     
 @app.route('/addMovies', methods=['GET', 'POST'])
@@ -182,7 +209,7 @@ def addMovie():
 @login_required
 def displayMovies():
     init('displayMovies')
-    print(request.args)
+
     timer = Timer()
     imdbFind = ImdbFind()
     
@@ -196,34 +223,29 @@ def displayMovies():
     timer.elapse('Got style')
 
 
-    movies = imdbFind.displayMovies(current_user, request.args)  
-    for m in range(5):
-        print(movies[m].imdb_movie.title)
-  
-  
+    searcher = jsonpickle.decode(session[skey('searcher')]) 
+    searcher.setArgs(request.args)      
+    session[skey('searcher')] = jsonpickle.encode(searcher)
+    
+    sortButton = request.args.get('sortButton')
+    
+    movies = imdbFind.displayMovies(current_user, searcher, sortButton)
     timer.elapse('Got movies')
 
+    pager = jsonpickle.decode(session[skey('pager')]) 
+    pager.setArgs(request.args, searcher, len(movies))    
+    session[skey('pager')] = jsonpickle.encode(pager)
+    
+    
     flasker = FlaskHelper()
-    flasker.setArgs(current_user, request.args)
+    flasker.setArgs(current_user, searcher)
     form = DisplayMoviesForm()
-    timer.elapse('Got DisplayMoviesForm')
     
-    thisSearch = request.args.get('thisSearch')
-    logArg = str(thisSearch) + '=' + str(request.args.get(thisSearch)) + ' order ' + str(request.args.get('sortButton'))
-            
-    if 'pager' in session:
-        pager = jsonpickle.decode(session['pager']) 
         
-    else:
-        pager = Pager()
-
-    print('@@@@@ about to set args')
-    pager.setArgs(request.args, len(movies))    
-    session['pager'] = jsonpickle.encode(pager)
-
+    #logArg = str(thisSearch) + '=' + str(request.args.get(thisSearch)) + ' order ' + str(request.args.get('sortButton'))
+    #current_user.log('displayMovies', 'thisSearch',  logArg)
     
-    current_user.log('displayMovies', 'thisSearch',  logArg)
-    
+    thisSearch = searcher.this + 'Search'
     render = render_template('displayMovies.html', title='Display My Movies', sstyle=sstyle, form=form, user=current_user, flasker=flasker, pager=pager, thisSearch=thisSearch, movies=movies)
 
     timer.elapse('Got render')
@@ -261,29 +283,31 @@ def inputSettingsDisplayField():
 @login_required
 def settings():
     init('settings') 
-    if 'settings' not in session or 'settings-expire' not in session:
-        session['settings'] = 'none'
-        session['settings-expire'] = datetime.now() - timedelta(minutes=1)
+    if skey('settings') not in session or skey('settings-expire') not in session:
+        session[skey('settings')] = 'none'
+        session[skey('settings-expire')] = datetime.now() - timedelta(hours=1)
                   
-    if datetime.now() > session['settings-expire']:
-        session['settings'] = 'none'
+    if datetime.now() > session[skey('settings-expire')]:
+        session[skey('settings')] = 'none'
 
-    if session['settings'] == 'account':
+    if session[skey('settings')] == 'account':
         return settings_account()
-    elif session['settings'] == 'display':
+    elif session[skey('settings')] == 'display':
         return settings_display()
+    elif session[skey('settings')] == 'reset':
+        return settings_reset()
     else:
         current_user.log('settings', '', '')
         flasker = FlaskHelper()
         
-        return render_template('settings.html', title='Settings', sstyle=session['sstyle'], flasker=flasker, settings='none')
+        return render_template('settings.html', title='Settings', sstyle=sstyle(), flasker=flasker, settings='none')
        
 @app.route('/settings_account', methods=['GET', 'POST'])
 @login_required
 def settings_account():
     init('settings_account') 
-    session['settings'] = 'account'
-    session['settings-expire'] = datetime.now() + timedelta(hours=1)
+    session[skey('settings')] = 'account'
+    session[skey('settings-expire')] = datetime.now() + timedelta(hours=1)
     
     flasker = FlaskHelper()
     flasker.setArgs(current_user, None)
@@ -303,20 +327,49 @@ def settings_account():
         form.password.data = 'NothingToSee'
         form.password2.data = 'NothingToSee'
         
-    return render_template('settings.html', title='Account Settings', sstyle=session['sstyle'], form=form, flasker=flasker, settings='account')
+    return render_template('settings.html', title='Account Settings', sstyle=sstyle(), form=form, flasker=flasker, settings='account')
 
 @app.route('/settings_display')
 @login_required
 def settings_display():
     init('settings_display') 
-    session['settings'] = 'display'
-    session['settings-expire'] = datetime.now() + timedelta(hours=1)
+    session[skey('settings')] = 'display'
+    session[skey('settings-expire')] = datetime.now() + timedelta(hours=1)
     
     current_user.log('settings', 'display', '')
     flasker = FlaskHelper()
     
         
-    return render_template('settings.html', title='Display Settings', sstyle=session['sstyle'], user=current_user, flasker=flasker, settings='display')
+    return render_template('settings.html', title='Display Settings', sstyle=sstyle(), user=current_user, flasker=flasker, settings='display')
+
+
+@app.route('/settings_reset')
+@login_required
+def settings_reset():
+    init('settings_reset') 
+    session[skey('settings')] = 'reset'
+    session[skey('settings-expire')] = datetime.now() + timedelta(hours=1)
+    
+    current_user.log('settings', 'reset', '')
+    flasker = FlaskHelper()
+    
+        
+    sess = request.args.get('sess')
+    if sess == 'pager' or sess == 'all':
+        current_user.log('settings', 'reset', 'pager')
+        session[skey('pager')] = jsonpickle.encode(Pager())
+        flash('Paging session reset')
+        
+    if sess == 'searcher' or sess == 'all': 
+        current_user.log('settings', 'reset', 'searcher')
+        session[skey('searcher')] = jsonpickle.encode(Searcher())
+        flash('Searching session reset')
+        
+    if sess == 'all': 
+        session[skey('settings-expire')] = datetime.now()
+        flash('Misc other session reset')
+        
+    return render_template('settings.html', title='Reset Settings', sstyle=sstyle(), user=current_user, flasker=flasker, settings='reset')
 
 
 @app.route('/settings_display_upCol')
@@ -330,7 +383,7 @@ def settings_display_upCol():
     flasker.upCol(selectCol)
     
         
-    return render_template('settings.html', title='Display Settings', sstyle=session['sstyle'], user=current_user, flasker=flasker, settings='display', selectCol=selectCol)
+    return render_template('settings.html', title='Display Settings', sstyle=sstyle(), user=current_user, flasker=flasker, settings='display', selectCol=selectCol)
 
 @app.route('/settings_display_dnCol')
 @login_required
@@ -343,7 +396,7 @@ def settings_display_dnCol():
     flasker.dnCol(selectCol)
     
         
-    return render_template('settings.html', title='Display Settings', sstyle=session['sstyle'], user=current_user, flasker=flasker, settings='display', selectCol=selectCol)
+    return render_template('settings.html', title='Display Settings', sstyle=sstyle(), user=current_user, flasker=flasker, settings='display', selectCol=selectCol)
 
 
 @app.route('/settings_display_resetCol')
@@ -357,7 +410,7 @@ def settings_display_resetCol():
     flasker.resetCol(selectCol)
     
         
-    return render_template('settings.html', title='Display Settings', sstyle=session['sstyle'], user=current_user, flasker=flasker, settings='display', selectCol=selectCol)
+    return render_template('settings.html', title='Display Settings', sstyle=sstyle(), user=current_user, flasker=flasker, settings='display', selectCol=selectCol)
 
 @app.route('/settings_display_resetSort')
 @login_required
@@ -370,7 +423,7 @@ def settings_display_resetSort():
     flasker.resetSort()
     
         
-    return render_template('settings.html', title='Display Settings', sstyle=session['sstyle'],  user=current_user,  flasker=flasker, settings='display', selectCol=selectCol)
+    return render_template('settings.html', title='Display Settings', sstyle=sstyle(),  user=current_user,  flasker=flasker, settings='display', selectCol=selectCol)
 
 
 @app.route('/settings_display_resetAll')
@@ -384,7 +437,7 @@ def settings_display_resetAll():
     flasker.resetAll()
     
         
-    return render_template('settings.html', title='Display Settings', sstyle=session['sstyle'],  user=current_user,  flasker=flasker, settings='display', selectCol=selectCol)
+    return render_template('settings.html', title='Display Settings', sstyle=sstyle(),  user=current_user,  flasker=flasker, settings='display', selectCol=selectCol)
 
 
 @app.route('/updateMovies', methods=['GET', 'POST'])
@@ -401,7 +454,35 @@ def updateMovies():
         imdbFind = ImdbFind()
         message = imdbFind.updateMovies(form.fromMovie, form.toMovie)
         
-    return render_template('updateMovies.html', title='Update Movies', sstyle=session['sstyle'], form=form, message=message)
+    return render_template('updateMovies.html', title='Update Movies', sstyle=sstyle(), form=form, message=message)
+
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    init('contact')   
+    form = ContactForm()
+    
+    
+    if 'csrf_token' in request.form and current_user.is_authenticated:
+        form.firstName.data = current_user.firstName
+        form.lastName.data = current_user.lastName
+        form.email.data = current_user.email
+        
+    if form.validate_on_submit():
+        info('Contact Us Submitted, subject=' + form.subject.data)
+ 
+        contacter = Contacter(current_user, form)
+        contacter.addContact()
+        contacter.sendEmail()
+        
+        if current_user.is_authenticated:
+            current_user.log('contact', 'success', '')
+            
+        flash('Thank you, thank you for contacting us.')
+        
+
+    return render_template('contact.html', title='Contact Us', user=current_user, sstyle=sstyle(), form=form)
+
 
 
 @app.route('/asUser', methods=['GET', 'POST'])
@@ -421,20 +502,18 @@ def asUser():
             message = "You are now logged in as '" + form.login.data + "'"
             login_user(user)
         
-    return render_template('asUser.html', title='Login As User', sstyle=session['sstyle'], form=form, message=message)
+    return render_template('asUser.html', title='Login As User', sstyle=sstyle(), form=form, message=message)
+ 
 
-
-@app.route('/reset_session')
+@app.route('/help', methods=['GET', 'POST'])
 @login_required
-def reset_session():
-    init('reset_session')
-    pager = Pager()
-    session['pager'] = jsonpickle.encode(pager)
+def help():
+    current_user.log('help', request.args.get('path'), '')
+    imagePath = 'images/help/' + request.args.get('path') + '.png'
+    includePath = 'helpInclude/' + request.args.get('path') + '.html'
+    title = titles[request.args.get('path')]
 
-
-    return render_template('home.html', title='Home Page', sstyle=session['sstyle'], user=current_user)
-
-
+    return render_template('help.html', title=title, imagePath=imagePath, includePath=includePath)
 
 @app.route('/test')
 @login_required

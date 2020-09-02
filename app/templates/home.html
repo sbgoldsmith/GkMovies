@@ -13,7 +13,7 @@ Then sort or search for titles, review, plot lines, cast members, etc.
 
 <table class="home" width="650px">
 <tr>
-<td class="home" width="130" valign="top" ><a href="{{ url_for('addMovies') }}">Add to My Movies</a></td>
+<td class="home" width="130" valign="top" ><a href="{{ url_for('addMovies') }}" class="helv">Add to My Movies</a></td>
 <td class="home" >Go to this page first.  You will see a simple input box.  Start typing and matching movies from IMDb will be listed.  
 When one or more movies appear that you have seen, press the <strong>Add Movie</strong> button to add it to your list.  
 After you have added a few, go to the next page.</td>
@@ -21,7 +21,7 @@ After you have added a few, go to the next page.</td>
 </tr>
 
 <tr>
-<td class="home" width="130" valign="top"><a href="{{ url_for('displayMovies') }}">Display My Movies</td>
+<td class="home" width="130" valign="top"><a href="{{ url_for('displayMovies') }}" class="helv">Display My Movies</td>
 <td class="home" >This is the main Goldkeys Movies page.  The page lists all of your movies and some associated information 
 from IMDb.  For each movie, you can enter some fields: Date seen, your rating, and your review.   
 The remaining fields come from IMDb and are updated periodically.  This is where you can search and sort. 
@@ -31,27 +31,29 @@ or cast member to go to that IMDb page.</td>
 </tr>
 
 <tr>
-<td class="home" width="130" valign="top"><a href="{{ url_for('settings') }}">Settings</td>
+<td class="home" width="130" valign="top"><a href="{{ url_for('settings') }}" class="helv">Settings</td>
 <td class="home" >This is where you can customize Goldkeys Movies for yourself.  You can change the width and height of column and add your own custom columns.  
 Three have been added - date, rating and review - and a total of 10 are available.  You can also change your account information like login and email.
 </td>
 </tr>
 
+<tr>
+<td class="home" width="130" valign="top"><a href="{{ url_for('contact') }}" class="helv">Contact Us</td>
+<td class="home" >Problems using Goldkeys Movies? Or do you have accolades you want to share?  Let us know.
+</td>
+</tr>
+
 {% if user.admin == 'T' %}
 <tr>
-<td class="home" width="130" valign="top"><a href="{{ url_for('updateMovies') }}">Update Movies</td>
+<td class="home" width="130" valign="top"><a href="{{ url_for('updateMovies') }}" class="helv">Update Movies</td>
 <td class="home" >Users with administrative permissions can run a manual update of IMDb information.</td>
 </tr>
 
 <tr>
-<td class="home" width="130" valign="top"><a href="{{ url_for('asUser') }}">Login As User</td>
+<td class="home" width="130" valign="top"><a href="{{ url_for('asUser') }}" class="helv">Login As User</td>
 <td class="home" >Use Goldkeys movies as if you were logged in as another user.</td>
 </tr>
 
-<tr>
-<td class="home" width="130" valign="top"><a href="{{ url_for('reset_session') }}">Reset Session</td>
-<td class="home" >For debugging.  Persistent little devils.</td>
-</tr>
 
 {% endif %}
 

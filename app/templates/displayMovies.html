@@ -18,6 +18,7 @@
 		<div class="helv">
 		Movies per Page: 
 		<select name="perPage" id="perPage" onchange="changePerPage()" }}>
+		<option value="5" {{ pager.getPerPageSelected(5) }}>5</option>
   		<option value="10" {{ pager.getPerPageSelected(10) }}>10</option>
   		<option value="25" {{ pager.getPerPageSelected(25) }}>25</option>
   		<option value="50" {{ pager.getPerPageSelected(50) }}>50</option>
@@ -25,7 +26,7 @@
   		<option value="250" {{ pager.getPerPageSelected(250) }}>250</option>
   		<option value="500" {{ pager.getPerPageSelected(500) }}>500</option>
   		<option value="1000" {{ pager.getPerPageSelected(1000) }}>1000</option>
-  		<option value="All" {{ pager.getPerPageSelected('All') }}>All</option>
+  		<option value="All" {{ pager.getPerPageSelected(0) }}>All</option>
 		</select>
 		</div>
 		</td>
@@ -69,15 +70,19 @@
 	<IMG src="{{ flasker.getArrow(col.name) }}" width="20" style="visibility: {{ flasker.getVisibility(col.name) }}; ">
 	<br>
 	{% if col.attribute.sortable == 'T' %}
-		<BUTTON  name="{{ col.name }}" type="submit" style="height:34px;" onclick="doButton('{{ col.name }}')">{{ col.label }}</BUTTON>
+		<BUTTON  name="{{ col.name }}" type="submit" style="height:34px;{{ col.getButtonColor() }}" onclick="doButton('{{ col.name }}')">{{ col.label }}</BUTTON>
 	{% else %}
 		<div class="button_height">{{ col.label }}</div>
 	{% endif %}
 	<br>
-	{% if col.attribute.searchable == 'T' %}
-		<INPUT  id="{{ col.name }}Search" name="{{ col.name }}Search" type="search"  value="{{ flasker.getArgValue(col.name) }}" style="width:{{ col.getWidth() }}px; margin-top: 2px;"  oninput="doSearch('{{ col.name }}')">
+	{% if col.attribute.dataType == "poster" %}
+	    <div  style="margin-top:22px">
+		<a href="{{ url_for('displayMovies', reset_search=T) }}" class="helv_small">Clear Search:</a>
+		</div>
+	{% elif col.attribute.searchable == 'T' %}
+		<INPUT  id="{{ col.name }}Search" name="{{ col.name }}Search" type="search" value="{{ flasker.getArgValue(col.name) }}" style="width:{{ col.getWidth() }}px; margin-top: 2px;"  oninput="doSearch('{{ col.name }}')">
 	{% endif %}
-	<br>
+
 	</TD>
 	{% endif %}
 	
@@ -93,26 +98,26 @@
 		{% if col.vis == 'T' %}
 		<td>
 		{% if col.attribute.dataType == "poster" %}
-			<a href="https://www.imdb.com/title/{{ movies[i].imdb_movie.tt }}" target="_blank"><img src="{{url_for('static', filename='posters')}}/{{ movies[i].imdb_movie.tt }}.jpg" width="50px"  /></a>
+			<a href="https://www.imdb.com/title/{{ movies[i].imdb_movie.tt }}" target="_blank"><img src="{{url_for('static', filename='posters')}}/{{ movies[i].imdb_movie.tt }}.jpg" width="{{ col.getWidth() }}px"  /></a>
 		{% elif col.attribute.dataType == "img" %}
 			<a href="Javascript:{{ col.name }}('{{ movies[i].imdb_movie.id }}', '{{ movies[i].imdb_movie.title }}' )"><img src="/static/images/{{ col.name }}.png" width="{{ col.getWidth() }}px"  ></a>
 		{% elif col.attribute.editable == 'T' and col.rows < 2 %}
-			<input type="text"  id="{{ col.name }}_{{ movies[i].imdb_movie.id }}" name="{{ col.name }}_{{ movies[i].imdb_movie.id }}" value="{{ flasker.getFormatValue(movies[i], col) }}" style="width:{{ col.getWidth() }}px" onkeyup="changeInput('{{ col.name }}', '{{ movies[i].imdb_movie.id }}', '{{ col.dataFormat }}')" >
+			<input type="text"  id="{{ col.name }}_{{ movies[i].imdb_movie.id }}" name="{{ col.name }}_{{ movies[i].imdb_movie.id }}" value="{{ flasker.getFormatValue(movies[i], col) }}" style="width:{{ col.getWidth() }}px" oninput="changeInput('{{ col.name }}', '{{ movies[i].imdb_movie.id }}', '{{ col.dataFormat }}')" >
 		{% elif col.attribute.editable == "T" and col.rows > 1 %}
-<textarea id="{{ col.name }}_{{ movies[i].imdb_movie.id }}" name="{{ col.name }}_{{ movies[i].imdb_movie.id }}" style="width:{{ col.getWidth() }}px" rows="{{ col.rows }}"  onkeyup="changeInput('{{ col.name }}', '{{ movies[i].imdb_movie.id }}', '{{ col.dataFormat }}')" >{{ flasker.getFormatValue(movies[i], col) }}</textarea>
+<textarea id="{{ col.name }}_{{ movies[i].imdb_movie.id }}" name="{{ col.name }}_{{ movies[i].imdb_movie.id }}" style="width:{{ col.getWidth() }}px" rows="{{ col.rows }}"  oninput="changeInput('{{ col.name }}', '{{ movies[i].imdb_movie.id }}', '{{ col.dataFormat }}')" >{{ flasker.getFormatValue(movies[i], col) }}</textarea>
 		{% elif col.attribute.scrollable == 'T' %}
-		<div class="scrollable">
+		<div class="scrollable" style="height:{{ col.getHeight() }}px">
 {{ flasker.getFormatValue(movies[i], col) }}
 		</div>
 		{% elif col.name == 'title' %}
-			<a href="https://www.imdb.com/title/{{ movies[i].imdb_movie.tt }}" target="_blank">{{ flasker.getFormatValue(movies[i], col) }}</a>
+			<a href="https://www.imdb.com/title/{{ movies[i].imdb_movie.tt }}" target="_blank" class="imdb" >{{ flasker.getFormatValue(movies[i], col) }}</a>
 		{% elif col.name == 'genre' %}
 			{% for genre in movies[i].imdb_movie.genres %}
 				{{ flasker.getFormatString(genre.genre, col) }}<br>
 			{% endfor %}
 		{% elif col.name == 'actor' %}
 			{% for actor in movies[i].imdb_movie.actor_movies %}
-				<a href="https://www.imdb.com/name/{{ actor.nm }}">{{ flasker.getFormatString(actor.actor.actor, col) }}</a><br>
+				<a href="https://www.imdb.com/name/{{ actor.nm }}" class="imdb" >{{ flasker.getFormatString(actor.actor.actor, col) }}</a><br>
 			{% endfor %}
 		{% else %}
 			{{ flasker.getFormatValue(movies[i], col) }}

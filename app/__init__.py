@@ -15,10 +15,10 @@ login = LoginManager(app)
 login.login_view = 'index'
 mail = Mail(app)
 logging.addLevelName(15, 'TIMER')
-logging.basicConfig(level=logging.DEBUG, format='gkm %(asctime)s %(levelname)s %(module)s line %(lineno)d %(message)s')
+logging.basicConfig(level=logging.DEBUG, format='*** GKM %(asctime)s %(levelname)s %(module)s line %(lineno)d %(message)s')
 #
 # Initialize Error Mail Handler
-#  
+#
 class MySMTPHandler(logging.handlers.SMTPHandler):
     def emit(self, record):
         """
@@ -73,9 +73,29 @@ logger.addHandler(mail_handler)
 
 from app import routes, models, errors
 #---------------------+
-
-
 '''
+from Library.PagerModule import Pager
+page = Pager()
+
+if hasattr(pager, 'setArgs'):
+    print('T')
+else:
+    print('F')
+    
+
+from Library.SearchModule import Searcher
+args = {'reset_search': 'T', 'sortButton':'title', 'titleSearch': 'men',  'reviewSearch': '', 'genreSearch': '', 'actorSearch':'', 'plotSearch':'',\
+        'user01Search':'', 'user02Search':'', 'user03Search':'', 'user04Search':'', 'user05Search':'', \
+        'user06Search':'', 'user07Search':'', 'user08Search':'', 'user09Search':'', 'user10Search':''}
+
+
+
+searcher = Searcher()
+searcher.setArgs(args)
+
+
+
+
 from collections import namedtuple
 from Library.PagerModule import Pager
 import json
@@ -85,16 +105,10 @@ from json import JSONEncoder
 args = {'pageSelected':4}
 session = {}
 
-print('@@@@@ new object')
-pager = Pager()
+
 pager.setArgs(args, 930)    
 session['pager'] = jsonpickle.encode(pager)
-
-print('@@@@@ is session')
-pager2 = jsonpickle.decode(session['pager'])
-print('@@@@@ about to print perPageSelected')
-print(pager.getPerPageSelected(5))
-        
+       
         
 pager = Pager()
 j = json.dumps(pager.toJson())

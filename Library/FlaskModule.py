@@ -15,41 +15,27 @@ def p(name, value):
         return ""; 
     else:
         return " " + name + "=\"" + str(value) + "\""
-    
-def narg(args, strg):
-    if strg in args:
-        return args[strg]
-    else:
-        return ""
-
-     
+      
         
 class FlaskHelper(Constants):       
-    def setArgs(self,  user, args):
+    def setArgs(self,  user, searcher):
         self.user = user
-        if args != None:
-            self.args = args
-            self.nargs = {}
-            
-            for searchColumn in self.searchColumns:
-                sColumn = searchColumn + 'Search'
-                self.nargs.update( {sColumn : narg(args, sColumn) } )
-            
-        stop = 1
+        if searcher != None:
+            self.searcher = searcher
 
     
     def getArgValue(self, thisSearch):
-        rtn = self.nargs[thisSearch + 'Search']
+        rtn = self.searcher.get(thisSearch)
         return rtn;
   
     def getArrow(self, thisCol):
         if self.user.order_by == thisCol:
             if self.user.order_dir == 'asc':
-                return "/static/images/upArrow.png"
+                return "/static/images/upArrowRed.png"
             else:
-                return "/static/images/dnArrow.png"
+                return "/static/images/dnArrowRed.png"
         else:
-            return "/static/images/upArrow.png"
+            return "/static/images/upArrowRed.png"
         
      
     def getVisibility(self, thisCol):
@@ -99,8 +85,7 @@ class FlaskHelper(Constants):
                 date_object = datetime.strptime(value, '%Y-%m-%d')
                 rtn = '{d.month}/{d.day}/{d.year}'.format(d=date_object)
         elif col.attribute.searchable == 'T' and  col.attribute.editable == 'F':  
-            sname = col.name + "Search"
-            lookfor = self.nargs[sname]
+            lookfor = self.searcher.get(col.name)
             rtn = highlight(value, lookfor)
 
         else:
@@ -108,8 +93,7 @@ class FlaskHelper(Constants):
         return rtn
 
     def getFormatString(self, strg, col):       
-        sname = col.name + "Search"
-        lookfor = self.nargs[sname]
+        lookfor = self.searcher.get(col.name)
         rtn = highlight(strg, lookfor)
         return rtn
 

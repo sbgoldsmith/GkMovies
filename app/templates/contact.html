@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="helv_section">
+Sure, I want to know what you think.  Be gentle.
+</div>
+
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    
+	<div class="helv_section">
+    <table>
+    <tr style="height:30px">
+    <td colspan="2">
+    <div class="helv_small_color" >
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            
+            {% for message in messages %}
+            {{ message }}<br>
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+    </div>
+    </td>
+    </tr>
+    
+    <tr style="height:40px">
+    <td valign="top">    	
+        {{ form.firstName.label }}
+    </td>
+    
+    <td valign="top"> 
+        
+    	{% if user.is_authenticated %}
+	    	{{ user.firstName }}
+	    	{{ user.lastName }}
+    	
+    	{% else %}
+    	
+	        {{ form.firstName(size=16) }}  {{ form.lastName(size=16) }}
+	        
+	        {% if form.firstName.errors|length > 0 %}
+	        <br>
+	            {% for error in form.firstName.errors %}
+	            <span style="color: red;">[{{ error }}]</span>
+	            {% endfor %}
+	        {% endif %}   
+	        
+	        {% if form.lastName.errors|length > 0 %}
+	            {% for error in form.lastName.errors %}
+	            <span style="color: red;">[{{ error }}]</span>
+	            {% endfor %}
+	        {% endif %} 
+        
+        {% endif %}
+
+        
+        
+    </td>
+    </tr>
+    
+    <tr style="height:40px">
+    <td valign="top">    
+        {{ form.email.label }}
+    </td>
+    
+    <td valign="top"> 
+        
+        
+        {% if user.is_authenticated %}
+	    	{{ user.email }}    	
+    	{% else %}    	
+	        {{ form.email(size=24) }}<br>
+	        {% if form.email.errors|length > 0 %}
+	            {% for error in form.email.errors %}
+	            <span style="color: red;">[{{ error }}]</span>
+	            {% endfor %}
+	        {% endif %}
+		{% endif %}
+		        
+    </td>
+    </tr>
+    
+    <tr style="height:40px">
+    <td valign="top">
+        {{ form.subject.label }}
+    </td>
+    
+    <td valign="top"> 
+        
+        {{ form.subject(size=47) }}<br>
+        {% if form.subject.errors|length > 0 %}
+              {% for error in form.subject.errors %}
+              <span style="color: red;">[{{ error }}]</span>
+              {% endfor %}
+        {% endif %}
+    </td>
+    </tr>
+    
+    <tr style="height:160px">
+    <td valign="top">
+        {{ form.message.label }}&nbsp;&nbsp;
+        
+    </td>
+    
+    <td valign="top"> 
+        
+        {{ form.message(rows='10', cols='50') }}<br>
+        {% if form.message.errors|length > 0 %}
+            {% for error in form.message.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        {% endif %}
+
+    </td>
+    
+    </tr>
+    
+    <tr>
+    <td>&nbsp;<br>{{ form.submit() }}</td>
+    </tr>
+
+    
+    </table>
+</div>
+</form>
+
+
+{% endblock %}

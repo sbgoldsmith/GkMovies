@@ -1,5 +1,5 @@
 from app import db, login
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 #from django.template.defaultfilters import title
 from datetime import datetime
@@ -89,6 +89,24 @@ class User(UserMixin, db.Model):
     
     def __repr__(self):
         return '<User {}, Email is {}>'.format(self.login, self.email)
+
+
+def load_contact(id):
+    return User.query.get(int(id))
+
+class Contact(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    login = db.Column(db.String(32))
+    email = db.Column(db.String(32))
+    firstName = db.Column(db.String(32))
+    lastName = db.Column(db.String(32))
+    subject = db.Column(db.String(64))
+    message = db.Column(db.String())
+    contact_date = db.Column(db.DateTime())
+
+    def setContactDate(self):
+        self.contact_date =  datetime.utcnow()
+        db.session.commit()
 
 
 def load_user_log(id):
@@ -200,6 +218,14 @@ class UserColumn(db.Model):
     def getWidth(self):
         return math.ceil(self.cols * Constants().widthFactor)
 
+    def getHeight(self):
+        return math.ceil(self.rows * Constants().heightFactor)
+    
+    def getButtonColor(self):
+        if self.name == current_user.order_by:
+            return "color:red; font-weight:bold;"
+        else:
+            return ""
     
 def load_column_attribute(id):
     return UserColumn.query.get(int(id))

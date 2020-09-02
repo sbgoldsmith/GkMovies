@@ -9,7 +9,6 @@ import logging
     
 class Pager():
     def __init__(self):
-        
         self.pageSelected = 1
         self.perPage = 25
         self.numPages = 1
@@ -17,7 +16,7 @@ class Pager():
         self.movieEnd = 1
         self.groupStart = 1
         self.groupEnd = 10
-        print('@@@@ pager inited')
+
     
     def previousGroup(self):
         self.groupStart -= 10
@@ -27,16 +26,16 @@ class Pager():
     def nextGroup(self):
         self.groupStart += 10
         self.groupEnd += 10
-        print('@@@@ in n2 1, self.numPages=' + str(self.numPages) + ', self.groupStart=' + str(self.groupStart) + ', self.groupEnd=' + str(self.groupEnd))
+       
         if self.groupEnd > self.numPages:
             self.groupEnd = self.numPages
-        print('@@@@ in n2 2, self.numPages=' + str(self.numPages) + ', self.groupStart=' + str(self.groupStart) + ', self.groupEnd=' + str(self.groupEnd))
 
 
-    def setArgs(self, args, totalMovies):
+
+    def setArgs(self, args, searcher, totalMovies):
         logging.getLogger('gk').info('Pager.setArgs: args=' + str(args))
         
-        if 'thisSearch' in args:
+        if searcher.isNew():
             self.pageSelected = 1
             self.groupStart = 1
             self.groupEnd = 10
@@ -45,7 +44,12 @@ class Pager():
             self.pageSelected = int(args['pageSelected'])
             
         elif 'perPage' in args:
-            self.perPage = int(args['perPage'])  
+            if args['perPage'] == 'All':
+                self.perPage = 0
+            else:
+                self.perPage = int(args['perPage'])
+                self.pageSelected = 1
+                
             self.groupStart = 1
             self.groupEnd = 10
         
@@ -64,10 +68,13 @@ class Pager():
             elif args['pageArrow'] == 'n2':
                 self.nextGroup()
                 self.pageSelected = self.groupStart
-                print('@@@@ in n2 3, self.pageSelected=' + str(self.pageSelected))
         
         
-        self.numPages = math.ceil(totalMovies / self.perPage)
+        if self.perPage == 0:
+            self.numPages = 1
+        else:
+            self.numPages = math.ceil(totalMovies / self.perPage)
+        
         self.movieStart = (self.pageSelected - 1) * self.perPage
 
         
@@ -77,7 +84,8 @@ class Pager():
             #
             self.movieEnd = totalMovies
         else:
-            self.movieEnd = self.movieStart + self.perPage
+            self.movieEnd = self.movieStart + min(self.perPage, totalMovies)
+            
             
         if self.numPages < 10:
             self.groupEnd = self.numPages;
@@ -90,7 +98,6 @@ class Pager():
         return self.numPages
 
     def getGroupRange(self):
-        print('@@@@ in groupGrange, self.groupStart=' + str(self.groupStart) + ', self.groupEnd=' + str(self.groupEnd))
         return range(self.groupStart, self.groupEnd + 1)
     
     def getPerPage(self):

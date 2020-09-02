@@ -17,6 +17,7 @@ class Config(object):
     MAIL_PASSWORD = 'Tgh2BCFneC8Z'
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
+    MAIL_DEBUG = False
     ADMINS = ['sgoldsmith@goldkeys.com']
 
     '''

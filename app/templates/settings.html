@@ -7,17 +7,21 @@
 <tr>
 <td valign="top" width="150px">
 
-<a href="{{ url_for('settings_account') }}">{{ flasker.strong(settings, 'account', 'Account') }}</a><P><br>
-<a href="{{ url_for('settings_display') }}">{{ flasker.strong(settings, 'display', 'Display Movies') }}</a><P><br>
-
+<a href="{{ url_for('settings_account') }}" class="helv">{{ flasker.strong(settings, 'account', 'Account') }}</a><P><br>
+<a href="{{ url_for('settings_display') }}" class="helv">{{ flasker.strong(settings, 'display', 'Display Movies') }}</a><P><br>
+<a href="{{ url_for('settings_reset') }}" class="helv">{{ flasker.strong(settings, 'reset', 'Reset Sessions') }}</a><P><br>
 
 </td>
 
-<td valign="top" width="600px">
+<td valign="top" width="600px">	
 {% if settings == 'account' %}
-		{% include 'settings_account.html' %}
+	{% include 'settings_account.html' %}
 {% elif  settings == 'display' %}
-		{% include 'settings_display.html' %}
+	{% include 'settings_display.html' %}
+{% elif  settings == 'reset' %}
+	{% include 'settings_reset.html' %}
+{% else %}
+	{% include 'settings_intro.html' %}
 {% endif %}
 </td>
 
