@@ -1,7 +1,7 @@
 import time
 import logging
 
-TIMER = 15
+TIMER = 25
 
 class Timer:
     def __init__(self):

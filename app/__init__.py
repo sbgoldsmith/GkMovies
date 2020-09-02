@@ -14,8 +14,8 @@ db = SQLAlchemy(app)
 login = LoginManager(app)
 login.login_view = 'index'
 mail = Mail(app)
-logging.addLevelName(15, 'TIMER')
-logging.basicConfig(level=logging.DEBUG, format='*** GKM %(asctime)s %(levelname)s %(module)s line %(lineno)d %(message)s')
+logging.addLevelName(25, 'TIMER')
+logging.basicConfig(level=logging.INFO, format='*** GKM %(asctime)s %(levelname)s %(module)s line %(lineno)d %(message)s')
 #
 # Initialize Error Mail Handler
 #

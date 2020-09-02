@@ -36,6 +36,8 @@ class Searcher():
                 if key.endswith('Search'):
                     self.this = key.replace('Search', '')
                     value = args[key]
+                    value = value.replace("+", " ")
+                    
                     setattr(self, self.this, value)
 
 

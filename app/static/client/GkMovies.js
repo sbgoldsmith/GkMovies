@@ -2,8 +2,8 @@ var xhr;
 
 function doSearch(elementName) {
 	elementName += 'Search';
-	var element = document.getElementById(elementName);
-	var url = "displayMovies?" + elementName + '=' + element.value;
+	var elementValue = document.getElementById(elementName).value.replace(' ', '+');
+	var url = "displayMovies?" + elementName + '=' + elementValue;
 	//alert("in doSearch, url=" + url);
 	window.open(url, "_self");
 }

@@ -23,7 +23,7 @@ import logging
 import jsonpickle
 
 version = '1.2'
-titles = {'home':'Home Page', 'addMovies':'Add to My Movies', 'displayMovies':'Display My Movies', 'settings':'Settings'}
+titles = {'home':'Home Page', 'addMovies':'Add to My Movies', 'displayMovies':'Display My Movies', 'settings':'Settings', 'contact':'Contact Us'}
 
 
 
@@ -220,8 +220,6 @@ def displayMovies():
     
     style = Style()
     sstyle = style.getDisplayStyle(current_user)
-    timer.elapse('Got style')
-
 
     searcher = jsonpickle.decode(session[skey('searcher')]) 
     searcher.setArgs(request.args)      
@@ -250,7 +248,6 @@ def displayMovies():
 
     timer.elapse('Got render')
     return render
-
 
 
 @app.route('/inputField', methods=['GET', 'POST'])
