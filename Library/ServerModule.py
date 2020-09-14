@@ -3,7 +3,7 @@ from flask_login import current_user
 from app import db
 import datetime
 import re
-import logging
+from Library.LoggerModule import debug
 
 def processValue(value, dataType):
     if dataType in ['number', 'currency', 'comma']:
@@ -76,7 +76,7 @@ class Inputter():
             column = getattr(UserMovie, name)
             UserMovie.query.filter_by(user_id = current_user.id, imdb_movie_id = imdbMovieId).update({column: rtn.value})
             db.session.commit()
-            logging.getLogger('gk').info('Inputter.processInput: Updated UserMovie, user_id=' + str(current_user.id) + ', ' + name + '=' + rtn.value)
+            debug('Inputter.processInput: Updated UserMovie, user_id=' + str(current_user.id) + ', ' + name + '=' + rtn.value)
             return ""
         elif rtn.message == 'silent':
             return ""
@@ -90,7 +90,7 @@ class Inputter():
             column = getattr(UserColumn, colAttribute)
             UserColumn.query.filter(UserColumn.user_id == user.id, UserColumn.name == name).update({column: rtn.value})
             db.session.commit()
-            logging.getLogger('gk').info('Inputter.processSettingsDisplayInput: Updated UserColumn, user_id=' + str(user.id) + ', ' + name + '.' + colAttribute + '=' + rtn.value)
+            debug('Inputter.processSettingsDisplayInput: Updated UserColumn, user_id=' + str(user.id) + ', ' + name + '.' + colAttribute + '=' + rtn.value)
             return ""
         elif rtn.message == 'silent':
             return ""

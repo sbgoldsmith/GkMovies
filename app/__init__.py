@@ -14,8 +14,16 @@ db = SQLAlchemy(app)
 login = LoginManager(app)
 login.login_view = 'index'
 mail = Mail(app)
+
+#
+# Initialize logging 
+#
+from werkzeug._internal import _logger
+if _logger:
+    _logger.setLevel(50) 
 logging.addLevelName(25, 'TIMER')
-logging.basicConfig(level=logging.INFO, format='*** GKM %(asctime)s %(levelname)s %(module)s line %(lineno)d %(message)s')
+logging.basicConfig(level=logging.INFO, format='*** GKM %(asctime)s %(levelname)s %(message)s')
+
 #
 # Initialize Error Mail Handler
 #
@@ -73,7 +81,38 @@ logger.addHandler(mail_handler)
 
 from app import routes, models, errors
 #---------------------+
+
 '''
+
+from Library.UpdateSchemaModule import UpdateSchema
+us = UpdateSchema()
+message = us.update_1_2()
+print(message)
+
+
+
+from app.models import Version
+lastest = Version.query.order_by(Version.install_date).first()
+d = lastest.getFormatInstallDate()
+
+
+from app.models import User
+from Library.AdderModuleF import Adder
+from flask_login import current_user, login_user
+
+user = User.query.filter_by(login = 'sbg').first()
+adder = Adder()
+message = adder.addMovie('tt6723592')
+
+
+
+from app.models import User   
+from app.Imdb import ImdbFind
+user = User.query.filter_by(login = 'sbg').first() 
+imdbFind = ImdbFind()
+message = imdbFind.findMovies(user, "hello   moove  ")
+
+
 from Library.PagerModule import Pager
 page = Pager()
 
@@ -160,13 +199,7 @@ r = getPageRange(1, 10, 900)
 
 
 
-from app.models import User
-from Library.AdderModuleF import Adder
-from flask_login import current_user, login_user
 
-user = User.query.filter_by(login = 'sbg').first()
-adder = Adder()
-message = adder.addMovie('tt2488496')
 
 
 

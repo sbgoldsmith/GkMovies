@@ -1,7 +1,7 @@
 from enum import Enum
 from flask import Markup
 from Library.HelperModuleF import nn
-from Library.TimerModule import Timer
+
 #
 #Highlight functions
 #

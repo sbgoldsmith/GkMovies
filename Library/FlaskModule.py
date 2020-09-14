@@ -1,6 +1,6 @@
 from Library.HelperModuleF import getTable, isImdb
 from Library.HighlightModule import highlight
-from Library.TimerModule import Timer
+from Library.LoggerModule import Timer, prt
 from Library.ConstantsModuleF import Constants
 from flask import Markup
 from app.models import UserColumn
@@ -70,7 +70,7 @@ class FlaskHelper(Constants):
     def tryFormatValue(self, movie, col):
         value = self.getValue(movie, col)
         
-        if value == None or value == '':
+        if value == None or value == '' or value == 0 or value == '0':
             rtn = ""
         elif col.dataFormat == "comma":
             rtn = "{:,.0f}".format(float(value))
@@ -78,6 +78,8 @@ class FlaskHelper(Constants):
             rtn = '${:,.2f}'.format(float(value))
         elif col.dataFormat == "time":
             rtn = str(value)[1:5]
+        elif col.dataFormat == "percent":
+            rtn = str(value) + '%'
         elif col.dataFormat == "date":
             if value == '0000-00-00' or value == '':
                 rtn = ''
@@ -103,7 +105,10 @@ class FlaskHelper(Constants):
             return Markup("<strong>" + label + "</strong>")
         else:
             return label
-        
+    
+    def plus(self, item):
+        return item.replace(' ', '+')
+            
     def isVisible(self, col):
         if col.vis == 'T':
             return 'checked'
@@ -118,8 +123,7 @@ class FlaskHelper(Constants):
         
         srt = col.srt
         upcol = UserColumn.query.filter(UserColumn.user_id == self.user.id, UserColumn.srt == srt - 1).first()
-        
-       
+
         col.query.filter(UserColumn.user_id == self.user.id, UserColumn.name == colName).update({UserColumn.srt: srt - 1})
         upcol.query.filter(UserColumn.user_id == self.user.id, UserColumn.name == upcol.name).update({UserColumn.srt: srt})
         db.session.commit()

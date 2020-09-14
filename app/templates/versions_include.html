@@ -1,0 +1,30 @@
+<div class="helv_section">
+<table class="home">
+
+<tr>
+<th class="home">Version</td>
+<th class="home">Install Date</td>
+<th class="home">Description</td>
+</th>
+
+
+{% for version in versions %}
+<tr>
+<td class="home" valign="top" >
+{{ version.version }}
+</td>
+
+<td class="home" valign="top" >
+{{ version.getFormatInstallDate() }}
+</td>
+
+<td class="home" valign="top" >
+{% include version.getVersionHtml() %}
+</td>
+
+
+</tr>
+{% endfor %}
+
+</table>
+</div>

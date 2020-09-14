@@ -4,17 +4,37 @@
 
 <div class="helv_section">
 
-<form action="" method="post" novalidate>
-    {{ form.hidden_tag() }}
+Update a range of movies.
+<P>
+<form action="" method="post" >
+    {{ rangeForm.hidden_tag() }}
 
-    {{ form.fromMovie.label }}&nbsp;{{ form.fromMovie(size=5) }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ form.toMovie.label }}&nbsp;{{ form.toMovie(size=5) }}
- 
-<p>{{ form.submit() }}</p>    
+    {{ rangeForm.fromMovie.label }}&nbsp;{{ rangeForm.fromMovie(size=5) }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ rangeForm.toMovie.label }}&nbsp;{{ rangeForm.toMovie(size=5) }}&nbsp;
+    {{ rangeForm.rangeGenres.label }}&nbsp;{{ rangeForm.rangeGenres }}&nbsp;
+    {{ rangeForm.rangeCast.label }}&nbsp;{{ rangeForm.rangeCast }}&nbsp;
+<p>{{ rangeForm.submit() }}</p>    
 
 </form>
+{{ range_message }}
 
+<P>&nbsp;<P>&nbsp;<P>
+Update a single movie
 <P>
-{{ message }}
+<form action="" method="post">
+    {{ singleForm.hidden_tag() }}
+    
+    {{ singleForm.tt.label }}&nbsp;{{ singleForm.tt(size=8) }}&nbsp;
+    {{ singleForm.singleGenres.label }}&nbsp;{{ singleForm.singleGenres }}&nbsp;
+    {{ singleForm.singleCast.label }}&nbsp;{{ singleForm.singleCast }}&nbsp;
+<p>{{ singleForm.submit() }}</p>    
+    
+ 
+ 
+</form>
+{{ single_message }}
+    
+<P>
+
 
 </div>
 

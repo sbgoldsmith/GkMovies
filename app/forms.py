@@ -4,6 +4,8 @@ from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import User
 from flask_login import current_user
 from wtforms.widgets import PasswordInput
+from wtforms.widgets.core import CheckboxInput
+from wtforms.fields.simple import HiddenField
 
 class AddMoviesForm(FlaskForm):
     titleSearch = StringField('Search By Title:', validators=[DataRequired()])
@@ -69,11 +71,24 @@ class SettingsAccountForm(FlaskForm):
         if other != None and other.login != me.login:    
             raise ValidationError('Email address used.  Please choose another.')
         
-class UpdateForm(FlaskForm):
+class UpdateRangeForm(FlaskForm):
     fromMovie = IntegerField('From:')
     toMovie = IntegerField('To:')
-    submit = SubmitField('Update Imdb Movies')
+    rangeGenres = BooleanField('Genres:', default=False)
+    rangeCast = BooleanField('Cast:', default=False)
+    submit = SubmitField('Update Imdb Movies') 
   
+class UpdateSingleForm(FlaskForm):
+    hidden = HiddenField('hidden')
+    tt = StringField('TT:')
+    singleGenres = BooleanField('Genres:', default=False)
+    singleCast = BooleanField('Cast:', default=False)
+    submit = SubmitField('Update Imdb Movie')
+    
+class UpdateSchemaForm(FlaskForm):
+    submit = SubmitField('Update Schema for Version 1.2')
+    
+    
 class AsUserForm(FlaskForm):
     login = StringField('login:', validators=[DataRequired()])
     submit = SubmitField('Login As User')

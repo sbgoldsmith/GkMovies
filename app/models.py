@@ -10,6 +10,7 @@ import jwt
 from app import app
 from flask_sqlalchemy import SQLAlchemy
 
+
 #db = SQLAlchemy(app)
 
 @login.user_loader
@@ -114,7 +115,7 @@ def load_user_log(id):
 
 class UserLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    login = db.Column(db.String(16))
+    login = db.Column(db.String(32))
     route = db.Column(db.String(64))
     action = db.Column(db.String(64))
     arg = db.Column(db.String(64))
@@ -162,10 +163,14 @@ class ImdbMovie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tt = db.Column(db.String(16), index=True, unique=True )
     title = db.Column(db.String(255))
+    series = db.Column(db.String(24))
+    seriesSeq = db.Column(db.Float())
     iyear = db.Column(db.Integer)
     runtime = db.Column(db.Time())
     imdbRating = db.Column(db.Float())
     imdbVotes = db.Column(db.Integer())
+    rottenTomatoes = db.Column(db.Integer())
+    metaCritic = db.Column(db.Integer())
     plot = db.Column(db.Text())
     poster = db.Column(db.String(255))
     poster_valid =  db.Column(db.String(1))
@@ -242,7 +247,24 @@ class ColumnAttribute(db.Model):
     dataType = db.Column(db.String(6))
     ordr = db.Column(db.Integer)
     user_column = db.relationship("UserColumn", back_populates='attribute')
-        
+    
+def load_version(id):
+    return Version.query.get(int(id))
+
+class Version(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    install_date = db.Column(db.DateTime())
+    version = db.Column(db.String(12))
+    summary = db.Column(db.String())
+    audience = db.Column(db.String())
+    
+    def getVersionHtml(self):
+        return '/versions/' + self.version + '.html'
+    
+    def getFormatInstallDate(self):
+        rtn = '{d.month}/{d.day}/{d.year}'.format(d=self.install_date)
+        return rtn
+    
 class UrlMovie():
     tt = ''
     title = ''
@@ -250,3 +272,10 @@ class UrlMovie():
     plot = ""
     countries = []
     button = False
+    
+    def hasImdb(self):
+        im = ImdbMovie.query.filter(ImdbMovie.tt == self.tt).first()
+        rtn = im == None
+        return rtn
+    
+        

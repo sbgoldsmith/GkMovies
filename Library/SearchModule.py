@@ -3,6 +3,9 @@ class Searcher():
     def __init__(self):
         self.this = ''
         
+        
+        self.series = ''
+        self.seriesFirst = False
         self.title = ''
         self.genre = ''
         self.actor = ''
@@ -27,7 +30,7 @@ class Searcher():
         if 'reset_search' in args:
             self.reseted = True   
             for var in dir(self):
-                if var not in ['setArgs', 'like', 'get', 'isNew', 'reseted'] and "__" not in var:
+                if var not in ['setArgs', 'like', 'get', 'isNew', 'reseted', 'seriesFirst'] and "__" not in var:
                     setattr(self, var, '')  
              
         else:
@@ -39,6 +42,8 @@ class Searcher():
                     value = value.replace("+", " ")
                     
                     setattr(self, self.this, value)
+                    if key == 'seriesSearch' and value != '':
+                        self.seriesFirst = True
 
 
     def like(self, name):

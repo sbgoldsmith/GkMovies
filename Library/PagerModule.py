@@ -1,9 +1,6 @@
 from flask import Markup
 import math
-import json
-from json import JSONEncoder
-from collections import namedtuple
-import logging
+from Library.LoggerModule import info
 
 
     
@@ -33,7 +30,7 @@ class Pager():
 
 
     def setArgs(self, args, searcher, totalMovies):
-        logging.getLogger('gk').info('Pager.setArgs: args=' + str(args))
+        info('args=' + str(args))
         
         if searcher.isNew():
             self.pageSelected = 1

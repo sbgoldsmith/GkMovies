@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="helv_section">
+
+</div>
+
+
+
+<table class="home" width="650px">
+
+
+<tr>
+<td class="home" width="130" valign="top"><a href="{{ url_for('updateMovies') }}" class="helv">Update Movies</td>
+<td class="home" >Run a manual update of IMDb information.</td>
+</tr>
+
+<tr>
+<td class="home" width="130" valign="top"><a href="{{ url_for('asUser') }}" class="helv">Login As User</td>
+<td class="home" >Use Goldkeys Movies as if you were logged in as another user.</td>
+</tr>
+
+<tr>
+<td class="home" width="130" valign="top"><a href="{{ url_for('updateSchema') }}" class="helv">Update Database Schema</td>
+<td class="home" >Run a database schema update for a new version of Goldkeys Movies.</td>
+</tr>
+
+
+</table>
+
+
+{% endblock %}
+

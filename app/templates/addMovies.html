@@ -6,11 +6,43 @@
 Below is a simple Search Box. Start typing and after about three characters, matching movies from IMDb will be listed. When one or more appears that you have seen, press the <strong>Add Movie button</strong> to add it to your list.
 After you have added a few, click on the <strong>Display</strong> link above to see your movie details.  Hint: try not to type to fast to give the web page enough time to respond.
 <P>
+
+<table>
+<tr>
+
+<td class="noborder">
 &nbsp;&nbsp;&nbsp;&nbsp;Search By Title: 
-<INPUT  id="titleSearch" name="titleSearch" type="search"  value="{{ titleSearch }}" size="15"  style="height:30px;" oninput="doAdderSearch()">
+</td>
+
+<td class="noborder">
+<INPUT  id="titleSearch" name="titleSearch" type="search" value="{{ titleSearch }}" size="25"  style="height:35px; font-family: Helvetica; font-size: 17px;" oninput="doAdderSearch()">
+</td>
+</tr>
+
+<tr>
+<td class="noborder">
+&nbsp;
+</td>
+
+<td class="noborder">
+{% if imdbFind.candidates | length > 0 %}
+	<select class="hide_slide" name="candidate" id="candidate" size="4"  onchange="doAdderCandidate('{{ imdbFind.badWord }}' )" onfocus="this.selectedIndex = -1;">
+	{% for candidate in imdbFind.candidates %}
+		<option value="{{ candidate }}" style="font-size: 17px;">{{ candidate }}</option>
+	{% endfor %}
+	</select>
+{% else %}
+	&nbsp;
+{% endif %}
+</td>
+</tr>
+</table>
+
+
 </div>
 
-  
+
+
 <TABLE cellpadding="4" class="fixed_headers" >
 	{% for movie in movies %}
 	<TR  class="border_top">
@@ -24,7 +56,7 @@ After you have added a few, click on the <strong>Display</strong> link above to 
 		{% endfor %}
 	</TD>
 	<TD>
-		<div id="button_{{ movie.tt }}" />
+		<div id="user_button_{{ movie.tt }}" />
 		{% if movie.button  %}
 		<BUTTON  name="addMovie" type="submit" class="active_button" onclick="addMyMovie('{{ movie.tt }}')">Add Movie</BUTTON> 
 	 	{% else %}
@@ -32,6 +64,19 @@ After you have added a few, click on the <strong>Display</strong> link above to 
 		{% endif %}
 		</div>
 	</TD>
+	
+	{% if user.admin == True %}
+	<TD>
+		<div id="imdb_button_{{ movie.tt }}" />
+		{% if movie.hasImdb() %}
+		<BUTTON  name="addImdb" type="submit" class="active_button" onclick="addImdb('{{ movie.tt }}')">Add Imdb</BUTTON> 
+		{% else %}
+		Movie Loaded
+		{% endif %}
+		</div>
+	</TD>
+	{% endif %}
+	
 	</TR>
 	{% endfor %}
 </TABLE>

@@ -49,9 +49,9 @@
     </tr>
     
     <tr>
-    <td>    
+    <td colspan="2">    
         {{ form.login.label }}<br>
-        {{ form.login(size=12) }}<br>
+        {{ form.login(size=24) }}<br>
         {% if form.login.errors|length > 0 %}
         	{% for error in form.login.errors %}
         	<span style="color: red;">[{{ error }}]</span>

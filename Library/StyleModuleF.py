@@ -26,14 +26,14 @@ class Style:
     
     a.imdb:link {
         font-family: Helvetica;
-        font-size: 14px;
+        font-size: 13px;
         text-decoration: none;
         color:blue;
     }
     
     a.imdb:visited {
         font-family: Helvetica;
-        font-size: 14px;
+        font-size: 13px;
         text-decoration: none;
         color:purple;
     }
@@ -41,6 +41,13 @@ class Style:
     a.helv_small {
         font-family: Helvetica;
         font-size: 13px;
+        text-decoration: none;
+        color:blue;
+    }
+    
+    a.helv_smaller {
+        font-family: Helvetica;
+        font-size: 12px;
         text-decoration: none;
         color:blue;
     }
@@ -93,13 +100,35 @@ class Style:
         padding-bottom: 8px;
     }
     
+    .hide_slide {
+        display: inline-block;
+        vertical-align: top;
+        overflow: hidden;
+        border: solid grey 0px;
+        outline:none;
+    }
+
+    .hide_slide select {
+        padding: 10px;
+        margin: -5px -20px -5px -5px;
+    }
+    
+    ul.version  {
+        padding-left: 14px;
+    }
+    
+    li.version {
+        padding-bottom: 8px;
+    }
+    
+    
     """
         return style
 
     def getHomeStyle(self):
         style = self.getCommonStyle() + """
 
-    table.home, td.home  {
+    table.home, td.home, th.home  {
         font-family: Helvetica;
         font-size: 14px;
         padding-top: 5px;
@@ -248,8 +277,8 @@ class Style:
     
     
     td.found_cell {
-        width: 300px;
-        text-indent: 75px;
+        width: 500px;
+        text-indent: 30px;
         border-right: 0px;
     }
     
@@ -282,6 +311,14 @@ class Style:
         border-bottom: 0px;
         border-left: 0px;
         border-right: 0px;
+    }
+    
+
+
+    
+    td.actor {
+        border: 1px solid;
+        text-align: right;
     }
     
     a.page_text:visited {

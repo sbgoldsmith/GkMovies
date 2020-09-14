@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request, session
 from app import app
 from app import db
-from app.forms import LoginForm, RegistrationForm, SettingsAccountForm, ResetPasswordRequestForm, ResetPasswordChangeForm, AddMoviesForm, DisplayMoviesForm, UpdateForm, AsUserForm, ContactForm
+from app.forms import LoginForm, RegistrationForm, SettingsAccountForm, ResetPasswordRequestForm, ResetPasswordChangeForm, AddMoviesForm, DisplayMoviesForm, UpdateRangeForm, UpdateSingleForm, AsUserForm, ContactForm, UpdateSchemaForm
 from app.models import User, AdderColumn
 from flask_login import current_user, login_user, logout_user
 from flask_login.utils import login_required
@@ -10,25 +10,21 @@ from app.Imdb import ImdbFind
 from Library.StyleModuleF import Style
 from Library.AdderModuleF import Adder
 from Library.FlaskModule import FlaskHelper
-from Library.TimerModule import Timer
 from Library.ModelModule import addUserColumns
 from Library.ServerModule import Inputter
 from Library.PagerModule import Pager
 from Library.SearchModule import Searcher
 from Library.ContactModule import Contacter
+from Library.LoggerModule import info, debug, Timer
+from Library.VersionModule import getLatestVersion, getAllVersions, getNewVersions
+from Library.UpdateSchemaModule import UpdateSchema
 from datetime import datetime, timedelta
 from app.Imdb import ImdbFind
 from app.email import send_password_reset_email
-import logging
 import jsonpickle
 
 version = '1.2'
 titles = {'home':'Home Page', 'addMovies':'Add to My Movies', 'displayMovies':'Display My Movies', 'settings':'Settings', 'contact':'Contact Us'}
-
-
-
-def info(message):
-    logging.getLogger('gk').info(message)
 
 def skey(key):
     if hasattr(current_user, 'id'):
@@ -38,27 +34,27 @@ def skey(key):
     
 def initJsonSession(name, obj):  
     if skey(name) not in session or session[skey('version')] != version:
-        info('Initialize Json session ' + skey(name))
+        debug('Initialize Json session ' + skey(name))
         session[skey(name)] = jsonpickle.encode(obj)
  
 def initSimpSession(name, obj):       
     if skey(name) not in session or session[skey('version')] != version:   
-        info('Initialize Simp session ' + skey(name))
+        debug('Initialize Simp session ' + skey(name))
         session[skey(name)] = obj
         
         
 def init(defName):
-    info(defName + ' init')
+    #info(defName + ' init')
 
-    initSimpSession('version', version)
-    #place ini initJsonSession Pager() & Searcher()
+
     initJsonSession('pager', Pager())        
     initJsonSession('searcher', Searcher())  
     initSimpSession('sstyle', Style().getCommonStyle())
+    initSimpSession('version', version)
         
     if current_user and current_user.is_authenticated:
         current_user.log(defName, 'init', '')
-        current_user.setLastVisit()
+
         
 def sstyle():
     return session[skey('sstyle')]
@@ -101,8 +97,16 @@ def index():
 @app.route('/home')
 @login_required
 def home():
+    info()
     init('home')
-    return render_template('home.html', title='Home Page', sstyle=Style().getHomeStyle(), user=current_user)
+    
+    version = getLatestVersion()
+    newVersions = getNewVersions()
+    
+    if len(newVersions) == 0:
+        current_user.setLastVisit()
+    
+    return render_template('home.html', title='Home Page', sstyle=Style().getHomeStyle(), user=current_user, version=version, newVersions=newVersions)
 
 
 @app.route('/logout')
@@ -181,33 +185,50 @@ def reset_password_change(token):
 @app.route('/addMovies', methods=['GET', 'POST'])
 @login_required
 def addMovies():
+    info()
     init('addMovies')
     if request.args.get('titleSearch') == None:
         titleSearch = ""
     else:
         titleSearch = str(request.args.get('titleSearch'))
         
+        
+        
     current_user.log('addMovies', 'titleSearch', titleSearch)
     imdbFind = ImdbFind()
     movies = imdbFind.findMovies(current_user, titleSearch)
 
     form = AddMoviesForm()
-    return render_template('addMovies.html', title='Add to My Movies', sstyle=Style().getAdderStyle(), form=form, titleSearch=titleSearch, movies=movies)
+    return render_template('addMovies.html', title='Add to My Movies', sstyle=Style().getAdderStyle(), form=form, user=current_user, imdbFind=imdbFind, titleSearch=titleSearch, movies=movies)
 
 @app.route('/addMovie', methods=['GET', 'POST'])
 @login_required
 def addMovie():
+    info()
     init('addMovie')
-    current_user.log('addmovie', 'tt', request.form['tt'])
+    current_user.log('addMovie', 'tt', request.form['tt'])
     adder = Adder()
     message = adder.addMovie(request.form['tt'])
     
     return message
 
+@app.route('/addImdb', methods=['GET', 'POST'])
+@login_required
+def addImdb():
+    info()
+    init('addImdb')
+    current_user.log('addImdb', 'tt', request.form['tt'])
+    adder = Adder()
+    message = adder.addImdb(request.form['tt'])
+    
+    return message
+
+
 
 @app.route('/displayMovies', methods=['GET', 'POST'])
 @login_required
 def displayMovies():
+    info()
     init('displayMovies')
 
     timer = Timer()
@@ -223,12 +244,15 @@ def displayMovies():
 
     searcher = jsonpickle.decode(session[skey('searcher')]) 
     searcher.setArgs(request.args)      
-    session[skey('searcher')] = jsonpickle.encode(searcher)
+
     
     sortButton = request.args.get('sortButton')
     
     movies = imdbFind.displayMovies(current_user, searcher, sortButton)
     timer.elapse('Got movies')
+    #Saving searcher here because Imdb might have changed it.
+    session[skey('searcher')] = jsonpickle.encode(searcher)
+    
 
     pager = jsonpickle.decode(session[skey('pager')]) 
     pager.setArgs(request.args, searcher, len(movies))    
@@ -244,7 +268,7 @@ def displayMovies():
     #current_user.log('displayMovies', 'thisSearch',  logArg)
     
     thisSearch = searcher.this + 'Search'
-    render = render_template('displayMovies.html', title='Display My Movies', sstyle=sstyle, form=form, user=current_user, flasker=flasker, pager=pager, thisSearch=thisSearch, movies=movies)
+    render = render_template('displayMovies.html', title='Display My Movies', sstyle=sstyle, form=form, user=current_user, flasker=flasker, pager=pager, searcher=searcher, thisSearch=thisSearch, movies=movies)
 
     timer.elapse('Got render')
     return render
@@ -279,6 +303,7 @@ def inputSettingsDisplayField():
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
+
     init('settings') 
     if skey('settings') not in session or skey('settings-expire') not in session:
         session[skey('settings')] = 'none'
@@ -287,6 +312,8 @@ def settings():
     if datetime.now() > session[skey('settings-expire')]:
         session[skey('settings')] = 'none'
 
+    info('settings, skey=' + skey('settings'))
+    
     if session[skey('settings')] == 'account':
         return settings_account()
     elif session[skey('settings')] == 'display':
@@ -306,11 +333,13 @@ def settings_account():
     session[skey('settings')] = 'account'
     session[skey('settings-expire')] = datetime.now() + timedelta(hours=1)
     
+    info('settings, skey=' + skey('settings'))
     flasker = FlaskHelper()
     flasker.setArgs(current_user, None)
     form = SettingsAccountForm()
 
     if form.validate_on_submit():
+        info('Settings account submitted')
         current_user.log('settings', 'account', 'submit')
         flasker.updateUser(form)
         flash('Your account settings have been changed.')
@@ -333,6 +362,7 @@ def settings_display():
     session[skey('settings')] = 'display'
     session[skey('settings-expire')] = datetime.now() + timedelta(hours=1)
     
+    info('settings, skey=' + skey('settings'))
     current_user.log('settings', 'display', '')
     flasker = FlaskHelper()
     
@@ -347,6 +377,7 @@ def settings_reset():
     session[skey('settings')] = 'reset'
     session[skey('settings-expire')] = datetime.now() + timedelta(hours=1)
     
+    info('settings, skey=' + skey('settings'))
     current_user.log('settings', 'reset', '')
     flasker = FlaskHelper()
     
@@ -372,6 +403,7 @@ def settings_reset():
 @app.route('/settings_display_upCol')
 @login_required
 def settings_display_upCol():
+    info()
     init('settings_display_upCol') 
     selectCol = request.args.get('name')
 
@@ -385,6 +417,7 @@ def settings_display_upCol():
 @app.route('/settings_display_dnCol')
 @login_required
 def settings_display_dnCol():
+    info()
     init('settings_display_dnCol') 
     selectCol = request.args.get('name')
 
@@ -399,6 +432,7 @@ def settings_display_dnCol():
 @app.route('/settings_display_resetCol')
 @login_required
 def settings_display_resetCol():
+    info()  
     init('settings_display_resetCol')    
     selectCol = request.args.get('name')
     
@@ -412,6 +446,7 @@ def settings_display_resetCol():
 @app.route('/settings_display_resetSort')
 @login_required
 def settings_display_resetSort():
+    info()  
     init('settings_display_resetSort')   
     selectCol = ""
      
@@ -425,7 +460,8 @@ def settings_display_resetSort():
 
 @app.route('/settings_display_resetAll')
 @login_required
-def settings_display_resetAll():  
+def settings_display_resetAll():
+    info()    
     init('settings_display_resetAll')    
     selectCol = ""
     
@@ -440,22 +476,39 @@ def settings_display_resetAll():
 @app.route('/updateMovies', methods=['GET', 'POST'])
 @login_required
 def updateMovies():
+    info()  
     init('updateMovies')   
-    message=''
+   
     current_user.log('updateMovies', '', '')
     
-    form = UpdateForm()
+    imdbFind = ImdbFind()
+    rangeForm = UpdateRangeForm()
+    singleForm = UpdateSingleForm()
+    
+    range_message = ''
+    single_message = ''
+    
     if 'csrf_token' in request.form:
-        info('Update Movies, range = ' + str(form.fromMovie.data) + " > " + str(form.toMovie.data))
-        current_user.log('updateMovies', 'range', str(form.fromMovie.data) + " > " + str(form.toMovie.data))
-        imdbFind = ImdbFind()
-        message = imdbFind.updateMovies(form.fromMovie, form.toMovie)
+       
+        if request.form.get('submit') == rangeForm.submit.label.text:
+            info('range = ' + str(rangeForm.fromMovie.data) + " > " + str(rangeForm.toMovie.data))
+            current_user.log('updateMovies', 'range', str(rangeForm.fromMovie.data) + " > " + str(rangeForm.toMovie.data))
+            range_message = imdbFind.updateMovies(rangeForm.fromMovie, rangeForm.toMovie, rangeForm.rangeGenres.data, rangeForm.rangeCast.data)
         
-    return render_template('updateMovies.html', title='Update Movies', sstyle=sstyle(), form=form, message=message)
+        elif request.form.get('submit') == singleForm.submit.label.text:
+            info('tt = ' + str(singleForm.tt.data))
+            imovie = imdbFind.updateMovie(singleForm.tt.data, singleForm.singleGenres.data, singleForm.singleCast.data)
+            single_message = "Updated '" + imovie.title + "'"
+        
+        else:
+            range_message = 'Error: unrecognized submit = ' + str(request.args.get('submit'))
+            
+    return render_template('updateMovies.html', title='Update Movies', sstyle=sstyle(), rangeForm=rangeForm, singleForm=singleForm, range_message=range_message, single_message=single_message)
 
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
+    info()  
     init('contact')   
     form = ContactForm()
     
@@ -485,7 +538,8 @@ def contact():
 @app.route('/asUser', methods=['GET', 'POST'])
 @login_required
 def asUser():
-    init('asUser') 
+    info()     
+
     message = ''
     form = AsUserForm()
     if 'csrf_token' in request.form:
@@ -498,13 +552,15 @@ def asUser():
             current_user.log('asUser', 'login success', form.login.data)
             message = "You are now logged in as '" + form.login.data + "'"
             login_user(user)
-        
+            init('asUser')
+            
     return render_template('asUser.html', title='Login As User', sstyle=sstyle(), form=form, message=message)
  
 
 @app.route('/help', methods=['GET', 'POST'])
 @login_required
 def help():
+    info() 
     current_user.log('help', request.args.get('path'), '')
     imagePath = 'images/help/' + request.args.get('path') + '.png'
     includePath = 'helpInclude/' + request.args.get('path') + '.html'
@@ -512,6 +568,61 @@ def help():
 
     return render_template('help.html', title=title, imagePath=imagePath, includePath=includePath)
 
+
+@app.route('/versions')
+@login_required
+def versions():
+    info()
+    init('versions')
+    versions = getAllVersions()
+
+    return render_template('versions_all.html', title='Release Notes', sstyle=Style().getHomeStyle(), user=current_user, versions=versions)
+
+
+@app.route('/versions_new')
+@login_required
+def versions_new():
+    info()
+    init('versions_new')
+    versions_new = getNewVersions()
+    current_user.setLastVisit()
+    return render_template('versions_new.html', title='Release Notes', sstyle=Style().getHomeStyle(), user=current_user, versions=versions_new)
+ 
+
+@app.route('/lastVisit', methods=['GET', 'POST'])
+@login_required
+def lastVisit():
+    info()
+    init('lastVisit')
+    current_user.setLastVisit()
+    
+    return ''
+
+@app.route('/admin')
+@login_required
+def admin():
+    info()
+    init('admin')
+
+    return render_template('admin.html', title='Administration Functions', sstyle=Style().getHomeStyle(), user=current_user)
+ 
+ 
+@app.route('/updateSchema', methods=['GET', 'POST'])
+@login_required
+def updateSchema():
+    info()
+    init('updateSchema')
+
+    message = ''
+    form = UpdateSchemaForm()
+    if 'csrf_token' in request.form:
+        us = UpdateSchema()
+        message = us.update_1_2()
+        info('message = ' + message)
+    return render_template('updateSchema.html', title='Update Database Schema', sstyle=Style().getHomeStyle(), user=current_user, form=form, message=message)
+ 
+ 
+ 
 @app.route('/test')
 @login_required
 def test():

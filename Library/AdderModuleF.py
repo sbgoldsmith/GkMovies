@@ -1,8 +1,10 @@
-from Library.ConstantsModuleF import *
 from Library.HelperModuleF import getItemList
 from Library.ActorModule import Actorer
+from Library.LoggerModule import info
+from Library.ConstantsModuleF import Constants
 
 from app.models import ImdbMovie, GenreMovie, UserMovie
+from app.email import send_email
 from Library.HelperModuleF import add0
 from app import db
 from flask_login import current_user
@@ -11,7 +13,6 @@ import urllib
 import os 
 import requests
 from datetime import datetime
-import logging
 
 def makeTime(strg):
     index1 = str.find(strg, " min")
@@ -34,12 +35,47 @@ def makeVotes(strg):
         strg = strg.replace(",", "")
         return int(strg)
     
-def makeRating(strg):
+def makeFloatRating(strg):
     if strg == 'N/A':
         return 0.0
     else:
         strg = strg.replace(",", "")
         return float(strg)
+
+def getRatings(jmovie):
+    rtn = []
+    ratings = jmovie['Ratings']
+    
+    rotten = 0;
+    meta = 0
+    
+    for rating in ratings:
+        if rating['Source'] == 'Internet Movie Database':
+            ignore = 1
+        elif rating['Source'] == 'Rotten Tomatoes':
+            rotten = makeIntRating(rating['Value'])
+        elif rating['Source'] == 'Metacritic':    
+            meta = makeIntRating(rating['Value'])
+        else:
+            src = 'Source = ' + rating['Source']
+            send_email("New OMDB Rating", 'steven.bl.goldsmith@gmail.com', 'sgoldsmith@goldkeys.com', src, src) 
+    
+    rtn.append(rotten)
+    rtn.append(meta)
+    
+    return rtn
+
+                
+def makeIntRating(strg):
+    if strg == 'N/A':
+        return 0
+    elif "/" in strg:
+        index = strg.find("/")
+        rtn = int(strg[0:index])
+        return rtn
+    else:
+        strg = strg.replace("%", "")
+        return int(strg)
     
 class Rtn:
     def __init__(self):
@@ -53,6 +89,18 @@ class Adder(Constants):
  
             
     def addMovie(self, tt):
+        imovie = self.addImdbMovie(tt)
+        self.addMovieToUser(imovie)
+   
+        return ""
+      
+    
+    def addImdb(self, tt):
+        self.addImdbMovie(tt)
+   
+        return ""
+                 
+    def addImdbMovie(self, tt):
         imovie = ImdbMovie.query.filter_by(tt = tt).first()
 
         if imovie == None:
@@ -63,22 +111,27 @@ class Adder(Constants):
             actorer.addMovieActors(rtn.jmovie)
             imovie = rtn.imovie
             
-        self.addMovieToUser(imovie)
    
-        return ""
-      
+        return imovie
+    
     def addMovieToImdb(self, tt):
         rtn = Rtn()
         surl = "http://www.omdbapi.com/?apikey=4bcae80b&plot=full&i=" + tt
         r = requests.get(url = surl) 
         jmovie = r.json()
-          
+
+        ratings = getRatings(jmovie)        
+                
         imovie = ImdbMovie(tt = jmovie['imdbID'],
                        title = jmovie['Title'],
+                       series = '',
+                       seriesSeq = 0,
                        iyear = jmovie['Year'],
                        runtime = makeTime(jmovie['Runtime']),
-                       imdbRating = makeRating(jmovie['imdbRating']),
+                       imdbRating = makeFloatRating(jmovie['imdbRating']),
                        imdbVotes = makeVotes(jmovie['imdbVotes']),
+                       rottenTomatoes = ratings[0],
+                       metaCritic = ratings[1],
                        plot = jmovie['Plot'],
                        poster = jmovie['Poster'],
                        poster_valid = 'T')  #.debug rethink this
@@ -125,19 +178,24 @@ class Adder(Constants):
         db.session.add(umovie)
         db.session.commit()
         
-    def updateImdbMovie(self, imovie):
+    def updateImdbMovie(self, imovie, doGenres, doCast):
         surl = "http://www.omdbapi.com/?apikey=4bcae80b&plot=full&i=" + imovie.tt
         r = requests.get(url = surl) 
         dmovie = r.json()
         
         rtn = 0       
-        if str(imovie.imdbRating) != str(makeRating(dmovie['imdbRating'])) or \
+        ratings = getRatings(dmovie)
+        if str(imovie.imdbRating) != str(makeFloatRating(dmovie['imdbRating'])) or \
             str(imovie.imdbVotes) != str(makeVotes(dmovie['imdbVotes'])) or \
+            str(imovie.rottenTomatoes) != str(ratings[0]) or \
+            str(imovie.metaCritic) != str(ratings[1]) or \
             imovie.plot != dmovie['Plot'] or \
             imovie.poster != dmovie['Poster']:
 
-            imovie.imdbRating = makeRating(dmovie['imdbRating'])
+            imovie.imdbRating = makeFloatRating(dmovie['imdbRating'])
             imovie.imdbVotes = makeVotes(dmovie['imdbVotes'])
+            imovie.rottenTomatoes = ratings[0]
+            imovie.metaCritic = ratings[1]
             imovie.plot = dmovie['Plot']
             imovie.poster = dmovie['Poster']
 
@@ -146,6 +204,13 @@ class Adder(Constants):
             
         poster_rtn = self.addMoviePoster(dmovie, imovie)
         db.session.commit()
+        
+        if doGenres:
+            self.addMovieGenres(dmovie)
+            
+        if doCast:
+            actorer = Actorer()
+            actorer.addMovieActors(dmovie)
         
         if poster_rtn == 1:
             rtn = 1
@@ -166,12 +231,12 @@ class Adder(Constants):
         
         else: 
             try:
-                logging.getLogger('gk').info('addMoviePoster: downloading to ' + imagePath)
+                info('Downloading to ' + imagePath)
                 urllib.request.urlretrieve(dmovie['Poster'], imagePath)
                 valid = 'T'
                 rtn = 1
             except:
-                logging.getLogger('gk').info('addMoviePoster: Could not download ' + dmovie['Poster'])
+                info('Could not download ' + dmovie['Poster'])
                 valid = 'F'
               
         if imovie != None:

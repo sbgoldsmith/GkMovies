@@ -5,7 +5,13 @@
 <TABLE  class="title_table" cellspacing="0">
 <TR>
 <TD class="found_cell">
-<SPAN  class="found_text">{{ movies|length }} Movies Found</SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<SPAN  class="found_text">
+{{ movies|length }} Movies Found
+{% if searcher.series != ''  %}
+&nbsp;in <font style="color:green">{{ searcher.series }}</font>
+<a href="JavaScript:clearSeries()" class="helv_small">Clear Series</a>
+{% endif %}
+</SPAN>
 </TD>
 
 
@@ -77,7 +83,7 @@
 	<br>
 	{% if col.attribute.dataType == "poster" %}
 	    <div  style="margin-top:22px">
-		<a href="{{ url_for('displayMovies', reset_search=T) }}" class="helv_small">Clear Search:</a>
+		<a href="{{ url_for('displayMovies', reset_search=T) }}" class="helv_smaller">Clear Search:</a>
 		</div>
 	{% elif col.attribute.searchable == 'T' %}
 		<INPUT  id="{{ col.name }}Search" name="{{ col.name }}Search" type="search" value="{{ flasker.getArgValue(col.name) }}" style="width:{{ col.getWidth() }}px; margin-top: 2px;"  oninput="doSearch('{{ col.name }}')">
@@ -97,8 +103,8 @@
 	
 		{% if col.vis == 'T' %}
 		<td>
-		{% if col.attribute.dataType == "poster" %}
-			<a href="https://www.imdb.com/title/{{ movies[i].imdb_movie.tt }}" target="_blank"><img src="{{url_for('static', filename='posters')}}/{{ movies[i].imdb_movie.tt }}.jpg" width="{{ col.getWidth() }}px"  /></a>
+		{% if col.attribute.dataType == "poster" %}		
+			<a href="https://www.imdb.com/title/{{ movies[i].imdb_movie.tt }}" target="_blank"><img src="{{url_for('static', filename='posters')}}/{{ movies[i].imdb_movie.tt }}.jpg" width="{{ col.getWidth() }}px"></a>
 		{% elif col.attribute.dataType == "img" %}
 			<a href="Javascript:{{ col.name }}('{{ movies[i].imdb_movie.id }}', '{{ movies[i].imdb_movie.title }}' )"><img src="/static/images/{{ col.name }}.png" width="{{ col.getWidth() }}px"  ></a>
 		{% elif col.attribute.editable == 'T' and col.rows < 2 %}
@@ -110,15 +116,39 @@
 {{ flasker.getFormatValue(movies[i], col) }}
 		</div>
 		{% elif col.name == 'title' %}
-			<a href="https://www.imdb.com/title/{{ movies[i].imdb_movie.tt }}" target="_blank" class="imdb" >{{ flasker.getFormatValue(movies[i], col) }}</a>
+			<a href="https://www.imdb.com/title/{{ movies[i].imdb_movie.tt }}"  target="_blank">
+			<img src="{{url_for('static', filename='images/imdb.jpg')}}" style="width:27px">
+			</a><br>
+			
+			{% if movies[i].imdb_movie.series != '' %}
+				<a href="JavaScript:searchSeries('{{ movies[i].imdb_movie.series }}' )" class="imdb" >
+				{{ flasker.getFormatValue(movies[i], col) }}
+				</a>
+			{% else %}
+				{{ flasker.getFormatValue(movies[i], col) }} 
+			{% endif %}
 		{% elif col.name == 'genre' %}
 			{% for genre in movies[i].imdb_movie.genres %}
 				{{ flasker.getFormatString(genre.genre, col) }}<br>
 			{% endfor %}
 		{% elif col.name == 'actor' %}
+		<div style="height:{{ col.getHeight() }}px">
+			<table cellspacing="0" cellpadding="0" style="border:0">
 			{% for actor in movies[i].imdb_movie.actor_movies %}
-				<a href="https://www.imdb.com/name/{{ actor.nm }}" class="imdb" >{{ flasker.getFormatString(actor.actor.actor, col) }}</a><br>
+			<tr style="background-color:transparent;">
+			
+			<td style="border:0;text-align:left;width:30px;">
+			<a href="https://www.imdb.com/name/{{ actor.nm }}"  target="_blank"><img src="{{url_for('static', filename='images/imdb.jpg')}}" style="width:25px"></a>
+			</td>
+			
+			<td style="border:0;text-align:left;">
+			<a href="Javascript:searchActor('{{ actor.actor.actor }}')">{{ flasker.getFormatString(actor.actor.actor, col) }}</a>
+			</td>
+			
+			</tr>
 			{% endfor %}
+			</table>
+		</div>
 		{% else %}
 			{{ flasker.getFormatValue(movies[i], col) }}
         {% endif %}

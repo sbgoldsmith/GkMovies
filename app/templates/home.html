@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div style="font-family: Helvetica; font-size=20px; color: red">
+<B>
+&nbsp;&nbsp;&nbsp;&nbsp;Goldkeys Movies is being updated to Version 1.2. <br>
+&nbsp;&nbsp;&nbsp;&nbsp;Please hold off using until about 5:00 PM.  Thank You
+</B>
+<P>
+</div>
+
 <div class="helv_section">
 Welcome To Goldkeys Movies.  With this site you can record all your favorite movies and link them to the Internet Movie Database 
 <img src="{{url_for('.static', filename='images/imdb.jpg')}}"  style="vertical-align:middle" width="40">.  Add as many or as few as you like.
@@ -43,19 +51,28 @@ Three have been added - date, rating and review - and a total of 10 are availabl
 </td>
 </tr>
 
+<tr>
+<td class="home" width="130" valign="top"><a href="{{ url_for('versions') }}" class="helv">Release Notes</td>
+<td class="home" >Goldkeys Movies was last updated to Version {{ version.version }} on {{ version.getFormatInstallDate() }}. 
+This page shows the complete change history.
+</td>
+</tr>
+
 {% if user.admin == 'T' %}
 <tr>
-<td class="home" width="130" valign="top"><a href="{{ url_for('updateMovies') }}" class="helv">Update Movies</td>
-<td class="home" >Users with administrative permissions can run a manual update of IMDb information.</td>
+<td class="home" width="130" valign="top"><a href="{{ url_for('admin') }}" class="helv">Administration Functions</td>
+<td class="home" >Used to change the behaviour of Goldkeys Movies for all users.</td>
 </tr>
-
-<tr>
-<td class="home" width="130" valign="top"><a href="{{ url_for('asUser') }}" class="helv">Login As User</td>
-<td class="home" >Use Goldkeys movies as if you were logged in as another user.</td>
-</tr>
-
 
 {% endif %}
+
+
+</table>
+
+<script>
+popNewVersions( {{ newVersions|length }});
+</script>
+
 
 {% endblock %}
 
