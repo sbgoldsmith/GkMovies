@@ -8,6 +8,9 @@ def tbl(table):
     if os.name == 'nt':
         table = 'zts_' + table
         return table
+    else:
+        return table
+    
     
 class UpdateSchema():
     def __init__(self):
