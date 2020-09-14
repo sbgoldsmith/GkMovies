@@ -65,7 +65,7 @@ After you have added a few, click on the <strong>Display</strong> link above to 
 		</div>
 	</TD>
 	
-	{% if user.admin == T %}
+	{% if user.admin == 'T' %}
 	<TD>
 		<div id="imdb_button_{{ movie.tt }}" />
 		{% if movie.hasImdb() %}
