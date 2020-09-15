@@ -1,5 +1,5 @@
 var xhr;
-
+	
 function doSearch(elementName) {
 	elementName += 'Search';
 	var elementValue = document.getElementById(elementName).value.replace(' ', '+');
@@ -316,6 +316,12 @@ function changePerPage() {
 function help(path) {
 	
 	var url = "help?path=" + path.substring(1);
+	
+	var under = url.indexOf('_')
+	if ( under > -1 ) {
+		url = url.substring(0, under);
+	}
+	
 	//alert(url)
 	window.open(url, "helpWindow", "height=500,width=800,menubar=no");	
 }
