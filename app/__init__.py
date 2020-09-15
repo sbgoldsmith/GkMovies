@@ -8,6 +8,7 @@ from flask_mail import Mail, Message
 import logging
 from logging.handlers import SMTPHandler
 
+
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
@@ -82,9 +83,29 @@ logger.addHandler(mail_handler)
 
 from app import routes, models, errors
 #---------------------+
-
 '''
+from app.Imdb import ImdbFind
+imdbFind = ImdbFind()
+imovie = imdbFind.updateMovie('tt0063385', False, False)
 
+
+import requests
+
+url = "https://imdb8.p.rapidapi.com/title/get-plots"
+
+querystring = {"tconst":"tt0031381"}
+
+headers = {
+    'x-rapidapi-host': "imdb8.p.rapidapi.com",
+    'x-rapidapi-key': "0079b1e126msh9e9ad2ba4a5bee7p1d8b00jsn472b69b29949"
+    }
+
+response = requests.request("GET", url, headers=headers, params=querystring)
+
+print(response.text)
+stop = True   
+      
+      
 from Library.UpdateSchemaModule import UpdateSchema
 us = UpdateSchema()
 message = us.update_1_2()
