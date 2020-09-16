@@ -61,10 +61,11 @@ def getSort(user, sortButton):
     column = UserColumn.query.filter(UserColumn.user_id == user.id, UserColumn.name == sortButton).first();
 
     dbType = None
-    if column.dataFormat in ["number", "currency", "comma"]:
-        dbType = db.Numeric()
-    elif column.dataFormat == 'date':
-        dbType = db.DateTime()
+    if sortButton.startswith("user"):
+        if column.dataFormat in ["number", "currency", "comma"]:
+            dbType = db.Numeric()
+        elif column.dataFormat == 'date':
+            dbType = db.DateTime()
 
         
     info('Cast=' + str(dbType))

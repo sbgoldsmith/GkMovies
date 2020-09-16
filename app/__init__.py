@@ -83,7 +83,31 @@ logger.addHandler(mail_handler)
 
 from app import routes, models, errors
 #---------------------+
+
+
+   
+   
+   
+   
 '''
+from app.models import User, UserColumn, ImdbMovie
+from app.Imdb import ImdbFind
+from Library.SearchModule import Searcher
+
+args = {'sortButton':'imdbRating', 'titleSearch': '',  'reviewSearch': '', 'genreSearch': 'war', 'actorSearch':'', 'plotSearch':'',\
+        'user01Search':'', 'user02Search':'', 'user03Search':'', 'user04Search':'', 'user05Search':'', \
+        'user06Search':'', 'user07Search':'', 'user08Search':'', 'user09Search':'', 'user10Search':''}
+user = User.query.filter_by(login = 'sbg').first() 
+
+imdbFind = ImdbFind()
+searcher = Searcher()
+movies = imdbFind.displayMovies(user, searcher, 'imdbRating')
+    
+for movie in movies:
+   print(movie.imdb_movie.title)
+   
+   
+
 from app.Imdb import ImdbFind
 imdbFind = ImdbFind()
 imovie = imdbFind.updateMovie('tt0063385', False, False)
@@ -186,18 +210,7 @@ stop = 1;
 
 
 
-from app.models import User, UserColumn, ImdbMovie
-from app.Imdb import ImdbFind
 
-args = {'sortButton':'title', 'titleSearch': '',  'reviewSearch': '', 'genreSearch': '', 'actorSearch':'', 'plotSearch':'',\
-        'user01Search':'', 'user02Search':'', 'user03Search':'', 'user04Search':'', 'user05Search':'', \
-        'user06Search':'', 'user07Search':'', 'user08Search':'', 'user09Search':'', 'user10Search':''}
-user = User.query.filter_by(login = 't1').first() 
-
-imdb = ImdbFind()
-movies = imdb.displayMovies(user, args)
-for movie in movies:
-   print(movie.imdb_movie.title)
     
 
 
@@ -215,25 +228,9 @@ r = getPageRange(1, 10, 900)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 user = User.query.filter_by(login = 'sbg').first()
 imdbFind = ImdbFind()
 imdbFind.findMovies(user, 'Star Wars')
-
-             
-
-    
-
 
 
 from app.models import User, UserColumn, ImdbMovie
