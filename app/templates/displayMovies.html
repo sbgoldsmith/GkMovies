@@ -106,7 +106,7 @@ in <font style="color:green">{{ searcher.series }}</font>
 		{% if col.attribute.dataType == "poster" %}		
 			<a href="https://www.imdb.com/title/{{ movies[i].imdb_movie.tt }}" target="_blank"><img src="{{url_for('static', filename='posters')}}/{{ movies[i].imdb_movie.tt }}.jpg" width="{{ col.getWidth() }}px"></a>
 		{% elif col.attribute.dataType == "img" %}
-			<a href="Javascript:{{ col.name }}('{{ movies[i].imdb_movie.id }}', '{{ movies[i].imdb_movie.title }}' )"><img src="/static/images/{{ col.name }}.png" width="{{ col.getWidth() }}px"  ></a>
+			<a href="Javascript:{{ col.name }}('{{ movies[i].imdb_movie.id }}', '{{ flasker.quote(movies[i].imdb_movie.title) }}' )"><img src="/static/images/{{ col.name }}.png" width="{{ col.getWidth() }}px"  ></a>
 		{% elif col.attribute.editable == 'T' and col.rows < 2 %}
 			<input type="text"  id="{{ col.name }}_{{ movies[i].imdb_movie.id }}" name="{{ col.name }}_{{ movies[i].imdb_movie.id }}" value="{{ flasker.getFormatValue(movies[i], col) }}" style="width:{{ col.getWidth() }}px" oninput="changeInput('{{ col.name }}', '{{ movies[i].imdb_movie.id }}', '{{ col.dataFormat }}')" >
 		{% elif col.attribute.editable == "T" and col.rows > 1 %}

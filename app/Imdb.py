@@ -139,7 +139,14 @@ class ImdbFind(Constants):
         for jmovie in jmovies:
             surl = "http://www.omdbapi.com/?apikey=4bcae80b&i=" + jmovie['imdbID']
             r = requests.get(url = surl) 
-            dmovie = r.json()
+            try:
+                dmovie = r.json()
+            except:
+                #
+                # Skip over any movie that can not be parsed
+                #
+                continue
+            
             adder.addMoviePoster(dmovie, None)
              
             urlMovie = UrlMovie()

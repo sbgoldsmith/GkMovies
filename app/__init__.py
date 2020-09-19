@@ -84,10 +84,11 @@ logger.addHandler(mail_handler)
 from app import routes, models, errors
 #---------------------+
 
-import random
-   
-   
-r=random.randint(1, 9999)
+from app.models import User   
+from app.Imdb import ImdbFind
+user = User.query.filter_by(login = 'sbg').first() 
+imdbFind = ImdbFind()
+message = imdbFind.findMovies(user, "dar")
    
 '''
 from app.models import User, UserColumn, ImdbMovie
@@ -152,11 +153,7 @@ message = adder.addMovie('tt6723592')
 
 
 
-from app.models import User   
-from app.Imdb import ImdbFind
-user = User.query.filter_by(login = 'sbg').first() 
-imdbFind = ImdbFind()
-message = imdbFind.findMovies(user, "hello   moove  ")
+
 
 
 from Library.PagerModule import Pager

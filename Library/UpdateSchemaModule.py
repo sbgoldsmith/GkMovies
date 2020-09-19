@@ -35,10 +35,9 @@ usteps_1_2 = [
 steps_1_3 = [
     ['ALTER TABLE', 'user', "ADD user_since DATETIME AFTER admin;"],
     ['ALTER TABLE', 'user', "ADD as_login VARCHAR(32) NOT NULL AFTER admin;"],
-    ['UPDATE', 'user', 'SET as_login = login;']
-    
+    ['UPDATE', 'user', 'SET as_login = login;'],
+    ['INSERT INTO', 'version', "VALUES ('4', '2020-09-15 20:45:38', '1.3', 'Add movies working spinner and results indication, more logging, fix skewed email', 'Ralph Knag');"], 
             ]
-
 
 class UpdateSchema():
     def __init__(self):
