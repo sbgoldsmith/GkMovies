@@ -22,8 +22,9 @@ from datetime import datetime, timedelta
 from app.Imdb import ImdbFind
 from app.email import send_password_reset_email
 import jsonpickle
+import random
 
-version = '1.2'
+version = '1.3'
 titles = {'home':'Home Page', 'addMovies':'Add to My Movies', 'displayMovies':'Display My Movies', 'settings':'Settings', 'contact':'Contact Us'}
 
 def skey(key):
@@ -58,6 +59,9 @@ def init(defName):
         
 def sstyle():
     return session[skey('sstyle')]
+
+def rand():
+    return random.randint(1, 999999)
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
@@ -97,7 +101,7 @@ def index():
 @app.route('/home')
 @login_required
 def home():
-    info()
+    info('Browser=' + request.user_agent.browser + ' on ' + request.user_agent.platform)
     init('home')
     
     version = getLatestVersion()
@@ -112,6 +116,7 @@ def home():
 @app.route('/logout')
 def logout():
     init('logout')
+    current_user.logout()
     logout_user()
     return redirect(url_for('index'))
 
@@ -132,6 +137,8 @@ def register():
                     order_by='title', 
                     order_dir='asc', 
                     admin='F',
+                    as_login = form.login.data, 
+                    user_since = datetime.utcnow(),
                     last_visit = datetime.utcnow())
         user.set_password(form.password.data)
         db.session.add(user)
@@ -197,9 +204,13 @@ def addMovies():
     current_user.log('addMovies', 'titleSearch', titleSearch)
     imdbFind = ImdbFind()
     movies = imdbFind.findMovies(current_user, titleSearch)
+    
+    status = ""
+    if len(movies) == 0 and len(titleSearch) > 0:
+        status = "No results yet.  Try entering more characters."
 
     form = AddMoviesForm()
-    return render_template('addMovies.html', title='Add to My Movies', sstyle=Style().getAdderStyle(), form=form, user=current_user, imdbFind=imdbFind, titleSearch=titleSearch, movies=movies)
+    return render_template('addMovies.html', title='Add to My Movies', sstyle=Style().getAdderStyle(), form=form, user=current_user, imdbFind=imdbFind, titleSearch=titleSearch, movies=movies, status=status)
 
 @app.route('/addMovie', methods=['GET', 'POST'])
 @login_required
@@ -512,6 +523,7 @@ def contact():
     init('contact')   
     form = ContactForm()
     
+    sent = False
     
     if 'csrf_token' in request.form and current_user.is_authenticated:
         form.firstName.data = current_user.firstName
@@ -524,14 +536,12 @@ def contact():
         contacter = Contacter(current_user, form)
         contacter.addContact()
         contacter.sendEmail()
-        
+        sent = True
+                    
         if current_user.is_authenticated:
             current_user.log('contact', 'success', '')
-            
-        flash('Thank you, thank you for contacting us.')
-        
 
-    return render_template('contact.html', title='Contact Us', user=current_user, sstyle=sstyle(), form=form)
+    return render_template('contact.html', title='Contact Us', user=current_user, sstyle=sstyle(), form=form, sent=sent)
 
 
 
@@ -548,10 +558,12 @@ def asUser():
             current_user.log('asUser', 'login fail', form.login.data)
             message = "login '" + form.login.data + "' is not a valid login"
         else:
+            orig = current_user.login
             info("Login As User " + form.login.data)
             current_user.log('asUser', 'login success', form.login.data)
             message = "You are now logged in as '" + form.login.data + "'"
             login_user(user)
+            current_user.asLogin(orig)
             init('asUser')
             
     return render_template('asUser.html', title='Login As User', sstyle=sstyle(), form=form, message=message)
@@ -566,7 +578,7 @@ def help():
     includePath = 'helpInclude/' + request.args.get('path') + '.html'
     title = titles[request.args.get('path')]
 
-    return render_template('help.html', title=title, imagePath=imagePath, includePath=includePath)
+    return render_template('help.html', title=title, imagePath=imagePath, includePath=includePath, rand=rand())
 
 
 @app.route('/versions')
@@ -617,7 +629,7 @@ def updateSchema():
     form = UpdateSchemaForm()
     if 'csrf_token' in request.form:
         us = UpdateSchema()
-        message = us.update_1_2()
+        message = us.update()
         info('message = ' + message)
     return render_template('updateSchema.html', title='Update Database Schema', sstyle=Style().getHomeStyle(), user=current_user, form=form, message=message)
  

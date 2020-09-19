@@ -30,6 +30,17 @@ function clearSeries(series){
 
 function doAdderSearch() {
 	var titleSearch = document.getElementById("titleSearch").value.replaceAll(' ', '+');
+	
+	if ( titleSearch.length > 3 ) {
+		var workingElement = document.getElementById("working")
+		workingElement.style.display = 'inline'
+			
+		var noresultsElement = document.getElementById("no_results")
+		if (noresultsElement != null ) {
+			noresultsElement.style.display = 'none'
+		}
+	} 
+
 	//alert ("titleSearch=:" + titleSearch + ":");
 	
 	var url = "addMovies?titleSearch=" + titleSearch
@@ -322,8 +333,7 @@ function help(path) {
 		url = url.substring(0, under);
 	}
 	
-	//alert(url)
-	window.open(url, "helpWindow", "height=500,width=800,menubar=no");	
+	window.open(url, "helpWindow", "height=500,width=800,menubar=no,location=no");	
 }
 
 function popNewVersions(numVersions) {
@@ -347,7 +357,7 @@ function popNewVersions(numVersions) {
 	 
 	var url = "versions_new";
 
-	window.open(url, "versionsNewWindow", "height=400,width=600,menubar=no");	
+	window.open(url, "versionsNewWindow", "height=400,width=600,menubar=no,location=no");	
 }
 
 function updateLastVisit() {	
@@ -366,4 +376,10 @@ function updateLastVisit() {
 
 function openerWindow(url) {
 	opener.location.href=url;
+}
+
+function backToOpener(url) {
+	opener.location.href=url;
+	//opener.focus()  does not work so have to close pop up instead
+	window.close();
 }

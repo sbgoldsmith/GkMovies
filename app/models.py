@@ -28,9 +28,14 @@ class User(UserMixin, db.Model):
     order_by = db.Column(db.String(12))
     order_dir = db.Column(db.String(6))
     admin = db.Column(db.String(1))
+    as_login = db.Column(db.String(32))
+    user_since = db.Column(db.DateTime())
     last_visit = db.Column(db.DateTime())
+
     movies = db.relationship('UserMovie',  lazy='dynamic')
     columns = db.relationship("UserColumn", lazy='dynamic', order_by="UserColumn.srt")
+    
+    adminLogin = None
     
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -70,15 +75,23 @@ class User(UserMixin, db.Model):
             {'reset_password': self.id, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
             
-    def log(self, route, action, arg):   
-        user_log = UserLog(login=self.login, 
+    def log(self, route, action, arg):
+        user_log = UserLog(login=self.as_login, 
                     route=route,
                     action=action,
                     arg=str(arg),
                     log_time = datetime.utcnow())
         db.session.add(user_log)
         db.session.commit()
-
+        
+    def asLogin(self, orig):
+        self.as_login = orig  + "->" + self.login
+        db.session.commit()
+        
+    def logout(self):
+        self.as_login = self.login
+        db.session.commit()
+        
     @staticmethod
     def verify_reset_password_token(token):
         try:

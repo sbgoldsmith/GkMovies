@@ -1,32 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+
+
+{% if sent == True %}
+    <div class="helv_small_color" >
+	Thank you, thank you for contacting us.<br>
+	Email has been sent.
+	</div>
+	
+		
+{% else %}	
+
 <div class="helv_section">
 Sure, I want to know what you think.  Be gentle.
-</div>
+<P>
+
 
 <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
     
-	<div class="helv_section">
     <table>
-    <tr style="height:30px">
-    <td colspan="2">
-    <div class="helv_small_color" >
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            
-            {% for message in messages %}
-            {{ message }}<br>
-            {% endfor %}
 
-        {% endif %}
-
-    {% endwith %}
-    </div>
-    </td>
-    </tr>
-    
     <tr style="height:40px">
     <td valign="top">    	
         {{ form.firstName.label }}
@@ -125,8 +121,9 @@ Sure, I want to know what you think.  Be gentle.
 
     
     </table>
-</div>
-</form>
 
+</form>
+</div>
+{% endif %}
 
 {% endblock %}

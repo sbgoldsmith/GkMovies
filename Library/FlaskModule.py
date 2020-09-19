@@ -184,5 +184,6 @@ class FlaskHelper(Constants):
             
         db.session.commit()
             
-            
+    def quote(self, strg):
+        return strg.replace("'", "\\'")  
             

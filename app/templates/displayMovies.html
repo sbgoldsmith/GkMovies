@@ -8,7 +8,7 @@
 <SPAN  class="found_text">
 {{ movies|length }} Movies Found
 {% if searcher.series != ''  %}
-&nbsp;in <font style="color:green">{{ searcher.series }}</font>
+in <font style="color:green">{{ searcher.series }}</font>
 <a href="JavaScript:clearSeries()" class="helv_small">Clear Series</a>
 {% endif %}
 </SPAN>
@@ -121,7 +121,7 @@
 			</a><br>
 			
 			{% if movies[i].imdb_movie.series != '' %}
-				<a href="JavaScript:searchSeries('{{ movies[i].imdb_movie.series }}' )" class="imdb" >
+				<a href="JavaScript:searchSeries('{{ flasker.quote(movies[i].imdb_movie.series) }}' )" class="imdb" >
 				{{ flasker.getFormatValue(movies[i], col) }}
 				</a>
 			{% else %}

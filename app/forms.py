@@ -86,7 +86,7 @@ class UpdateSingleForm(FlaskForm):
     submit = SubmitField('Update Imdb Movie')
     
 class UpdateSchemaForm(FlaskForm):
-    submit = SubmitField('Update Schema for Version 1.2')
+    submit = SubmitField('Update Schema for Version 1.3')
     
     
 class AsUserForm(FlaskForm):

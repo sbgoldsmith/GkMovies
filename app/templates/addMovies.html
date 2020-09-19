@@ -41,6 +41,23 @@ After you have added a few, click on the <strong>Display</strong> link above to 
 
 </div>
 
+{% if movies|length == 0 and titleSearch != '' %}
+	<div id="no_results" class="helv">
+	No results.  Try entering more characters.
+	</div>
+{% endif %}
+	
+<div id="working" class="helv" style="display:none">
+<table>
+<tr>
+<td  class="noborder" valign="center">
+Working .... 
+</td>
+<td class="noborder">
+<img src="{{url_for('static', filename='images/spinner.gif') }}" width="40px" >
+</td>
+</table>
+</div>
 
 
 <TABLE cellpadding="4" class="fixed_headers" >
