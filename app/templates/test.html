@@ -8,8 +8,8 @@ Goldkeys Movies - Display My Movies
 </TITLE>
 
 <link rel="stylesheet" href="/static/client/GkMovies.css">
-<link href="//db.onlinewebfonts.com/c/157c6cc36dd65b1b2adc9e7f3329c761?family=Amazon+Ember" rel="stylesheet" type="text/css">
-<script src="/static/client/GkMovies.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+<script src="/static/client/GkMovies.js?version=1.3"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
 <style>
@@ -24,14 +24,53 @@ Goldkeys Movies - Display My Movies
         font-size: 13px;
     }
 
-    a.helv_small {
-        font-family: Helvetica;
-        font-size: 13px;
-    }
-    
     a.helv {
         font-family: Helvetica;
         font-size: 14px;
+        text-decoration: none;
+        color:blue;
+    }
+    
+    a.imdb:link {
+        font-family: Helvetica;
+        font-size: 13px;
+        text-decoration: none;
+        color:blue;
+    }
+    
+    a.imdb:visited {
+        font-family: Helvetica;
+        font-size: 13px;
+        text-decoration: none;
+        color:purple;
+    }
+
+    a.imdb_large:link {
+        font-family: Helvetica;
+        font-size: 15px;
+        text-decoration: none;
+        color:blue;
+    }
+    
+    a.imdb_large:visited {
+        font-family: Helvetica;
+        font-size: 15px;
+        text-decoration: none;
+        color:purple;
+    }
+    
+    a.helv_small {
+        font-family: Helvetica;
+        font-size: 13px;
+        text-decoration: none;
+        color:blue;
+    }
+    
+    a.helv_smaller {
+        font-family: Helvetica;
+        font-size: 12px;
+        text-decoration: none;
+        color:blue;
     }
     
     div.helv {
@@ -50,23 +89,100 @@ Goldkeys Movies - Display My Movies
         color: red;
     }
     
+    
+    div.helv_section {
+        font-family: Helvetica;
+        font-size: 14px;
+        width: 750px;
+    }
 
-
+    span.helv_small {
+        font-family: Helvetica;
+        font-size: 13px;
+    }
+    
+    
     td.helv  {
         font-family: Helvetica;
         font-size: 14px;
     }
     
+    
+    td.noborder {
+        border-bottom: 0px;
+        border-left: 0px;
+        border-right: 0px;
+    }
+    
+    div.tight {
+        margin-top: -9px;
+        margin-bottom: -9px;
+    }
+    
+    div.button_height {
+        font-family: Helvetica;
+        font-size: 14px;
+        display: inline-block;
+        padding-top: 9px;
+        padding-bottom: 8px;
+    }
+               
+    div.scrollable {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+     
+    .hide_slide {
+        display: inline-block;
+        vertical-align: top;
+        overflow: hidden;
+        border: solid grey 0px;
+        outline:none;
+    }
 
+    .hide_slide select {
+        padding: 10px;
+        margin: -5px -20px -5px -5px;
+    }
+    
+    ul.version  {
+        padding-left: 14px;
+    }
+    
+    li.version {
+        padding-bottom: 8px;
+    }
+    
+    .button_refresh {
+        background-color: #cffffb;
+    }
+    
+    .button_active {
+        background-color: #cffffb;
+    }
+    
+    .eye_inside i {
+        margin-left: -20px;
+        cursor: pointer;
+    }
 
+    .eye_outside i {
+        margin-left: 5px;
+        cursor: pointer;
+    }
+    
+    
 
     
     table.title_table {
         height: 40px;
-        width: 622px;
+        width: 586px;
         background-color: #cffffb;
         color: #222222;
-        vertical-align: center;
+        vertical-align: middle;
         text-align: left;
         border-collapse: collapse;  
         border-top: 1px solid #222222;
@@ -74,20 +190,69 @@ Goldkeys Movies - Display My Movies
         border-right: 1px solid #222222;
         border-bottom: 0px solid #222222;
     }
+
+    
     
     td.found_cell {
+        width: 500px;
+        text-indent: 30px;
         border-right: 0px;
     }
     
     td.page_cell {
+        text-align: left;
+        border-left: 0px;
+        border-right: 0px;
+
+    }
+    
+    td.page_number_cell {
+        width: 25px;
+        text-align: center;
+        border-top: 1px solid #00008B;
+        border-bottom: 1px solid #00008B;
+        border-left: 1px solid #00008B;
+        border-right: 1px solid #00008B;
+    }
+    
+    td.per_page_cell {
+        width: 100x;
+        border-top: 0px;
+        border-bottom: 0px;
         border-left: 0px;
         border-right: 0px;
     }
     
-    td.page_number_cell {
-        width: 10px;
-        font-size: 24px;
+    td.arrow_page_cell {
+        border-top: 0px;
+        border-bottom: 0px;
+        border-left: 0px;
+        border-right: 0px;
     }
+    
+
+
+    
+    td.actor {
+        border: 1px solid;
+        text-align: right;
+    }
+    
+    a.page_text:visited {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 17px;
+        text-decoration: none;
+        color:blue;
+    }
+    
+    a.page_text:link {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 17px;
+        text-decoration: none;
+        color:blue;
+
+    }
+    
     .title_text {
         font-family: Arial, Helvetica, sans-serif;
         font-size: 24px;
@@ -96,58 +261,195 @@ Goldkeys Movies - Display My Movies
         font-family: Arial, Helvetica, sans-serif;
         font-size: 18px;
     }
+    
+    
+    .fixed_headers {
+        width: 586px;
+        table-layout: fixed; 
+        border-collapse: collapse;  
+    }
+    .fixed_headers table, th, td {
+        border-top: 0px solid #222222;
+        border-left: 1px solid #222222;
+        border-right: 1px solid #222222;
+        border-bottom: 1px solid #222222;
+    }
+    
+    .fixed_headers thead td {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        text-align: center;
+        vertical-align: top;
+    }
+    .fixed_headers tbody td {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 13px;
+        vertical-align: top;
+    }
+
+    .fixed_headers thead td text {
+        padding-bottom: 2px;
+    }
+    .fixed_headers thead td:nth-child(1) {
+        width: 80px;
+    }
+    .fixed_headers tbody td:nth-child(1) {
+        width: 80px;
+        text-align: center;
+        vertical-align: center;
+    }
+    .fixed_headers thead td:nth-child(2) {
+        width: 160px;
+    }
+    .fixed_headers tbody td:nth-child(2) {
+        width: 160px;
+        text-align: left;
+        vertical-align: top;
+    }
+    .fixed_headers thead td:nth-child(3) {
+        width: 144px;
+    }
+    .fixed_headers tbody td:nth-child(3) {
+        width: 144px;
+        text-align: left;
+        vertical-align: top;
+    }
+    .fixed_headers thead td:nth-child(4) {
+        width: 144px;
+    }
+    .fixed_headers tbody td:nth-child(4) {
+        width: 144px;
+        text-align: left;
+        vertical-align: top;
+    }
+    .fixed_headers thead td:nth-child(5) {
+        width: 24px;
+    }
+    .fixed_headers tbody td:nth-child(5) {
+        width: 24px;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .fixed_headers thead {
+      background-color: #cffffb;
+      color: #222222;
+    }
+    .fixed_headers thead tr {
+      display: table;
+      position: relative;
+    }
+    .fixed_headers tbody {
+      display: block;
+      overflow: auto;
+      height: 600px;
+    }
+    .fixed_headers tbody tr:nth-child(even) {
+      background-color: #e0e0e0;
+    }
+    .old_ie_wrapper {
+      height: 700px;
+      width: 586px;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    .old_ie_wrapper tbody {
+      height: auto;
+    }
 
 </style>
 
 </HEAD>
 <BODY>
 <div class="helv">
+	<table>
+	<tr>
+	<td align="center" class="noborder">
+	<div class="tight">
+	 <a href="/home"><img src="/static/images/goldkeys.png" style="width:80px"></a><br>
      Goldkeys Movies 
-     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- 
+     </div>
+ 	 </td>
+ 	 
+ 	 <td class="noborder">
      
-
-     Welcome Tara1
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     Welcome Steven
      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-     <a href="/home">Home</a>&nbsp;&nbsp;
-     <a href="/addMovies">Add</a>&nbsp;&nbsp;
-     <a href="/displayMovies">Display</a>&nbsp;&nbsp;
-     <a href="/settings">Settings</a>&nbsp;&nbsp;          
-     <a href="/logout">Logout</a>
+     <a href="/home" class="helv">Home</a>&nbsp;&nbsp;
+     <a href="/addMovies" class="helv">Add</a>&nbsp;&nbsp;
+     <a href="/displayMovies" class="helv">Display</a>&nbsp;&nbsp;
+     <a href="/settings" class="helv">Settings</a>&nbsp;&nbsp;
+     <a href="Javascript:help('/displayMovies')" class="helv">Help</a>&nbsp;&nbsp;      
+     <a href="/logout" class="helv">Logout</a>
+     
+     </td>
+     </tr>
+     </table>
      
 </div>
         
 <hr>
 
-<H2> Display My Movies </H2>
+<table>
+<tr>
+<td class="noborder">
+<H2 style="margin-top:5px"> Display My Movies </H2>
+</td>
 
+
+
+<td class="noborder" style="vertical-align:top; text-align:center;width:160px;">
+
+<BUTTON  name="seen" type="submit" class="button_active" style="width:110px;height:34px;color:red; font-weight:bold;" onclick="setDisplayType('seen', '/displayMovies' )">Movies I<br>Have Seen</BUTTON>
+</td>
+
+<td class="noborder" style="vertical-align:top; text-align:center;width:160px;">
+<BUTTON  name="want" type="submit" class="button_active" style="width:110px;height:34px;" onclick="setDisplayType('want', '/displayMovies' )">Movies I Want<br>To See</BUTTON>
+</td>
+
+
+
+
+</tr>
+
+
+</table>
 
 
 <TABLE  class="title_table" cellspacing="0">
 <TR>
 <TD class="found_cell">
-<SPAN  class="found_text">18 Movies Found</SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<SPAN  class="found_text">
+1 Movies Found
+
+</SPAN>
 </TD>
 
 
 
 
-<TD "width=100px">
-	<table border=1>
+<TD class="page_cell">
+	<table border=0>
 	<tr>
-		
-		<td class="page_number_cell">
-		<a href="/displayMovies?pageSelected=1" class="helv" >1</a>
+		<td class="per_page_cell">
+		<div class="helv">
+		Movies per Page: 
+		<select name="perPage" id="perPage" onchange="changePerPage()" }}>
+		<option value="5" >5</option>
+  		<option value="10" >10</option>
+  		<option value="25" selected>25</option>
+  		<option value="50" >50</option>
+  		<option value="100" >100</option>
+  		<option value="250" >250</option>
+  		<option value="500" >500</option>
+  		<option value="1000" >1000</option>
+  		<option value="All" >All</option>
+		</select>
+		</div>
 		</td>
 		
-		<td>
-		<a href="/displayMovies?pageSelected=2" class="helv" >2</a>
-		</td>
-		
-		<td>
-		<a href="/displayMovies?pageSelected=3" class="helv" >3</a>
-		</td>
 		
 	</tr>
 	</table>
@@ -159,6 +461,1052 @@ Goldkeys Movies - Display My Movies
 
 </TR>
 </TABLE>
+
+<TABLE  class="fixed_headers" cellspacing="0">
+<THEAD>
+<TR>
+
+
+	
+	
+	<TD align="center">
+	<IMG src="/static/images/upArrowRed.png" width="20" style="visibility: hidden; ">
+	<br>
+	
+		<div class="button_height"></div>
+	
+	<br>
+	
+	    <div  style="margin-top:22px">
+		<a href="/displayMovies?clear_search=" class="helv_smaller">Clear Search:</a>
+		</div>
+	
+
+	</TD>
+	
+	
+
+
+	
+	
+	<TD align="center">
+	<IMG src="/static/images/upArrowRed.png" width="20" style="visibility: hidden; ">
+	<br>
+	
+		<BUTTON  name="title" type="submit" style="height:34px;" onclick="doButton('title')">Title</BUTTON>
+	
+	<br>
+	
+		<INPUT  id="titleSearch" name="titleSearch" type="search" value="gone" style="width:160px; margin-top: 2px;"  oninput="doSearch('title')">
+	
+
+	</TD>
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+	<TD align="center">
+	<IMG src="/static/images/upArrowRed.png" width="20" style="visibility: hidden; ">
+	<br>
+	
+		<div class="button_height">Cast</div>
+	
+	<br>
+	
+		<INPUT  id="actorSearch" name="actorSearch" type="search" value="" style="width:144px; margin-top: 2px;"  oninput="doSearch('actor')">
+	
+
+	</TD>
+	
+	
+
+
+	
+	
+	<TD align="center">
+	<IMG src="/static/images/upArrowRed.png" width="20" style="visibility: hidden; ">
+	<br>
+	
+		<div class="button_height">Crew</div>
+	
+	<br>
+	
+		<INPUT  id="crewSearch" name="crewSearch" type="search" value="" style="width:144px; margin-top: 2px;"  oninput="doSearch('crew')">
+	
+
+	</TD>
+	
+	
+
+
+	
+	
+
+
+	
+	
+
+
+	
+	
+	<TD align="center">
+	<IMG src="/static/images/upArrowRed.png" width="20" style="visibility: hidden; ">
+	<br>
+	
+		<div class="button_height"></div>
+	
+	<br>
+	
+
+	</TD>
+	
+	
+
+</TR>
+</THEAD>
+<TBODY>
+
+
+	<tr>
+	
+	
+		
+		<td>
+				
+			<a href="https://www.imdb.com/title/tt0031381" target="_blank"><img src="/static/posters/tt0031381.jpg" width="80px"></a>
+		
+        </td>
+        
+     
+	
+		
+		<td>
+		
+			<a href="https://www.imdb.com/title/tt0031381"  target="_blank">
+			<img src="/static/images/imdb.jpg" style="width:27px">
+			</a><br>
+			
+			
+
+				<font color="red" style="BACKGROUND-COLOR:#FFFF00">Gone</font> with the Wind 
+				
+				
+				
+			
+		
+        </td>
+        
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+     
+	
+		
+		<td>
+		
+		<div class="scrollable" style="height:120px">
+			<table cellspacing="0" cellpadding="0" style="border:0">
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0000022"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Clark Gable')" class="imdb">Clark Gable</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0000046"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Vivien Leigh')" class="imdb">Vivien Leigh</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0593775"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Thomas Mitchell')" class="imdb">Thomas Mitchell</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0641966"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Barbara O&#39;Neil')" class="imdb">Barbara O&#39;Neil</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0450810"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Evelyn Keyes')" class="imdb">Evelyn Keyes</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0751946"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Ann Rutherford')" class="imdb">Ann Rutherford</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0001660"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('George Reeves')" class="imdb">George Reeves</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0186347"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Fred Crane')" class="imdb">Fred Crane</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0567408"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Hattie McDaniel')" class="imdb">Hattie McDaniel</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0689318"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Oscar Polk')" class="imdb">Oscar Polk</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0574335"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Butterfly McQueen')" class="imdb">Butterfly McQueen</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0430460"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Victor Jory')" class="imdb">Victor Jory</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0113548"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Everett Brown')" class="imdb">Everett Brown</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0382730"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Howard Hickman')" class="imdb">Howard Hickman</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0722265"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Alicia Rhett')" class="imdb">Alicia Rhett</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0001366"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Leslie Howard')" class="imdb">Leslie Howard</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0000014"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Olivia de Havilland')" class="imdb">Olivia de Havilland</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0112203"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Rand Brooks')" class="imdb">Rand Brooks</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0638560"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Carroll Nye')" class="imdb">Carroll Nye</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0187711"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Laura Hope Crews')" class="imdb">Laura Hope Crews</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0026655"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Eddie &#39;Rochester&#39; Anderson')" class="imdb">Eddie &#39;Rochester&#39; Anderson</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0003193"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Harry Davenport')" class="imdb">Harry Davenport</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0731345"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Leona Roberts')" class="imdb">Leona Roberts</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0002034"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Jane Darwell')" class="imdb">Jane Darwell</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0613262"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Ona Munson')" class="imdb">Ona Munson</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0403636"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Paul Hurst')" class="imdb">Paul Hurst</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0422436"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Isabel Jewell')" class="imdb">Isabel Jewell</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0454541"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Cammie King Conlon')" class="imdb">Cammie King Conlon</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0511599"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Eric Linden')" class="imdb">Eric Linden</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0449858"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('J.M. Kerrigan')" class="imdb">J.M. Kerrigan</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0000955"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Ward Bond')" class="imdb">Ward Bond</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0602803"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Jackie Moran')" class="imdb">Jackie Moran</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0249893"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Cliff Edwards')" class="imdb">Cliff Edwards</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0447180"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Lillian Kemble-Cooper')" class="imdb">Lillian Kemble-Cooper</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0134831"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Yakima Canutt')" class="imdb">Yakima Canutt</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0552728"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Marcella Martin')" class="imdb">Marcella Martin</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0382195"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Louis Jean Heydt')" class="imdb">Louis Jean Heydt</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0474139"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Mickey Kuhn')" class="imdb">Mickey Kuhn</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0398250"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Olin Howland')" class="imdb">Olin Howland</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0045784"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('Irving Bacon')" class="imdb">Irving Bacon</a>
+				</td>
+				
+				</tr>
+			
+			</table>
+		</div>
+		
+		
+        </td>
+        
+     
+	
+		
+		<td>
+		
+		<div class="scrollable" style="height:120px">
+			<table cellspacing="0" cellpadding="0" style="border:0">
+			<tr style="background-color:transparent;">
+			<td  style="border:0;text-align:left;" colspan="2">
+			Directors(s):
+			</td>
+			</tr>
+			
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0281808"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchCrew('Victor Fleming')" class="imdb">Victor Fleming</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0002030"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchCrew('George Cukor')" class="imdb">George Cukor</a>
+				</td>
+				
+				</tr>
+			
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0939992"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchCrew('Sam Wood')" class="imdb">Sam Wood</a>
+				</td>
+				
+				</tr>
+			
+			
+			<tr style="background-color:transparent;">
+			<td style="border:0;text-align:left;" colspan="2">
+			<br>Writer(s):
+			</td>
+			</tr>
+			
+			
+					
+				<tr style="background-color:transparent;">
+				<td style="border:0;text-align:left;" colspan="2">
+				story of the old south &#34;Gone with the Wind&#34;
+				</td>
+				</tr>
+				
+				<tr style="background-color:transparent;">
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0593565"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+
+				<a href="Javascript:searchCrew('Margaret Mitchell')" class="imdb">Margaret Mitchell</a>
+				</td>
+				
+				</tr>
+			
+					
+				<tr style="background-color:transparent;">
+				<td style="border:0;text-align:left;" colspan="2">
+				screenplay
+				</td>
+				</tr>
+				
+				<tr style="background-color:transparent;">
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0397608"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+
+				<a href="Javascript:searchCrew('Sidney Howard')" class="imdb">Sidney Howard</a>
+				</td>
+				
+				</tr>
+			
+					
+				<tr style="background-color:transparent;">
+				<td style="border:0;text-align:left;" colspan="2">
+				contributing writer
+				</td>
+				</tr>
+				
+				<tr style="background-color:transparent;">
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0308177"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+
+				<a href="Javascript:searchCrew('Oliver H.P. Garrett')" class="imdb">Oliver H.P. Garrett</a>
+				</td>
+				
+				</tr>
+			
+					
+				<tr style="background-color:transparent;">
+				<td style="border:0;text-align:left;" colspan="2">
+				contributing writer
+				</td>
+				</tr>
+				
+				<tr style="background-color:transparent;">
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0372942"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+
+				<a href="Javascript:searchCrew('Ben Hecht')" class="imdb">Ben Hecht</a>
+				</td>
+				
+				</tr>
+			
+					
+				<tr style="background-color:transparent;">
+				<td style="border:0;text-align:left;" colspan="2">
+				contributing writer
+				</td>
+				</tr>
+				
+				<tr style="background-color:transparent;">
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0842485"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+
+				<a href="Javascript:searchCrew('Jo Swerling')" class="imdb">Jo Swerling</a>
+				</td>
+				
+				</tr>
+			
+					
+				<tr style="background-color:transparent;">
+				<td style="border:0;text-align:left;" colspan="2">
+				contributing writer
+				</td>
+				</tr>
+				
+				<tr style="background-color:transparent;">
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/nm0886668"  target="_blank"><img src="/static/images/imdb.jpg" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+
+				<a href="Javascript:searchCrew('John Van Druten')" class="imdb">John Van Druten</a>
+				</td>
+				
+				</tr>
+			
+			
+			</table>
+		</div>
+		
+		
+        </td>
+        
+     
+	
+		
+     
+	
+		
+     
+	
+		
+		<td>
+		
+			<a href="Javascript:deleteMovie('16', 'Gone with the Wind' )"><img src="/static/images/deleteMovie.png" width="24px"  ></a>
+		
+        </td>
+        
+     
+     </tr>
+
+</TABLE>
+
+<script>
+setSearchFocus( 'Search' );
+</script>
+
+
 
 
 </BODY>

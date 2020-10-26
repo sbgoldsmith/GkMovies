@@ -1,6 +1,6 @@
 from Library.ConstantsModuleF import Constants
 from Library.HelperModuleF import getItemList
-from app.models import Actor, ActorMovie
+from app.models import Person, PersonMovie
 from app import db
 
 import urllib

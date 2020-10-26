@@ -39,7 +39,20 @@ def info(message=''):
 
     logging.getLogger('gk').info(msg)
     
+def warn(message=''):
+    curFrame = inspect.currentframe()
+    nextFrame = inspect.getouterframes(curFrame, 2)  
+    msg = getMsg(nextFrame, message)
 
+    logging.getLogger('gk').warn(msg)
+   
+def error(message=''):
+    curFrame = inspect.currentframe()
+    nextFrame = inspect.getouterframes(curFrame, 2)  
+    msg = getMsg(nextFrame, message)
+
+    logging.getLogger('gk').error(msg)
+     
 def prt(name, obj):   
     print ('@@@ ' + name)
     print (obj)
@@ -53,7 +66,15 @@ class Timer:
         newTime = int(round(time.time() * 1000))
         elapsed = newTime - self.time
         self.time = newTime
-        logging.getLogger('gk').log(TIMER, strg + ': ' + str(elapsed))
+        
+        curFrame = inspect.currentframe()
+        nextFrame = inspect.getouterframes(curFrame, 2)
+        
+        selapsed = "{:,}".format(elapsed)
+        msg = getMsg(nextFrame, strg + ': ' + selapsed)
+    
+        logging.getLogger('gk').log(TIMER, msg)
+    
 
         
         

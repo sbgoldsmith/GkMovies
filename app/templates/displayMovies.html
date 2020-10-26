@@ -68,7 +68,7 @@ in <font style="color:green">{{ searcher.series }}</font>
 <TABLE  class="fixed_headers" cellspacing="0">
 <THEAD>
 <TR>
-{% for col in user.columns %}
+{% for col in user.getColumns(searcher.displayType)  %}
 
 	{% if col.vis == 'T' %}
 	
@@ -78,12 +78,12 @@ in <font style="color:green">{{ searcher.series }}</font>
 	{% if col.attribute.sortable == 'T' %}
 		<BUTTON  name="{{ col.name }}" type="submit" style="height:34px;{{ col.getButtonColor() }}" onclick="doButton('{{ col.name }}')">{{ col.label }}</BUTTON>
 	{% else %}
-		<div class="button_height">{{ col.label }}</div>
+		<div class="button_sort">{{ col.label }}</div>
 	{% endif %}
 	<br>
-	{% if col.attribute.dataType == "poster" %}
+	{% if col.name == "poster" and searcher.hasSearch() %}
 	    <div  style="margin-top:22px">
-		<a href="{{ url_for('displayMovies', reset_search=T) }}" class="helv_smaller">Clear Search:</a>
+		<a href="{{ url_for('displayMovies', clear_search=T) }}" class="helv_smaller">Clear Search:</a>
 		</div>
 	{% elif col.attribute.searchable == 'T' %}
 		<INPUT  id="{{ col.name }}Search" name="{{ col.name }}Search" type="search" value="{{ flasker.getArgValue(col.name) }}" style="width:{{ col.getWidth() }}px; margin-top: 2px;"  oninput="doSearch('{{ col.name }}')">
@@ -99,13 +99,13 @@ in <font style="color:green">{{ searcher.series }}</font>
 {% for i in pager.getMovieRange() %}
 
 	<tr>
-	{% for col in user.columns %}
+	{% for col in user.getColumns(searcher.displayType)  %}
 	
 		{% if col.vis == 'T' %}
 		<td>
-		{% if col.attribute.dataType == "poster" %}		
+		{% if col.name == "poster" %}		
 			<a href="https://www.imdb.com/title/{{ movies[i].imdb_movie.tt }}" target="_blank"><img src="{{url_for('static', filename='posters')}}/{{ movies[i].imdb_movie.tt }}.jpg" width="{{ col.getWidth() }}px"></a>
-		{% elif col.attribute.dataType == "img" %}
+		{% elif col.dataFormat == "img" %}
 			<a href="Javascript:{{ col.name }}('{{ movies[i].imdb_movie.id }}', '{{ flasker.quote(movies[i].imdb_movie.title) }}' )"><img src="/static/images/{{ col.name }}.png" width="{{ col.getWidth() }}px"  ></a>
 		{% elif col.attribute.editable == 'T' and col.rows < 2 %}
 			<input type="text"  id="{{ col.name }}_{{ movies[i].imdb_movie.id }}" name="{{ col.name }}_{{ movies[i].imdb_movie.id }}" value="{{ flasker.getFormatValue(movies[i], col) }}" style="width:{{ col.getWidth() }}px" oninput="changeInput('{{ col.name }}', '{{ movies[i].imdb_movie.id }}', '{{ col.dataFormat }}')" >
@@ -125,30 +125,93 @@ in <font style="color:green">{{ searcher.series }}</font>
 				{{ flasker.getFormatValue(movies[i], col) }}
 				</a>
 			{% else %}
+
 				{{ flasker.getFormatValue(movies[i], col) }} 
+				
+				{% if searcher.displayType == 'want' %}
+				<P><br><P><br>
+				<a href="JavaScript:movieSeen('{{ movies[i].imdb_movie.tt }}')">Change to movie seen</a>
+				{%endif %}
+				
 			{% endif %}
 		{% elif col.name == 'genre' %}
 			{% for genre in movies[i].imdb_movie.genres %}
 				{{ flasker.getFormatString(genre.genre, col) }}<br>
 			{% endfor %}
 		{% elif col.name == 'actor' %}
-		<div style="height:{{ col.getHeight() }}px">
+		<div class="scrollable" style="height:{{ col.getHeight() }}px">
 			<table cellspacing="0" cellpadding="0" style="border:0">
-			{% for actor in movies[i].imdb_movie.actor_movies %}
-			<tr style="background-color:transparent;">
+			{% for uperson in movies[i].imdb_movie.getPersons(40, 'actor') %}
 			
-			<td style="border:0;text-align:left;width:30px;">
-			<a href="https://www.imdb.com/name/{{ actor.nm }}"  target="_blank"><img src="{{url_for('static', filename='images/imdb.jpg')}}" style="width:25px"></a>
-			</td>
-			
-			<td style="border:0;text-align:left;">
-			<a href="Javascript:searchActor('{{ actor.actor.actor }}')" class="imdb">{{ flasker.getFormatString(actor.actor.actor, col) }}</a>
-			</td>
-			
-			</tr>
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/{{ uperson.nm }}"  target="_blank"><img src="{{url_for('static', filename='images/imdb.jpg')}}" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchActor('{{ uperson.name }}')" class="imdb">{{ flasker.getFormatString(uperson.name, col) }}</a>
+				</td>
+				
+				</tr>
 			{% endfor %}
 			</table>
 		</div>
+		
+		{% elif col.name == 'crew' %}
+		<div class="scrollable" style="height:{{ col.getHeight() }}px">
+			<table cellspacing="0" cellpadding="0" style="border:0">
+			<tr style="background-color:transparent;">
+			<td  style="border:0;text-align:left;" colspan="2">
+			Directors(s):
+			</td>
+			</tr>
+			
+			{% for uperson in movies[i].imdb_movie.getPersons(40, 'director') %}
+			
+				<tr style="background-color:transparent;">
+				
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/{{ uperson.nm }}"  target="_blank"><img src="{{url_for('static', filename='images/imdb.jpg')}}" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+				<a href="Javascript:searchCrew('{{ uperson.name }}')" class="imdb">{{ flasker.getFormatString(uperson.name, col) }}</a>
+				</td>
+				
+				</tr>
+			{% endfor %}
+			
+			<tr style="background-color:transparent;">
+			<td style="border:0;text-align:left;" colspan="2">
+			<br>Writer(s):
+			</td>
+			</tr>
+			
+			{% for uperson in movies[i].imdb_movie.getPersons(40, 'writer') %}
+					
+				<tr style="background-color:transparent;">
+				<td style="border:0;text-align:left;" colspan="2">
+				{{ uperson.job }}
+				</td>
+				</tr>
+				
+				<tr style="background-color:transparent;">
+				<td style="border:0;text-align:left;width:30px;">
+				<a href="https://www.imdb.com/name/{{ uperson.nm }}"  target="_blank"><img src="{{url_for('static', filename='images/imdb.jpg')}}" style="width:25px"></a>
+				</td>
+				
+				<td style="border:0;text-align:left;">
+
+				<a href="Javascript:searchCrew('{{ uperson.name }}')" class="imdb">{{ flasker.getFormatString(uperson.name, col) }}</a>
+				</td>
+				
+				</tr>
+			{% endfor %}
+			
+			</table>
+		</div>
+		
 		{% else %}
 			{{ flasker.getFormatValue(movies[i], col) }}
         {% endif %}

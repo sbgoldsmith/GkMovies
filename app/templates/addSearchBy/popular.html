@@ -1,0 +1,31 @@
+List movies by popularity according to interest expressed at IMDb.  You can select from All Genres or by a selected
+genre.
+<P>
+<table style="width:660px;text-align:center;">
+
+{% set cols = 5 %}
+{% set rows = (genres|length / cols) | round(0, 'ceil') | int %}
+{% for row in range(0, rows) %}
+	<tr>
+	{% for col in range(0, cols) %}
+		{% set i = row * cols + col %}
+		<td style="height:20px;width:80px;text-align:center;">
+		{% if i < genres|length %}
+		<a href="Javascript:adderGenreListRapid('{{ genres[i].code }}')" class='imdb_large' style="{{ flasker.getButtonColor(genres[i].code, genreCode) }}">{{ genres[i].name }}</a>
+		{% endif %}
+		</td>
+	{% endfor %}
+	</tr>
+{% endfor %}
+
+</table>
+
+<table style="width:660px;text-align:center;">
+<tr>
+<td style="text-align:center;">
+<div id="popularSearchSpinner" style="display:none">
+<img src="{{url_for('static', filename='images/spinner.gif') }}" width="60px" >
+</div>
+</td>
+</tr>
+</table>

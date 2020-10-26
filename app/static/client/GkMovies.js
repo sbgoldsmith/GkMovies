@@ -15,6 +15,24 @@ function searchActor(actorName){
 	window.open(url, "_self");
 }
 
+function searchCrew(crewName){
+	crewName = crewName.replace(' ', '+');
+	var url = "displayMovies?crewSearch=" + crewName;
+	//alert("in searchCrew, url=" + url);
+	window.open(url, "_self");
+}
+
+function setDisplayType(displayType, path) {
+	if ( path.startsWith('/settings') ) {
+		path = 'settings'
+	} else {
+		path = 'displayMovies'
+	}
+	var url = path + '?displayType=' + displayType;
+	//alert("in setDisplayType, url=" + url);
+	window.open(url, "_self");
+}
+
 function searchSeries(series){
 	var url = "displayMovies?seriesSearch=" + series;
 	//alert("in seriesSearch, url=" + url);
@@ -27,11 +45,19 @@ function clearSeries(series){
 	window.open(url, "_self");
 }
 
+/*
+ * Add Movie Search Functions
+ */
+function adderTypeSelect(typeSelect) {
+	var url = "addMovies?action=typeSelect&addTypeSelectSearch=" + typeSelect
+	//alert("in setAddSearch, url=" + url);
+	window.open(url, "_self");
+}
 
-function doAdderSearch() {
-	var titleSearch = document.getElementById("titleSearch").value.replaceAll(' ', '+');
+function adderTitleSearchOmdb() {
+	var addTitleSearch = document.getElementById("addTitleSearch").value.replaceAll(' ', '+');
 	
-	if ( titleSearch.length > 3 ) {
+	if ( addTitleSearch.length > 3 ) {
 		var workingElement = document.getElementById("working")
 		workingElement.style.display = 'inline'
 			
@@ -41,28 +67,86 @@ function doAdderSearch() {
 		}
 	} 
 
-	//alert ("titleSearch=:" + titleSearch + ":");
+	//alert ("addTitleSearch=:" + addTitleSearch + ":");
 	
-	var url = "addMovies?titleSearch=" + titleSearch
+	var url = "addMovies?action=titleSearchOmdb&addTitleSearch=" + addTitleSearch
 	//alert("in doAdderSearch, url=" + url);
 	window.open(url, "_self");
 }
 
 
-function doAdderCandidate(badWord) {
+function adderTitleSearchOmdbCandidate(badWord) {
 	
-	var titleSearch = document.getElementById("titleSearch").value;
+	var addTitleSearch = document.getElementById("addTitleSearch").value;
 	var candidate = document.getElementById("candidate").value
 	
 	//alert('titleSearch=' + titleSearch + ', candidate=' + candidate + ', badWord=' + badWord)
 	
-	var newTitleSearch = titleSearch.replace(badWord, candidate).replaceAll(' ', '+')
+	var newTitleSearch = addTitleSearch.replace(badWord, candidate).replaceAll(' ', '+')
 			
 			
-	var url = "addMovies?titleSearch=" + newTitleSearch
+	var url = "addMovies?action=titleSearchOmdb&addTitleSearch=" + newTitleSearch
 	//alert("in doAdderCandidate, url=" + url);
 	window.open(url, "_self");
 }
+
+
+
+function adderTitleSearchRapid() {
+	var addTitleSearch = document.getElementById('addTitleSearch').value.replaceAll(' ', '+');
+	var personSearchSpinner = document.getElementById('personSearchSpinner');
+	personSearchSpinner.style.display = 'inline'
+		
+	var url = "addMovies?action=titleSearchRapid&addTitleSearch=" + addTitleSearch + "&addPersonSearch="
+	//alert("in doAdderCandidate, url=" + url);
+	window.open(url, "_self");
+}
+
+
+function adderPersonListRapid(id) {
+
+	
+	btn = document.getElementById('button_' + id);
+	spinner = document.getElementById('spinner_' + id);
+	
+	btn.style.display = 'none'
+	spinner.style.display = 'inline'
+
+	
+	var url = "addMovies?action=personListRapid&nameId=" + id
+	//alert("in listPersonMovies, url=" + url);
+	window.open(url, "_self");
+	
+}
+
+
+function adderPersonSearchRapid() {
+	
+	var addPersonSearch = document.getElementById('addPersonSearch').value.replaceAll(' ', '+');
+	var lesser = document.getElementById('addLesserSearch')
+	
+	
+	var personSearchSpinner = document.getElementById('personSearchSpinner');
+	personSearchSpinner.style.display = 'inline'
+		
+	var url = "addMovies?action=personSearchRapid&addPersonSearch=" + addPersonSearch + "&addLesserSearch=" + lesser.checked + "&addTitleSearch="
+	//alert("url=" + url)
+	window.open(url, "_self");
+}
+
+function adderGenreListRapid(genreCode) {
+
+	var popularSearchSpinner = document.getElementById('popularSearchSpinner');
+	popularSearchSpinner.style.display = 'inline'
+		
+	var url = "addMovies?action=popularListGenreRapid&genreCode=" + genreCode
+	//alert("url=" + url)
+	window.open(url, "_self");
+}
+
+/*
+ * Button Functions
+ */
 
 function doButton(element) {
 
@@ -90,7 +174,7 @@ function setSearchFocus(element) {
 	thisSearch.value = val; //set that value back.  
 }
 
-function changeInput(name, imdbMovieId, dataType) {
+function changeInput(name, imdbMovieId, dataFormat) {
 	var boxName = name + "_" + imdbMovieId;
 	var value = document.getElementById(boxName).value;
 
@@ -99,7 +183,7 @@ function changeInput(name, imdbMovieId, dataType) {
     	imdbMovieId: imdbMovieId,
         name: name,
         value: value,
-        dataType: dataType
+        dataFormat: dataFormat
     }).done(function(response) {
     	if ( response != "") {
         	alert(response)
@@ -110,7 +194,7 @@ function changeInput(name, imdbMovieId, dataType) {
 
 }
 
-function changeSettingsDisplayInput(inp, name, colAttribute, dataType) {
+function changeSettingsDisplayInput(inp, name, displayType, colAttribute, dataFormat) {
 	//alert("In changeSettingsDisplayInput, name=" + name + ", colAttribute=" + colAttribute)
 	
 	var boxName = name + "_" + colAttribute;
@@ -120,19 +204,20 @@ function changeSettingsDisplayInput(inp, name, colAttribute, dataType) {
 	
 
 	
-	if ( dataType == 'boolean' ) {
+	if ( dataFormat == 'boolean' ) {
 		var value = inp.checked ? 'T' : 'F'
 	} else {
 		var value = document.getElementById(boxName).value;
 	}
 	
-	//alert("In changeSettingsDisplayInput, name=" + name + ", colAttribute=" + colAttribute + ", dataType=" + dataType + ", boxName=" + boxName + ", value=" + value )
+	//alert("In changeSettingsDisplayInput, name=" + name + ", colAttribute=" + colAttribute + ", dataFormat=" + dataFormat + ", boxName=" + boxName + ", value=" + value )
 	
 	
     $.post('inputSettingsDisplayField', {
     	name: name,
+    	displayType: displayType,
     	colAttribute: colAttribute,
-    	dataType: dataType,
+    	dataFormat: dataFormat,
         value: value
     }).done(function(response) {
     	if ( response != "") {
@@ -144,44 +229,89 @@ function changeSettingsDisplayInput(inp, name, colAttribute, dataType) {
 
 }
 
-function addMyMovie(tt) {
+function addMyMovie(tt, displayType) {
 	//alert('addMovie starts, tt=' + tt)
 	
+	spinner = document.getElementById('spinner_' + tt + '_' + displayType);
+	button = document.getElementById('button_' + tt + '_' + displayType);
+	
+	button_seen = document.getElementById('button_' + tt + '_seen');
+	button_want = document.getElementById('button_' + tt + '_want');
+	button_imdb = document.getElementById('button_' + tt + '_imdb');
+	
+	spinner.style.display = 'inline'
+	button.style.display = 'none'
+		
+	plot = document.getElementById('div_' + tt + '_plot');
+
     $.post('addMovie', {
-    	tt: tt
+    	tt: tt,
+    	displayType: displayType
     }).done(function(response) {
-    	if ( response != "") {
-        	alert(response)
-    	} else {
-    		user_div_button = document.getElementById('user_button_' + tt);
-    		user_div_button.innerHTML = "Movie Added";
+		var plot_div = document.getElementById('div_' + tt + '_plot');
+		var cast_div = document.getElementById('div_' + tt + '_cast');
+		var crew_div = document.getElementById('div_' + tt + '_crew');
+		
+		if ( crew_div != null ) {
+    		var json = jQuery.parseJSON(response);
+
+    		plot_div.innerHTML = json.plot
+    		cast_div.innerHTML = json.cast
+    		crew_div.innerHTML = json.crew	
+
+    	} 
+    
+		spinner.style.display = 'none'
+		button.style.display = 'inline'
+				
+		if ( displayType == 'seen' ) {
+			button_seen.innerHTML = "I Saw this Movie";
+			button_want.innerHTML = ''
+				
+		} else if ( displayType == 'want' ) {
+			button_want.innerHTML = 'Movie on Watch List'
+			
+		} else if (displayType = 'imdb') {
+			button_imdb.innerHTML = 'Movie Added to Imdb'
+		}
     		
-    		imdb_div_button = document.getElementById('imdb_button_' + tt);
-    		imdb_div_button.innerHTML = "Movie Loaded";
-    	}
+
+    	
     }).fail(function() {
         alert("addMyMovie(): Unexpected Failure")
     });
     
 }
 
-function addImdb(tt) {
-	//alert('addImdb starts, tt=' + tt)
+
+
+function refreshAdder(tt, what) {
+	//alert('refreshAdder starts, tt=' + tt + ", what=" + what)
 	
-    $.post('addImdb', {
-    	tt: tt
+	div = document.getElementById('div_' + tt + '_' + what);
+	spinner = document.getElementById('spinner_' + tt + '_' + what);
+	tbl = document.getElementById('tbl_' + tt + '_' + what);
+	
+	spinner.style.display = 'inline'
+	tbl.style.display = 'none'
+		
+    $.post('refreshAdder', {
+    	tt: tt,
+    	what: what
     }).done(function(response) {
-    	if ( response != "") {
-        	alert(response)
-    	} else {
-    		imdb_div_button = document.getElementById('imdb_button_' + tt);
-    		imdb_div_button.innerHTML = "Movie Loaded";
-    	}
+    	spinner.style.display = 'none'
+    	tbl.style.display = 'inline'	
+    	div.innerHTML = response;
+    	//alert('response = ' + response)
+    	
     }).fail(function() {
-        alert("addImdb(): Unexpected Failure")
+        alert("refreshAdder(): Unexpected Failure")
     });
 
 }
+
+
+
 
 function updateMovies() {
 	var url = "updateMovies?function=run"
@@ -201,49 +331,49 @@ function deleteMovie(imdb_movie_id, title) {
 	window.open(url, "_self");
 }
 
-function upCol(colName) {
-	var url = "settings_display_upCol?name=" + colName 
+function upCol(colName, displayType) {
+	var url = "settings_display_upCol?name=" + colName + '&displayType=' + displayType
 	//alert("url=" + url)
 	window.open(url, "_self");
 }
 
-function dnCol(colName) {
-	var url = "settings_display_dnCol?name=" + colName 
+function dnCol(colName, displayType) {
+	var url = "settings_display_dnCol?name=" + colName + '&displayType=' + displayType
 	//alert("url=" + url)
 	window.open(url, "_self");
 }
 
-function resetCol(colName) {
+function resetCol(colName, displayType) {
 	var r = confirm("Are you sure you want to reset column '" + colName + "'?");
 	if (r == false) {
 		return;
 	}
 	
 	
-	var url = "settings_display_resetCol?name=" + colName 
+	var url = "settings_display_resetCol?name=" + colName + '&displayType=' + displayType
 	//alert("url=" + url)
 	window.open(url, "_self");
 }
 
-function resetSort() {
+function resetSort(displayType) {
 	var r = confirm("Are you sure you want to reset all column sorts?");
 	if (r == false) {
 		return;
 	}
 	
 	
-	var url = "settings_display_resetSort"
+	var url = "settings_display_resetSort?displayType=" + displayType
 	//alert("url=" + url)
 	window.open(url, "_self");
 }
 
-function resetAll() {
+function resetAll(displayType) {
 	var r = confirm("Are you sure you want to reset all column displays?");
 	if (r == false) {
 		return;
 	}
 	
-	var url = "settings_display_resetAll" 
+	var url = "settings_display_resetAll?displayType=" + displayType 
 	//alert("url=" + url)
 	window.open(url, "_self");
 }
@@ -336,7 +466,7 @@ function help(path) {
 	window.open(url, "helpWindow", "height=500,width=800,menubar=no,location=no");	
 }
 
-function popNewVersions(numVersions) {
+function popNewVersions(numVersions, rand) {
 
 	if ( numVersions == 0 ) {
 		return;
@@ -355,9 +485,9 @@ function popNewVersions(numVersions) {
 	}
 	 
 	 
-	var url = "versions_new";
+	var url = "versions_new?r=" + rand;
 
-	window.open(url, "versionsNewWindow", "height=400,width=600,menubar=no,location=no");	
+	window.open(url, "versionsNewWindow", "height=400,width=650,menubar=no,location=no");	
 }
 
 function updateLastVisit() {	
@@ -370,16 +500,62 @@ function updateLastVisit() {
 	 	}).done(function(response) {
 
 	    }).fail(function() {
-	        alert("popNewVersions(): Unexpected Failure")
+	        alert("updateLastVisit(): Unexpected Failure")
 	    });	
 }
 
-function openerWindow(url) {
-	opener.location.href=url;
+function movieSeen(tt) {
+	var url = "movie_seen?tt=" + tt 
+	//alert("url=" + url)
+	window.open(url, "_self");
+	
 }
 
-function backToOpener(url) {
-	opener.location.href=url;
-	//opener.focus()  does not work so have to close pop up instead
-	window.close();
+function backToOpener(url, rule) {
+	alert('9 rule=' + rule)
+	if ( rule == '/versions') {
+		// Coming from Release Notes
+		window.open(url, "_self");
+	} else {
+		// Coming from pop up
+		opener.location.href=url;
+		opener.focus();  //does not work 
+		//window.close();	
+
+	}
+}
+
+function setUpEye(url_rule) {
+	const togglePassword = document.querySelector('#togglePassword');
+	const password = document.querySelector('#password');
+	const password2 = document.getElementById('password2');
+
+	
+	togglePassword.addEventListener('click', function (e) {
+	    // toggle the type attribute
+	    const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+	    
+	    doPw(password, type, url_rule)
+	    doPw(password2, type, url_rule)
+	  
+	    // toggle the eye slash icon
+	    this.classList.toggle('fa-eye-slash');
+	});
+}
+
+function doPw(pw, type, url_rule) {
+	
+	if ( pw == null ) {
+		return
+	}
+	
+	if ( url_rule.startsWith('/settings') ) {
+	    if (pw.value == 'NothingToSee' && type == 'text' ) {
+	    	pw.value = ''
+	    } else if ( pw.value  == '' && type == 'password' ) {
+	    	pw.value = 'NothingToSee'
+	    }
+	}
+	
+    pw.setAttribute('type', type);
 }

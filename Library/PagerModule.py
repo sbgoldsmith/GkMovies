@@ -13,7 +13,6 @@ class Pager():
         self.movieEnd = 1
         self.groupStart = 1
         self.groupEnd = 10
-
     
     def previousGroup(self):
         self.groupStart -= 10

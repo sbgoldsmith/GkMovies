@@ -5,7 +5,18 @@ from flask import render_template
 from app.models import Contact
 from Library.ConstantsModuleF import Constants
 from app.email import send_email
+from threading import Thread
+from app import mail
+from flask_mail import Message
 
+from threading import Thread
+from app import app
+
+def send_async_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
+
+    
 class Contacter(Constants):
     def __init__(self, user, form):
         self.form = form
@@ -28,11 +39,15 @@ class Contacter(Constants):
         db.session.commit()
         
         
-    def sendEmail(self):
-        send_email('Goldkeys Movies - Contact Me',
-            sender=app.config['ADMINS'][0],
-            recipients=['sgoldsmith@goldkeys.com'],
-            text_body=render_template('contact/contact.txt', contact=self),
-            html_body=render_template('contact/contact.html', contact=self)
-            )
-          
+    def send_contact_email(self):
+        subject = 'Goldkeys Movies - Contact Me'
+        sender = app.config['MAIL_USERNAME']
+        recipients = app.config['ADMINS']
+        
+        msg = Message(subject, sender=sender, recipients=recipients)
+        msg.body = render_template('contact/contact.txt', contact=self)
+        msg.html = render_template('contact/contact.html', contact=self)
+        thr = Thread(target=send_async_email, args=[app, msg])
+        thr.start()
+        
+ 

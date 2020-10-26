@@ -2,20 +2,26 @@
 
 {% block content %}
 
-<!--
+
 <div style="font-family: Helvetica; font-size=20px; color: red">
 <B>
-&nbsp;&nbsp;&nbsp;&nbsp;Goldkeys Movies is being updated to Version 1.3. <br>
-&nbsp;&nbsp;&nbsp;&nbsp;Please hold off using until about 5:30 PM.  Thank You
+&nbsp;&nbsp;&nbsp;&nbsp;Goldkeys Movies is being updated to Version 1.4. <br>
+&nbsp;&nbsp;&nbsp;&nbsp;Please hold off using until about 5:00 PM.  Thank You
 </B>
 <P>
 </div>
--->
+
 
 <div class="helv_section">
-Welcome To Goldkeys Movies.  With this site you can record all your favorite movies and link them to the Internet Movie Database 
-<img src="{{url_for('.static', filename='images/imdb.jpg')}}"  style="vertical-align:middle" width="40">.  Add as many or as few as you like.
-Then sort or search for titles, review, plot lines, cast members, etc.  
+
+Welcome to Goldkeys Movies. Here you can track all your favorite movies and link them to the<br>
+Internet Movie Database 
+<img src="{{url_for('.static', filename='images/imdb.jpg')}}"  style="vertical-align:middle" width="40">.  
+Add as many or as few movies as you like. &nbsp;Add reviews, ratings,<br>
+dates seen, or any other movie
+information that interests you.
+Then sort or search for titles, reviews,<br>
+plot lines, cast members, etc.   
 <P>
 &nbsp;
 </div>
@@ -25,37 +31,46 @@ Then sort or search for titles, review, plot lines, cast members, etc.
 <table class="home" width="650px">
 <tr>
 <td class="home" width="130" valign="top" ><a href="{{ url_for('addMovies') }}" class="helv">Add to My Movies</a></td>
-<td class="home" >Go to this page first.  You will see a simple input box.  Start typing and matching movies from IMDb will be listed.  
-When one or more movies appear that you have seen, press the <strong>Add Movie</strong> button to add it to your list.  
-After you have added a few, go to the next page.</td>
+<td class="home" >Go to this page first.  Search for movies by title, cast member, crew, or popularity.  
+For each movie listed, you can:
+<UL>
+<LI>Press <span class="light_bold">I <U>Saw</U> This Movie</span> to 
+add it to your list.  
+<LI>Press <span class="light_bold">I <U>Want</U> to See This Movie</span> to add it to your watch list of movies.
+</UL> 
+After you have added a few movies, try out the <a href="{{ url_for('displayMovies') }}" class="helv">Display My Movies</a> page.</td>
 
 </tr>
 
 <tr>
-<td class="home" width="130" valign="top"><a href="{{ url_for('displayMovies') }}" class="helv">Display My Movies</td>
-<td class="home" >This is the main Goldkeys Movies page.  The page lists all of your movies and some associated information 
-from IMDb.  For each movie, you can enter some fields: Date seen, your rating, and your review.   
+<td class="home" width="130" valign="top"><a href="{{ url_for('displayMovies') }}" class="helv">Display My Movies</a></td>
+<td class="home" >This is the main Goldkeys Movies page.  It lists your movies seen or on your watch list,
+and associated information 
+from IMDb.  For each movie, you can enter these fields: Date Seen, My Rating, My Review or up to 10 other fields that you define in <a href="{{ url_for('settings') }}" class="helv">Settings</a>.   
 The remaining fields come from IMDb and are updated periodically.  This is where you can search and sort. 
 Press a button to sort and press it again to reverse the sort.
-Click on a movie poster, title 
-or cast member to go to that IMDb page.</td>
+Click on a movie poster or <img src="{{url_for('.static', filename='images/imdb.jpg')}}" style="width:27px"> icon to go to that IMDb page.  
+You can also list movies in a series (e.g. Star Wars)</td>
 </tr>
 
 <tr>
-<td class="home" width="130" valign="top"><a href="{{ url_for('settings') }}" class="helv">Settings</td>
-<td class="home" >This is where you can customize Goldkeys Movies for yourself.  You can change the width and height of column and add your own custom columns.  
-Three have been added - date, rating and review - and a total of 10 are available.  You can also change your account information like login and email.
+<td class="home" width="130" valign="top"><a href="{{ url_for('settings') }}" class="helv">Settings</a></td>
+<td class="home" >You can customize Goldkeys Movies for your own needs.  Include additional columns
+of information or hide ones that don't interest you.  
+Change the width and height of 
+columns and add your own custom columns.  
+You can also change the account information that you entered when you registered.
 </td>
 </tr>
 
 <tr>
-<td class="home" width="130" valign="top"><a href="{{ url_for('contact') }}" class="helv">Contact Us</td>
+<td class="home" width="130" valign="top"><a href="{{ url_for('contact') }}" class="helv">Contact Us</a></td>
 <td class="home" >Problems using Goldkeys Movies? Or do you have accolades you want to share?  Let us know.
 </td>
 </tr>
 
 <tr>
-<td class="home" width="130" valign="top"><a href="{{ url_for('versions') }}" class="helv">Release Notes</td>
+<td class="home" width="130" valign="top"><a href="{{ url_for('versions') }}" class="helv">Release Notes</a></td>
 <td class="home" >Goldkeys Movies was last updated to Version {{ version.version }} on {{ version.getFormatInstallDate() }}. 
 This page shows the complete change history.
 </td>
@@ -63,8 +78,8 @@ This page shows the complete change history.
 
 {% if user.admin == 'T' %}
 <tr>
-<td class="home" width="130" valign="top"><a href="{{ url_for('admin') }}" class="helv">Administration Functions</td>
-<td class="home" >Used to change the behaviour of Goldkeys Movies for all users.</td>
+<td class="home" width="130" valign="top"><a href="{{ url_for('admin') }}" class="helv">Administration Functions</a></td>
+<td class="home" >Used to change the behavior of Goldkeys Movies for all users.</td>
 </tr>
 
 {% endif %}
@@ -73,7 +88,7 @@ This page shows the complete change history.
 </table>
 
 <script>
-popNewVersions( {{ newVersions|length }});
+popNewVersions( {{ newVersions|length }}, {{ rand }});
 </script>
 
 

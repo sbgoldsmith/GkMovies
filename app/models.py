@@ -9,7 +9,8 @@ from time import time
 import jwt
 from app import app
 from flask_sqlalchemy import SQLAlchemy
-
+from flask import Markup
+import os
 
 #db = SQLAlchemy(app)
 
@@ -25,6 +26,10 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(32), index=True, unique=True)
     firstName = db.Column(db.String(32))
     lastName = db.Column(db.String(32))
+    city = db.Column(db.String(48))
+    state  = db.Column(db.String(2))
+    country = db.Column(db.String(2))
+    face = db.Column(db.String(255))
     order_by = db.Column(db.String(12))
     order_dir = db.Column(db.String(6))
     admin = db.Column(db.String(1))
@@ -47,10 +52,10 @@ class User(UserMixin, db.Model):
         self.last_visit =  datetime.utcnow()
         db.session.commit()
 
-    def getTableWidth(self):
+    def getTableWidth(self, displayType):
         rtn = 0
         self.cols = 0;
-        for column in self.columns:
+        for column in self.getColumns(displayType):
             if column.vis == 'T':
                 rtn += column.cols
                 self.cols += 1
@@ -61,14 +66,16 @@ class User(UserMixin, db.Model):
         return self.cols
 
    
-    def hasMovie(self, tt):
+    def getDisplayType(self, tt):
         im = ImdbMovie.query.filter_by(tt = tt).first()
         if im == None:
-            return False
+            return None
         
         um = UserMovie.query.filter_by(user_id = self.id, imdb_movie_id = im.id).first()   
-         
-        return  um != None
+        if um:
+            return um.displayType
+        else:
+            return None
     
     def get_reset_password_token(self, expires_in=86400):
         return jwt.encode(
@@ -92,6 +99,17 @@ class User(UserMixin, db.Model):
         self.as_login = self.login
         db.session.commit()
         
+    def getColumns(self, displayType):
+        columns = UserColumn.query.filter(UserColumn.user_id == self.id, UserColumn.displayType == displayType).order_by(UserColumn.srt).all()
+        return columns
+    
+    def getFace(self):
+
+        if self.face != '':
+            return self.face
+        else:
+            return "_blank.png"   
+            
     @staticmethod
     def verify_reset_password_token(token):
         try:
@@ -105,6 +123,24 @@ class User(UserMixin, db.Model):
         return '<User {}, Email is {}>'.format(self.login, self.email)
 
 
+def load_state(id):
+    return State.query.get(int(id))  
+
+class State(db.Model):
+    id_state = db.Column(db.Integer, primary_key=True)
+    state_code = db.Column(db.String(2))
+    state_name = db.Column(db.String(24))
+    srt = db.Column(db.Integer)
+    
+def load_country(id):
+    return State.query.get(int(id))  
+
+class Country(db.Model):
+    id_country = db.Column(db.Integer, primary_key=True)
+    country_code = db.Column(db.String(3))
+    country_name = db.Column(db.String(48))
+    srt = db.Column(db.Integer)
+      
 def load_contact(id):
     return User.query.get(int(id))
 
@@ -154,7 +190,13 @@ class UserMovie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index=True)
     imdb_movie_id = db.Column(db.Integer, db.ForeignKey('imdb_movie.id'), index=True)
+    displayType = db.Column(db.String(12))
     add_date = db.Column(db.DateTime())
+    
+    my_date_seen = db.Column(db.Date())
+    my_rating = db.Column(db.Float())
+    my_review = db.Column(db.Text())
+    
     user01 = db.Column(db.Text())
     user02 = db.Column(db.Text())
     user03 = db.Column(db.Text())
@@ -182,41 +224,129 @@ class ImdbMovie(db.Model):
     runtime = db.Column(db.Time())
     imdbRating = db.Column(db.Float())
     imdbVotes = db.Column(db.Integer())
+    imdbTopRank = db.Column(db.Integer())
     rottenTomatoes = db.Column(db.Integer())
-    metaCritic = db.Column(db.Integer())
-    plot = db.Column(db.Text())
+    metaScore = db.Column(db.Integer())
+    metaReviews = db.Column(db.Integer())
+    metaUserScore = db.Column(db.Float())
+    metaUserReviews = db.Column(db.Integer())
+    oplot = db.Column(db.Text())
     poster = db.Column(db.String(255))
     poster_valid =  db.Column(db.String(1))
+    insert_date = db.Column(db.DateTime())
+    update_date = db.Column(db.DateTime())
+    
     genres = db.relationship('GenreMovie', order_by="GenreMovie.srt")
-    actor_movies = db.relationship('ActorMovie', order_by="ActorMovie.srt")
+    person_movies = db.relationship('PersonMovie', order_by="PersonMovie.srt")
+    plot = db.relationship('ImdbPlot', uselist=False)
+    
+    def getPersons(self, num, what):
+        rtn = []
+        i = 0;
+        for personMovie in self.person_movies:
+            if personMovie.role != what:
+                continue
+            i += 1
+            
+            if i > num:
+                break
+            
+            if not personMovie.person:
+                #
+                # This could happen if person table is being updated in the background and not yet finished.  Be silent about this.
+                continue
+            
+            urlPerson = UrlPerson()
+            urlPerson.nm = personMovie.person.nm
+            urlPerson.name = personMovie.person.name
+            urlPerson.job = personMovie.job
+            rtn.append(urlPerson)
+            
         
+        return rtn    
+    
+    def getGenreList(self):
+        rtn = []
+        
+        for genre in self.genres:
+            rtn.append(genre.genre)
+        return rtn
+    
+    
+def load_imdb_plot(id):
+    return ImdbPlot.query.get(int(id))
+
+class ImdbPlot(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    tt = db.Column(db.String(16), db.ForeignKey('imdb_movie.tt'), index=True, unique=True )
+    outline = db.Column(db.Text())
+    summary = db.Column(db.Text())
+
+def load_genre(id):
+    return Genre.query.get(int(id))  
+
+class Genre(db.Model):
+    id_genre = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(24))
+    name = db.Column(db.String(24))
+    chart = db.Column(db.String(1))
+    srt = db.Column(db.Integer)
+         
 def load_genre_movie(id):
     return GenreMovie.query.get(int(id))  
+
     
 class GenreMovie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tt = db.Column(db.String(16), db.ForeignKey('imdb_movie.tt'), index = True)
     genre = db.Column(db.String(16))
     srt = db.Column(db.Integer)
-    
 
-def load_actor_movie(id):
-    return ActorMovie.query.get(int(id))  
+
+        
+def load_person_movie(id):
+    return PersonMovie.query.get(int(id))  
     
-class ActorMovie(db.Model):
+class PersonMovie(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     tt = db.Column(db.String(16), db.ForeignKey('imdb_movie.tt'), index = True)
-    nm = db.Column(db.String(16), db.ForeignKey('actor.nm'), index=True)
+    nm = db.Column(db.String(16), db.ForeignKey('person.nm'), index=True)
+    role = db.Column(db.String(16))
+    job = db.Column(db.String(255))
     srt = db.Column(db.Integer)
-    actor = db.relationship('Actor')
+    src = db.Column(db.String(6))
+    person = db.relationship('Person') 
     
-def load_actor(id):
-    return Actor.query.get(int(id))  
+    def getUrlPerson(self):           
+        urlPerson = UrlPerson()
+        urlPerson.nm = self.nm
+        urlPerson.job = self.job
+        
+        if self.person == None:
+            urlPerson.name = 'Missing Name'
+        else:
+            urlPerson.name = self.person.name
+        
+        return urlPerson
     
-class Actor(db.Model):
+def load_person(id):
+    return Person.query.get(int(id))  
+    
+class Person(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nm = db.Column(db.String(16), index=True,  unique=True)
-    actor = db.Column(db.String(48))
+    name = db.Column(db.String(48))
+    legacyNameText = db.Column(db.String(48))
+    birthDate =  db.Column(db.Date())
+    birthPlace = db.Column(db.String(255))
+    deathDate = db.Column(db.Date())
+    deathPlace = db.Column(db.String(255))
+    deathCause = db.Column(db.String(255))
+    gender = db.Column(db.String(16))
+    height = db.Column(db.Float())
+    realName = db.Column(db.String(48))
+    image_url = db.Column(db.String(255))
+    insert_time = db.Column(db.DateTime())
     
 def load_user_column(id):
     return UserColumn.query.get(int(id))
@@ -226,6 +356,7 @@ class UserColumn(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), index = True)
     name = db.Column(db.String(16), index = True)
     label = db.Column(db.String(16))
+    displayType = db.Column(db.String(16))
     cols = db.Column(db.Integer)
     rows = db.Column(db.Integer)
     dataFormat = db.Column(db.String(8))
@@ -257,7 +388,6 @@ class ColumnAttribute(db.Model):
     searchable = db.Column(db.String(1))
     scrollable = db.Column(db.String(1))
     editable = db.Column(db.String(1))
-    dataType = db.Column(db.String(6))
     ordr = db.Column(db.Integer)
     user_column = db.relationship("UserColumn", back_populates='attribute')
     
@@ -277,18 +407,88 @@ class Version(db.Model):
     def getFormatInstallDate(self):
         rtn = '{d.month}/{d.day}/{d.year}'.format(d=self.install_date)
         return rtn
+
+class UrlPerson():
+    def __init__(self):
+        self.nm = ''
+        self.name = ''
+        self.birthDate = ''
+        self.deathDate= ''
+        self.job = ''
+        self.image = ''
+
     
+    def getDateRange(self):
+        if self.birthDate == None:
+            return ''
+        
+        rtn =  '{dt.month}/{dt.day}/{dt.year}'.format(dt = self.birthDate)
+        
+        if self.deathDate != None:
+            rtn += ' - ' + '{dt.month}/{dt.day}/{dt.year}'.format(dt = self.deathDate)
+        return rtn
+
+
 class UrlMovie():
-    tt = ''
-    title = ''
-    iyear = 0
-    plot = ""
-    countries = []
-    button = False
     
+    def __init__(self):
+        self.tt = ''
+        self.title = ''
+        self.iyear = 0
+        self.actors = []
+        self.directors = []
+        self.writers = []
+        self.genres = []
+        self.plot = ""
+        self.poster = ''
+        self.displayType = None
+        
+        
     def hasImdb(self):
         im = ImdbMovie.query.filter(ImdbMovie.tt == self.tt).first()
         rtn = im == None
         return rtn
     
+    def displayCrew(self):
+        rtn = 'Director(s):<br>\n'
         
+        for director in self.directors:
+            #rtn += '&nbsp;&nbsp;' + director.name + ' ' + director.nm + '<br>\n'
+            rtn += "&nbsp;&nbsp;<a href='https://www.imdb.com/name/" + director.nm + "'  class='imdb' target='_blank'>" + director.name + "</a><br>\n"
+        
+        rtn += '<br>Writer(s):<br>\n'
+        for writer in self.writers:
+            #rtn += '&nbsp;&nbsp;' + writer.job + ' ' + writer.name + ' ' + writer.nm + '<br>\n'
+            rtn += "&nbsp;&nbsp;" + writer.job + ' ' + "<a href='https://www.imdb.com/name/" + writer.nm + "'  class='imdb' target='_blank'>" + writer.name + "</a><br>\n"
+
+        return rtn
+    
+    def markCrew(self):
+        return Markup(self.displayCrew())
+    
+    def displayCast(self):
+        rtn = ''
+        for actor in self.actors:
+            if isinstance(actor, str):
+                rtn += actor + '<br>\n'
+            else:
+                rtn += "<a href='https://www.imdb.com/name/" + actor.nm + "'  class='imdb' target='_blank'>" + actor.name + "</a><br>\n"
+                        
+                        
+           
+        return rtn
+    
+    def markCast(self):
+        return Markup(self.displayCast())
+    
+    def displayGenre(self):
+        rtn = ''
+        for genre in self.genres:
+            rtn += genre + '<br>\n'
+
+        return rtn
+    
+    def markGenre(self):
+        return Markup(self.displayGenre())
+    
+    

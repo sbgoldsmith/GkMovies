@@ -1,0 +1,9 @@
+<td class="noborder" style="vertical-align:top; text-align:center;width:130px;">
+
+<BUTTON  name="seen" type="submit" class="{{ flasker.getButtonClass('seen', searcher.displayType) }}" style="width:110px;" onclick="setDisplayType('seen', '{{ request.url_rule }}' )">Movies I<br>Have Seen</BUTTON>
+</td>
+
+<td class="noborder" style="vertical-align:top; text-align:center;width:130px;">
+<BUTTON  name="want" type="submit" class="{{ flasker.getButtonClass('want', searcher.displayType) }}" style="width:110px;" onclick="setDisplayType('want', '{{ request.url_rule }}' )">Movies I Want<br>To See</BUTTON>
+</td>
+

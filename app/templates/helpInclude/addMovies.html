@@ -1,5 +1,36 @@
-Adding movies should be self-explanatory but 
-if you have any questions, <br>
+There are three options for finding movies to add to your lists:
+<OL>
+<LI><a href="javascript:adderTypeSelect('title')" class="helv">Simple Search</a>.
+<br>
+There is a single input box with this option.  Start typing a title and after about three characters, 
+matching movies from IMDb will be listed.  Unfortunately, matches must be exact so suggestions for 
+misspelled words are provided.  This option uses an older interface which 
+is fast but provides limited information. Try not to type too fast to give the web page enough time to respond.
+<P>
+<LI><a href="javascript:adderTypeSelect('people')" class="helv">Advanced Search</a>.
+<br>
+The advanced search lets you look for movies by 
+title or person. Persons include actors and crew (i.e., directors and writers). 
+This option uses a new interface with access to much more information.  
+However, it is slow.  So that you don't have to wait half a lifetime, 
+it only retrieves poster and titles.  You can then ask for plots, cast or crew 
+for movies that might be of interest.  If someone asked for these before, 
+they are saved locally and displayed.
+<P>
+<LI><a href="javascript:adderTypeSelect('popular')" class="helv">Popularity List</a>.
+<br>
+IMDb records movie searches and makes available lists of movies by popularity.  Of course, these change over time.  
+You can retrieve the overall list of a list for a single genre.
+</OL>
+<P>
+For any movie listed:
+<UL>
+<LI>Press the <span class="light_bold">I <U>Saw</U> This Movie</span> button to 
+add it to the movies you have seen.  
+<LI>Press the <span class="light_bold">I <U>Want</U> to See This Movie</span> button to add it to your watch list of movies.
+</UL> 
+<P>
+If you have any questions,
 please
 <a href="javascript:backToOpener('{{ url_for('contact') }}?r={{ rand }}')" class="helv">Contact Us</a>
-and I will include the answers in this pop up.
+so I can improve usability.

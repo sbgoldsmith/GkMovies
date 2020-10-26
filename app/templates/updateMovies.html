@@ -4,18 +4,18 @@
 
 <div class="helv_section">
 
-Update a range of movies.
+Update a oldest of movies.
 <P>
 <form action="" method="post" >
-    {{ rangeForm.hidden_tag() }}
+    {{ oldestForm.hidden_tag() }}
 
-    {{ rangeForm.fromMovie.label }}&nbsp;{{ rangeForm.fromMovie(size=5) }} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{ rangeForm.toMovie.label }}&nbsp;{{ rangeForm.toMovie(size=5) }}&nbsp;
-    {{ rangeForm.rangeGenres.label }}&nbsp;{{ rangeForm.rangeGenres }}&nbsp;
-    {{ rangeForm.rangeCast.label }}&nbsp;{{ rangeForm.rangeCast }}&nbsp;
-<p>{{ rangeForm.submit() }}</p>    
+    {{ oldestForm.cnt.label }}&nbsp;{{ oldestForm.cnt(size=5) }}&nbsp;&nbsp;
+    {{ oldestForm.oldestGenres.label }}&nbsp;{{ oldestForm.oldestGenres }}&nbsp;
+    {{ oldestForm.oldestCast.label }}&nbsp;{{ oldestForm.oldestCast }}&nbsp;
+<p>{{ oldestForm.submit() }}</p>    
 
 </form>
-{{ range_message }}
+{{ oldest_message }}
 
 <P>&nbsp;<P>&nbsp;<P>
 Update a single movie

@@ -3,90 +3,196 @@
 {% block content %}
 
 <div class="helv_section">
-Below is a simple Search Box. Start typing and after about three characters, matching movies from IMDb will be listed. When one or more appears that you have seen, press the <strong>Add Movie button</strong> to add it to your list.
-After you have added a few, click on the <strong>Display</strong> link above to see your movie details.  Hint: try not to type to fast to give the web page enough time to respond.
+There are three methods for finding movies to add to your lists:
 <P>
 
-<table>
+<table style="width:650">
 <tr>
 
-<td class="noborder">
-&nbsp;&nbsp;&nbsp;&nbsp;Search By Title: 
+<td style="text-align:center">
+<BUTTON  name="byTitle" type="submit" class="{{ flasker.getButtonClass('title', typeSelect) }}" style="width:80px" onclick="adderTypeSelect('title')">Simple<br>Search</BUTTON>
 </td>
 
-<td class="noborder">
-<INPUT  id="titleSearch" name="titleSearch" type="search" value="{{ titleSearch }}" size="25"  style="height:35px; font-family: Helvetica; font-size: 17px;" oninput="doAdderSearch()">
+<td style="text-align:center">
+<BUTTON  name="byPerson" type="submit" class="{{ flasker.getButtonClass('person', typeSelect) }}" style="width:80px" onclick="adderTypeSelect('person')">Advanced<br>Search</BUTTON>
 </td>
+
+<td style="text-align:center">
+<BUTTON  name="byPopular" type="submit" class="{{ flasker.getButtonClass('popular', typeSelect) }}" style="width:80px" onclick="adderTypeSelect('popular')">Popularity<br>List</BUTTON>
+</td>
+
 </tr>
 
-<tr>
-<td class="noborder">
-&nbsp;
-</td>
 
-<td class="noborder">
-{% if imdbFind.candidates | length > 0 %}
-	<select class="hide_slide" name="candidate" id="candidate" size="4"  onchange="doAdderCandidate('{{ imdbFind.badWord }}' )" onfocus="this.selectedIndex = -1;">
-	{% for candidate in imdbFind.candidates %}
-		<option value="{{ candidate }}" style="font-size: 17px;">{{ candidate }}</option>
-	{% endfor %}
-	</select>
-{% else %}
-	&nbsp;
-{% endif %}
-</td>
-</tr>
 </table>
+
+
+<P>
+{% if typeSelect == 'title' %}
+	{% include 'addSearchBy/title.html' %}
+{% elif typeSelect == 'person' %}
+	{% include 'addSearchBy/person.html' %}
+{% elif typeSelect == 'popular' %}
+	{% include 'addSearchBy/popular.html' %}
+{% endif %}
+
+
 
 
 </div>
 
-{% if movies|length == 0 and titleSearch != '' %}
-	<div id="no_results" class="helv">
-	No results.  Try entering more characters.
-	</div>
-{% endif %}
-	
-<div id="working" class="helv" style="display:none">
-<table>
-<tr>
-<td  class="noborder" valign="center">
-Working .... 
-</td>
-<td class="noborder">
-<img src="{{url_for('static', filename='images/spinner.gif') }}" width="40px" >
-</td>
-</table>
-</div>
 
 
-<TABLE cellpadding="4" class="fixed_headers" >
+<TABLE class="border">
 	{% for movie in movies %}
-	<TR  class="border_top">
-	<TD><a href="https://www.imdb.com/title/{{ movie.tt }}"  target="_blank"><img src="{{url_for('static', filename='posters')}}/{{ movie.tt }}.jpg" width="50px"  /></a></TD>
-	<TD><a href="https://www.imdb.com/title/{{ movie.tt }}"  target="_blank">{{ movie.title }}</a></TD>
-	<TD>{{ movie.iyear }}</TD>
-	<TD>{{ movie.plot }}</TD>
-	<TD>
-		{% for country in movie.countries %}
-		{{ country }}<BR>
-		{% endfor %}
+	<TR class="alt">
+	<TD class="border_top" style="width:60px;"><a href="https://www.imdb.com/title/{{ movie.tt }}"  target="_blank"><img src="{{ movie.poster }}" width="50px"  /></a></TD>
+	<TD class="border_top" style="width:160px"><a href="https://www.imdb.com/title/{{ movie.tt }}"  class="imdb" target="_blank">{{ movie.title }}</a></TD>
+	<TD class="border_top" style="width:35px">{{ movie.iyear }}</TD>
+	
+	<!--  Plot  -->	
+	<TD class="border_top_scroll" style="width:280px">
+		<div id="spinner_{{ movie.tt }}_plot" style="display:none">
+		<img src="{{url_for('static', filename='images/spinner.gif') }}" width="60px" >
+		</div>
+		
+		<TABLE id="tbl_{{ movie.tt }}_plot" >
+		<TR>
+		<td class="border_none" style="text-align: left;">
+		<div class="scrollable" id='div_{{ movie.tt }}_plot' style="height:90px;">
+
+		{{ movie.plot }}
+	
+		</div>
+		
+		</td>
+		
+		</tr>
+		
+		{% if typeSelect == 'person' %}
+		<tr>
+		<td class="border_none" style="text-align: center;width:280px;">
+		<BUTTON  name="refreshPlot" type="submit" class="button_up" onclick="refreshAdder('{{ movie.tt }}', 'plot')">Refresh Plot</BUTTON> 
+		</td>
+		</tr>
+		{% endif %}
+		
+		</TABLE>
+	
+	<!--  Genres  -->
+	{% if typeSelect in ['title', 'popular'] %}
+	<TD class="border_top" style="width:100px">
+	{{ movie.markGenre() }}
 	</TD>
-	<TD>
-		<div id="user_button_{{ movie.tt }}" />
-		{% if movie.button  %}
-		<BUTTON  name="addMovie" type="submit" class="active_button" onclick="addMyMovie('{{ movie.tt }}')">Add Movie</BUTTON> 
+	{% endif %}
+	
+	<!--  Cast  -->
+	{% if typeSelect in ['title', 'person'] %}
+	<TD class="border_top_scroll" style="width:130px">
+	
+		<div id="spinner_{{ movie.tt }}_cast" style="display:none">
+		<img src="{{url_for('static', filename='images/spinner.gif') }}" width="60px" >
+		</div>
+		
+		
+		<TABLE id="tbl_{{ movie.tt }}_cast" >
+		<TR>
+		<td class="border_none" style="text-align: left;">
+		<div class="scrollable"  id='div_{{ movie.tt }}_cast' style='height:90px;'>
+		
+		{{ movie.markCast() }}
+		
+		</div>
+		
+		</td>
+		
+		</tr>
+		
+		{% if typeSelect == 'person' %}
+		<tr>
+		<td class="border_none" style="text-align: center;width:130px;">
+		<BUTTON  name="refreshCast" type="submit" class="button_up" onclick="refreshAdder('{{ movie.tt }}', 'cast')">Refresh Cast</BUTTON> 
+		</td>
+		</tr>
+		{% endif %}
+		
+		</TABLE>
+		
+	</td>
+	{% endif %}
+	
+	<!--  Crew  -->
+	{% if typeSelect == 'person' %}
+	<td class="border_top_scroll" style="width:200px">
+		<div id="spinner_{{ movie.tt }}_crew" style="display:none">
+		<img src="{{url_for('static', filename='images/spinner.gif') }}" width="60px" >
+		</div>
+		
+		<TABLE id="tbl_{{ movie.tt }}_crew" >
+		<TR>
+		<td class="border_none" style="text-align: left;">
+		<div class="scrollable"  id='div_{{ movie.tt }}_crew' style="height:90px;">	
+		
+		{{ movie.markCrew() }}
+
+		</div>
+		</td>
+		
+		</TR>
+		
+
+		<tr>
+		<td class="border_none" style="text-align: center;width:200px;">
+		<BUTTON  name="refreshCrew" type="submit" class="button_up" onclick="refreshAdder('{{ movie.tt }}', 'crew')">Refresh Crew</BUTTON> 
+		</td>
+		</tr>
+
+		
+		</TABLE>
+	</TD>
+	 {% endif %}
+	 		
+	<!--  I Saw this Movie Button  -->
+	<TD class="border_middle" style="width:80px;">
+		<div id="spinner_{{ movie.tt }}_seen" style="display:none">
+		<img src="{{url_for('static', filename='images/spinner.gif') }}" width="60px" >
+		</div>
+		
+		
+		<div id="button_{{ movie.tt }}_seen" />
+		{% if movie.displayType in [None, 'want'] %}
+		<BUTTON  name="addMovie" type="submit" class="button_up" onclick="addMyMovie('{{ movie.tt }}', 'seen')">I <U>Saw</U><br>this movie</BUTTON> 
 	 	{% else %}
-		Movie Added
+		I Saw this movie
 		{% endif %}
 		</div>
 	</TD>
 	
+	<!--  I Want to See this Movie Button  -->
+	<TD class="border_middle" style="width:80px;">
+		<div id="spinner_{{ movie.tt }}_want" style="display:none">
+		<img src="{{url_for('static', filename='images/spinner.gif') }}" width="60px" >
+		</div>
+		
+		<div id="button_{{ movie.tt }}_want" />
+		{% if movie.displayType == None %}
+		<BUTTON  name="addMovie" type="submit" class="button_up" onclick="addMyMovie('{{ movie.tt }}', 'want')">I <U>Want</U><br>to see<br>this movie</BUTTON> 
+	 	{% elif movie.displayType == 'want' %}
+		Movie on Watch List
+		{% endif %}
+		</div>
+	</TD>
+	
+	<!--  Add IMDb Button  -->
 	{% if user.admin == 'T' %}
-	<TD>
-		<div id="imdb_button_{{ movie.tt }}" />
+	<TD class="border_middle" style="width:80px;">
+		<div id="spinner_{{ movie.tt }}_imdb" style="display:none">
+		<img src="{{url_for('static', filename='images/spinner.gif') }}" width="60px" >
+		</div>
+		
+		<div id="button_{{ movie.tt }}_imdb" />
 		{% if movie.hasImdb() %}
-		<BUTTON  name="addImdb" type="submit" class="active_button" onclick="addImdb('{{ movie.tt }}')">Add Imdb</BUTTON> 
+		<BUTTON  name="addImdb" type="submit" class="button_up" onclick="addMyMovie('{{ movie.tt }}', 'imdb')">Add Imdb</BUTTON> 
 		{% else %}
 		Movie Loaded
 		{% endif %}
@@ -99,7 +205,13 @@ Working ....
 </TABLE>
 
 <script>
-setSearchFocus('titleSearch');
+{% if addTitleSearch != '' %}
+setSearchFocus('addTitleSearch');
+{% elif addPersonSearch != '' %}
+setSearchFocus('addPersonSearch');
+{% endif %}
+
+
 </script>
 
 {% endblock %}

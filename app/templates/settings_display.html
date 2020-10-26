@@ -1,12 +1,19 @@
 <div class="helv" >
-Use this table to customize your Display Movies.  You can change the Label or Width of any column, hide or show columns, and change the order for which columns are shown. 
+Use this table to customize your <a href="{{ url_for('displayMovies') }}" class="helv">Display My Movies</a> page.
+You can change the Label, or Width or Height of any column, hide or show columns, 
+and change the order that columns are shown. Hover over a row to see more options for that row.  
 <P>
-Click on a row to see more options for that row.  There is no submit button, all changes are made in real time.
+There are two separate settings, one for movies you have seen and one for movies you want to see.
 <P>
-Be careful not to make columns too narrow, they might not align with the headers.
-<P>
-
 </div>
+
+<table>
+<tr>
+{% include 'displayMoviesButtons.html' %}
+</tr>
+</table>
+
+<P>
 
 <table id="table" cellspacing="0" cellpadding="5">
 <tr>
@@ -15,19 +22,20 @@ Be careful not to make columns too narrow, they might not align with the headers
 <th>Label</th>
 <th>Width</th>
 <th>Height</th>
+<th>Format</th>
 </tr>
 
-{% for col in user.columns %}
+{% for col in user.getColumns(searcher.displayType) %}
 <tr id="user_{{ col.name }}">
-	<td align="center"><input type="checkbox" id="{{ col.name }}_vis" name="{{ col.name }}_vis" onclick="changeSettingsDisplayInput(this, '{{ col.name }}', 'vis', 'boolean')" {{ flasker.isVisible( col ) }}></td>
+	<td align="center"><input type="checkbox" id="{{ col.name }}_vis" name="{{ col.name }}_vis" onclick="changeSettingsDisplayInput(this, '{{ col.name }}', '{{ searcher.displayType }}', 'vis', 'boolean')" {{ flasker.isVisible( col ) }}></td>
 	
 	<td>{{ col.name }}</td>
-	<td><input type="text" id="{{ col.name }}_label" name="{{ col.name }}_label" value="{{ col.label }}" size="10" onkeyup="changeSettingsDisplayInput(this, '{{ col.name }}', 'label', 'text')" ></td>
-	<td><input type="text" id="{{ col.name }}_cols" name="{{ col.name }}_cols" value="{{ col.cols }}" size="3" onkeyup="changeSettingsDisplayInput(this, '{{ col.name }}', 'cols', 'number')"></td>
-	<td><input type="text" id="{{ col.name }}_rows" name="{{ col.name }}_rows" value="{{ col.rows }}" size="3" onkeyup="changeSettingsDisplayInput(this, '{{ col.name }}', 'rows', 'number')"></td>
+	<td><input type="text" id="{{ col.name }}_label" name="{{ col.name }}_label" value="{{ col.label }}" size="10" onkeyup="changeSettingsDisplayInput(this, '{{ col.name }}', '{{ searcher.displayType }}', 'label', 'text')" ></td>
+	<td><input type="text" id="{{ col.name }}_cols" name="{{ col.name }}_cols" value="{{ col.cols }}" size="3" onkeyup="changeSettingsDisplayInput(this, '{{ col.name }}', '{{ searcher.displayType }}', 'cols', 'number')"></td>
+	<td><input type="text" id="{{ col.name }}_rows" name="{{ col.name }}_rows" value="{{ col.rows }}" size="3" onkeyup="changeSettingsDisplayInput(this, '{{ col.name }}', '{{ searcher.displayType }}', 'rows', 'number')"></td>
 	<td>
 	{% if col.name.startswith('user') %}
-	<select name="{{ col.name }}_dataFormat" id="{{ col.name }}_dataFormat" onchange="changeSettingsDisplayInput(this, '{{ col.name }}', 'dataFormat', 'text')" }}>
+	<select name="{{ col.name }}_dataFormat" id="{{ col.name }}_dataFormat" onchange="changeSettingsDisplayInput(this, '{{ col.name }}', '{{ searcher.displayType }}', 'dataFormat', 'text')" }}>
   		<option value="text" {{ flasker.getSelected(col, 'text' ) }}>Text</option>
   		<option value="date" {{ flasker.getSelected(col, 'date' ) }}>Date</option>
   		<option value="number" {{ flasker.getSelected(col, 'number' ) }}>Number</option>
@@ -40,10 +48,10 @@ Be careful not to make columns too narrow, they might not align with the headers
 	
 	
 	<td id="arrow_{{ col.name }}"  style="display:none;"">
-		<a href="Javascript:upCol('{{ col.name }}' )"><img src="{{url_for('static', filename='images/upArrow.png')}}" width="15px" style="margin-top: 10px;"></a>
-		<a href="Javascript:dnCol('{{ col.name }}' )"><img src="{{url_for('static', filename='images/dnArrow.png')}}" width="15px"></a>
+		<a href="Javascript:upCol('{{ col.name }}', '{{ searcher.displayType }}' )"><img src="{{url_for('static', filename='images/upArrow.png')}}" width="15px" style="margin-top: 10px;"></a>
+		<a href="Javascript:dnCol('{{ col.name }}', '{{ searcher.displayType }}'  )"><img src="{{url_for('static', filename='images/dnArrow.png')}}" width="15px"></a>
 		&nbsp;&nbsp;
-		<a href="Javascript:resetCol('{{ col.name }}' )" class="helv_small">Reset</a>
+		<a href="Javascript:resetCol('{{ col.name }}', '{{ searcher.displayType }}' )" class="helv_small">Reset</a>
 		
 	</td>
 		
@@ -53,10 +61,10 @@ Be careful not to make columns too narrow, they might not align with the headers
 </table>
 
 &nbsp;&nbsp;&nbsp;
-<a href="Javascript:resetAll()" class="helv_small">Reset All</a> 
+<a href="Javascript:resetAll('{{ searcher.displayType }}')" class="helv_small">Reset All</a> 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="Javascript:resetSort()" class="helv_small">Reset Sort</a>
+<a href="Javascript:resetSort('{{ searcher.displayType }}')" class="helv_small">Reset Sort</a>
 
 <script type="text/javascript">
 settingsColors('{{ selectCol }}')

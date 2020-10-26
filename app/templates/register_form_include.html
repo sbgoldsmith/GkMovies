@@ -1,9 +1,20 @@
-<form action="" method="post" novalidate>
+{% macro show_errors(field) %}
+	{% if field.errors|length > 0 %}
+        {% for error in field.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    {% else %}
+       	<br>
+    {% endif %}  
+{% endmacro %}
+
+<form action="" method="post" enctype="multipart/form-data" novalidate>
     {{ form.hidden_tag() }}
 
     <table>
     <tr>
     <td  colspan="2">
+
     <div class="helv_small_color" >
     {% with messages = get_flashed_messages() %}
 		{% if messages %}
@@ -25,40 +36,22 @@
     <td>    
         {{ form.firstName.label }}<br>
         {{ form.firstName(size=16) }}<br>
-        {% if form.firstName.errors|length > 0 %}
-	        {% for error in form.firstName.errors %}
-	        <span style="color: red;">[{{ error }}]</span>
-	        {% endfor %}
-	    {% else %}
-        	<br>
-        {% endif %}   
+		{{ show_errors(form.firstName) }}
 	</td>
 	
 	<td>
 	    {{ form.lastName.label }}<br>
         {{ form.lastName(size=16) }}<br>
-        {% if form.lastName.errors|length > 0 %}
-	        {% for error in form.lastName.errors %}
-	        <span style="color: red;">[{{ error }}]</span>
-	        {% endfor %}
-	    {% else %}
-        	<br>
-        {% endif %}  
-        
+		{{ show_errors(form.lastName) }}
     </td>
     </tr>
     
     <tr>
-    <td colspan="2">    
+    <td colspan="2">   
+
         {{ form.login.label }}<br>
         {{ form.login(size=24) }}<br>
-        {% if form.login.errors|length > 0 %}
-        	{% for error in form.login.errors %}
-        	<span style="color: red;">[{{ error }}]</span>
-        	{% endfor %}
-        {% else %}
-        	<br>
-        {% endif %}
+		{{ show_errors(form.login) }}
 	</td>
 	</tr>
 	
@@ -66,40 +59,58 @@
 	<td colspan="2">
         {{ form.email.label }}<br>
         {{ form.email(size=24) }}<br>
-        {% if form.email.errors|length > 0 %}
-        	{% for error in form.email.errors %}
-        	<span style="color: red;">[{{ error }}]</span>
-        	{% endfor %}
-        {% else %}
-        	<br>
-        {% endif %}
+		{{ show_errors(form.email) }}
     </td>
     </tr>
     
     <tr>
+	<td>
+        {{ form.city.label }}<br>
+        {{ form.city(size=24) }}<br>
+		{{ show_errors(form.city) }}
+    </td>
+
+	<td >
+        {{ form.stateSelect.label }}<br>
+        {{ form.stateSelect }}<br>
+		{{ show_errors(form.stateSelect) }}
+    </td>
+    </tr>
+    
+    <tr>
+	<td colspan="2">
+        {{ form.countrySelect.label }}<br>
+        {{ form.countrySelect }}<br>
+		{{ show_errors(form.countrySelect) }}
+    </td>
+    
+    <tr>
+	<td>
+        {{ form.face.label }}<br>
+        {{ form.face }}<br>
+		{{ show_errors(form.face) }}
+    </td>
+    <td>
+    {% if user %}
+    <img src="{{url_for('static', filename='faces')}}/{{ user.getFace()}}" width="50px">
+    {% endif %}
+    </td>
+     
+    <tr>
     <td>
 		{{ form.password.label }}<br>
         {{ form.password(size=16) }}<br>
-        {% if form.password.errors|length > 0 %}
-	      	{% for error in form.password.errors %}
-	      	<span style="color: red;">[{{ error }}]</span>
-	      	{% endfor %}
-        {% else %}
-      	<br>
-        {% endif %}
+		{{ show_errors(form.password) }}
+
 	</td>
 	
 	
 	<td>
 	    {{ form.password2.label }}<br>
-        {{ form.password2(size=16) }}<br>
-        {% if form.password2.errors|length > 0 %}
-        	{% for error in form.password2.errors %}
-        	<span style="color: red;">[{{ error }}]</span>
-        	{% endfor %}
-        {% else %}
-        	<br>
-        {% endif %} 
+	    <div class="eye_outside">
+        {{ form.password2(size=16) }}<i class="far fa-eye" id="togglePassword"></i>
+        </div>
+		{{ show_errors(form.password2) }}
     </td>
     
     </tr>
@@ -112,3 +123,6 @@
     </table>
 
 </form>
+
+<script>setUpEye('{{ request.url_rule }}')</script>
+        

@@ -41,11 +41,15 @@ Goldkeys Movies - New Versions
         color:blue;
     }
 </style>
-
-<script src="{{url_for('.static', filename='client/GkMovies.js')}}"></script>
+<script src="{{url_for('.static', filename='client/GkMovies.js')}}?r={{ rand }}"></script>
 
 </HEAD>
 <BODY>
+
+<div class="helv" style="width:600px;">
+<a href="Javascript:close()" style="float:right;">Close</a>
+</div>
+
 
 <div class="helv">
 {% include 'versions_include.html' %}

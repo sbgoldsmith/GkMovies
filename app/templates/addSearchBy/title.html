@@ -1,0 +1,64 @@
+Below is the Simple Search Box. Start typing and after about three characters, matching movies from 
+IMDb will be listed.
+<P>
+<table >
+<tr>
+
+<td style="width: 80px">
+&nbsp;
+</td>
+
+<td>
+Search By Title: 
+</td>
+
+<td colspan="2">
+<INPUT  id="addTitleSearch" name="addTitleSearch" type="search" value="{{ addTitleSearch }}" size="25"  style="height:35px; font-family: Helvetica; font-size: 17px;" oninput="adderTitleSearchOmdb()">
+</td>
+</tr>
+
+
+
+<tr>
+<td colspan="2">
+&nbsp;
+</td>
+
+<td>
+{% if omdb.candidates | length > 0 %}
+	<select class="hide_slide" name="candidate" id="candidate" size="4"  onchange="doAdderCandidate('{{ omdb.badWord }}' )" onfocus="this.selectedIndex = -1;">
+	{% for candidate in omdb.candidates %}
+		<option value="{{ candidate }}" style="font-size: 17px;">{{ candidate }}</option>
+	{% endfor %}
+	</select>
+{% else %}
+	&nbsp;
+{% endif %}
+</td>
+</tr>
+
+
+<tr>
+
+<td colspan="2">
+&nbsp;
+</td>
+
+{% if movies|length == 0 and addTitleSearch != '' %}
+
+	<td>
+	<div id="no_results" class="helv">
+	No results.  Try entering more characters.
+	</div>
+	</td>
+	
+{% endif %}
+	
+	<td  id="working" class="helv" style="display:none">
+	<img src="{{url_for('static', filename='images/spinner.gif') }}" width="40px" >
+	</td>
+	
+
+</tr>
+</table>
+

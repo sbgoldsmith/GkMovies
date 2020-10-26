@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="helv_section">
+
+<table class="home">
+<tr>
+<td class="home" style="width:70px"><a href="{{ url_for('updateRelease') }}?version=1.4&step=1" class="helv">Step 1</a></td>
+<td class="home">Manage user_column table</td>
+</tr>
+
+<tr>
+<td class="home"><a href="{{ url_for('updateRelease') }}?version=1.4&step=2" class="helv">Step 2</a></td>
+<td class="home">Initialize imdb_movie with imdb_plot, person_movie, genre_movie.<br>
+Updates imdb_movie.update_date field
+</td>
+</tr>
+
+</table>
+<P>
+{{ message }}
+
+</div>
+
+
+{% endblock %}
+

@@ -10,6 +10,7 @@ class Style:
     h2 {
         font-family: Helvetica;
         font-size: 20px;
+        margin-bottom: -1px;
     }
     
     li.helv {
@@ -24,6 +25,13 @@ class Style:
         color:blue;
     }
     
+    a.helv_large {
+        font-family: Helvetica;
+        font-size: 15px;
+        text-decoration: none;
+        color:blue;
+    }
+    
     a.imdb:link {
         font-family: Helvetica;
         font-size: 13px;
@@ -34,6 +42,20 @@ class Style:
     a.imdb:visited {
         font-family: Helvetica;
         font-size: 13px;
+        text-decoration: none;
+        color:purple;
+    }
+
+    a.imdb_large:link {
+        font-family: Helvetica;
+        font-size: 15px;
+        text-decoration: none;
+        color:blue;
+    }
+    
+    a.imdb_large:visited {
+        font-family: Helvetica;
+        font-size: 15px;
         text-decoration: none;
         color:purple;
     }
@@ -72,9 +94,21 @@ class Style:
     div.helv_section {
         font-family: Helvetica;
         font-size: 14px;
-        width: 650px;
+        width: 750px;
     }
 
+    span.helv_small {
+        font-family: Helvetica;
+        font-size: 13px;
+    }
+    
+    span.light_bold {
+        font-family: Helvetica;
+        font-weight: normal;
+        color: blue;
+        font-size: 14px;
+    }
+    
     td.helv  {
         font-family: Helvetica;
         font-size: 14px;
@@ -92,14 +126,21 @@ class Style:
         margin-bottom: -9px;
     }
     
-    div.button_height {
+    div.button_sort {
         font-family: Helvetica;
         font-size: 14px;
         display: inline-block;
         padding-top: 9px;
         padding-bottom: 8px;
     }
-    
+               
+    div.scrollable {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: overlay;
+    }
+     
     .hide_slide {
         display: inline-block;
         vertical-align: top;
@@ -121,6 +162,44 @@ class Style:
         padding-bottom: 8px;
     }
     
+    .button_up {
+        border: 1px solid #555555;
+        border-radius: 5px;
+        background-color: #D6EAF8;
+        color:black;
+        font-family: Helvetica;
+        font-size: 13px;
+        cursor: pointer;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        box-shadow: -2px -2px 6px 2px rgba(0,0,0,0.5) inset;
+    }
+    
+    .button_down {
+        border: 1px solid #555555;
+        border-radius: 5px;
+        background-color: #D6EAF8;
+        color:red;
+        font-weight: bold;
+        font-family: Helvetica;
+        font-size: 13px;
+        cursor: pointer;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        box-shadow: 2px 2px 6px 2px rgba(0,0,0,0.5) inset;
+    }
+    
+
+    
+    .eye_inside i {
+        margin-left: -20px;
+        cursor: pointer;
+    }
+
+    .eye_outside i {
+        margin-left: 5px;
+        cursor: pointer;
+    }
     
     """
         return style
@@ -145,127 +224,76 @@ class Style:
         return style
     
     def getAdderStyle(self):
-        #db = Db()
-        #sql = "SELECT sum(width) as tableWidth FROM " + Tbl().adderColumns + " ORDER BY srt;"
-        #tableWidth = db.getString("tableWidth", sql)
-
-        #cols = self.helper.getNumAdderCols()
-        #tableWidth += cols * 4 + 6
-        #Services.query(func.sum(Services.price)).filter(Services.dateAdd.between(start, end)).scalar()  # or you can use .scalar() ; .one() ; .first() ; .all() depending on what you want to achieve
-        #tableWidth = AdderColumn.query(func.sum(AdderColumn.width)).scalar()
-        
-
-        tableWidth = AdderColumn.query.with_entities(func.sum(AdderColumn.width)).first()
-        cols = 5
-        
+            
         style = self.getCommonStyle() + """
         
-    .title_table {
-        height: 60px;
-        width: """ + str(tableWidth) + """px;
-        background-color: #cffffb;
-        color: #222222;
-        text-align: center;
-        border-collapse: collapse;  
-        border-top: 1px solid #222222;
-        border-left: 1px solid #222222;
-        border-right: 1px solid #222222;
-        border-bottom: 0px solid #222222;
+    table.border {
+        border: 1px solid #222222;
+        border-collapse: collapse; 
     }
-    .title_text {
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 24px;
-    }
-    .found_text {
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 18px;
-    }
-    .fixed_headers {
-        width: """ + str(tableWidth) + """px;
-        table-layout: fixed; 
-        border-collapse: collapse;  
-    }
-    .fixed_headers table, th, td {
-        border-top: 0px solid #222222;
-        border-left: 1px solid #222222;
-        border-right: 1px solid #222222;
-        border-bottom: 1px solid #222222;
-    }
-
-    .fixed_headers tbody td {
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 13px;
-    }\n"""
     
-        adderColumns = AdderColumn.query.order_by(AdderColumn.srt).all()
-
-        c = 1
-
-        for ac in adderColumns:
-            style += '    .fixed_headers td:nth-child(' + str(c) + ') {\n'
-            style += '        width: ' + str(ac.width) + 'px;\n'
-            style += '        text-align: ' + ac.align + ';\n'
-            style += '        vertical-align: ' + ac.valign + ';\n'
-            style += '    }\n'
-            c += 1
-
-           
-        style += """
-    .fixed_headers thead {
-      background-color: #cffffb;
-      color: #222222;
-    }
-    .fixed_headers thead tr {
-      display: block;
-      position: relative;
-    }
-    .fixed_headers tbody {
-      display: block;
-      overflow: auto;
-      height: 700px;
-    }
-    .fixed_headers tbody tr:nth-child(even) {
+    tr.alt:nth-child(even) {
       background-color: #e0e0e0;
     }
-    .active_button {
-        background-color: #cffffb;
+
+    td.border_top {
+        vertical-align: top;
+        border: 1px solid #222222;
+        padding-left: 3px;
+        padding-right: 3px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 13px;
     }
-    .old_ie_wrapper {
-      height: 700px;
-      width: """ + str(tableWidth)  + """px;
-      overflow-x: hidden;
-      overflow-y: auto;
+    
+    td.border_top_scroll {
+        vertical-align: middle;
+        text-align: center;        
+        border: 1px solid #222222;
+        padding-left: 3px;
+        padding-right: 0px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 13px;
     }
-    .old_ie_wrapper tbody {
-      height: auto;
-    }\n"""
+    
+    td.border_middle {
+        vertical-align: middle;
+        text-align: center;
+        border: 1px solid #222222;
+        padding-left: 3px;
+        padding-right: 3px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 13px;
+    }
+    
+    td.border_none {
+        border: 0px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 13px;
+    }
+    
+
+    """
             
         return style
    
        
-    def getDisplayStyle(self, user):
+    def getDisplayStyle(self, user, displayType):
         #user = User.query.filter(User.login == current_user.login).join(UserColumn).first()
 
-        tableWidth = user.getTableWidth()
+        tableWidth = user.getTableWidth(displayType)
         cols = user.getNumCols()
         tableWidth += cols * 4 + 14
 
         
         style = self.getCommonStyle() + """
-        
-    div.scrollable {
-        width: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: auto;
-    }
+
     
     table.title_table {
         height: 40px;
         width: """ + str(tableWidth) + """px;
-        background-color: #cffffb;
+        background-color: #EBF5FB;
         color: #222222;
-        vertical-align: center;
+        vertical-align: middle;
         text-align: left;
         border-collapse: collapse;  
         border-top: 1px solid #222222;
@@ -375,7 +403,7 @@ class Style:
     
        
         c = 1
-        for col in user.columns:
+        for col in user.getColumns(displayType):
             if col.vis == 'T':
                 style += '    .fixed_headers thead td:nth-child(' + str(c) + ') {\n'
                 style += '        width: ' + str(col.getWidth()) + 'px;\n'
@@ -390,11 +418,11 @@ class Style:
                 
         style += """
     .fixed_headers thead {
-      background-color: #cffffb;
+      background-color: #EBF5FB;
       color: #222222;
     }
     .fixed_headers thead tr {
-      display: block;
+      display: table;
       position: relative;
     }
     .fixed_headers tbody {
@@ -416,3 +444,36 @@ class Style:
     }\n"""
             
         return style
+
+    def getHelpStyle(self):
+        style = """
+        
+    div.helv_section {
+        font-family: Helvetica;
+        font-size: 14px;
+        width: 600px;
+    }
+    
+    div.helv {
+        font-family: Helvetica;
+        font-size: 14px;
+    }
+    
+    a.helv {
+        font-family: Helvetica;
+        font-size: 14px;
+        text-decoration: none;
+        color:blue;
+    }
+    
+    span.light_bold {
+        font-family: Helvetica;
+        font-weight: normal;
+        color: blue;
+        font-size: 14px;
+    }
+    
+    """
+    
+        return style
+    

@@ -5,10 +5,10 @@ import datetime
 import re
 from Library.LoggerModule import debug
 
-def processValue(value, dataType):
-    if dataType in ['number', 'currency', 'comma']:
+def processValue(value, dataFormat):
+    if dataFormat in ['number', 'currency', 'comma']:
         return processNumber(value)
-    elif dataType == "date":
+    elif dataFormat == "date":
         return processDate(value)
     else:
         return processText(value)
@@ -69,8 +69,8 @@ class Rtn:
         self.message = ""
                             
 class Inputter():
-    def processInput(self, imdbMovieId, name, value, dataType):
-        rtn = processValue(value, dataType)
+    def processInput(self, imdbMovieId, name, value, dataFormat):
+        rtn = processValue(value, dataFormat)
 
         if rtn.message == '':
             column = getattr(UserMovie, name)
@@ -83,12 +83,12 @@ class Inputter():
         else:
             return rtn.message
         
-    def processSettingsDisplayInput(self, user, name, colAttribute, dataType, value): 
-        rtn = processValue(value, dataType)
+    def processSettingsDisplayInput(self, user, name, displayType, colAttribute, dataFormat, value): 
+        rtn = processValue(value, dataFormat)
         
         if rtn.message == '':
             column = getattr(UserColumn, colAttribute)
-            UserColumn.query.filter(UserColumn.user_id == user.id, UserColumn.name == name).update({column: rtn.value})
+            UserColumn.query.filter(UserColumn.user_id == user.id, UserColumn.name == name, UserColumn.displayType == displayType).update({column: rtn.value})
             db.session.commit()
             debug('Inputter.processSettingsDisplayInput: Updated UserColumn, user_id=' + str(user.id) + ', ' + name + '.' + colAttribute + '=' + rtn.value)
             return ""

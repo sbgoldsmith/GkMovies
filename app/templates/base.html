@@ -7,8 +7,9 @@ Goldkeys Movies - {{ title }}
 </TITLE>
 
 <link rel="stylesheet" href="{{url_for('static', filename='client/GkMovies.css')}}">
-<script src="{{url_for('.static', filename='client/GkMovies.js')}}?version=1.3"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+<script src="{{url_for('.static', filename='client/GkMovies.js')}}?version=1.4"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
 <style>
 {{ sstyle }}
@@ -37,11 +38,10 @@ Goldkeys Movies - {{ title }}
      Welcome {{ current_user.firstName }}
      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-     <a href="{{ url_for('home') }}" class="helv">Home</a>&nbsp;&nbsp;
-     <a href="{{ url_for('addMovies') }}" class="helv">Add</a>&nbsp;&nbsp;
-     <a href="{{ url_for('displayMovies') }}" class="helv">Display</a>&nbsp;&nbsp;
-     <a href="{{ url_for('settings') }}" class="helv">Settings</a>&nbsp;&nbsp;
-     <a href="Javascript:help('{{ request.path }}')" class="helv">Help</a>&nbsp;&nbsp;      
+     <a href="{{ url_for('home') }}" class="helv">{{flasker.nav('/home', 'Home')}}</a>&nbsp;&nbsp;
+     <a href="{{ url_for('addMovies') }}" class="helv">{{flasker.nav('/addMovies', 'Add')}}</a>&nbsp;&nbsp;
+     <a href="{{ url_for('displayMovies') }}" class="helv">{{flasker.nav('/display', 'Display')}}</a>&nbsp;&nbsp;
+     <a href="{{ url_for('settings') }}" class="helv">{{flasker.nav('/settings', 'Settings')}}</a>&nbsp;&nbsp;
      <a href="{{ url_for('logout') }}" class="helv">Logout</a>
      {% endif %}
      </td>
@@ -52,8 +52,25 @@ Goldkeys Movies - {{ title }}
         
 <hr>
 
-<H2> {{ title }} </H2>
+<table style="width:750px">
+<tr>
+<td class="noborder" style="vertical-align:top;height:60px;width:200px">
+<H2 style="margin-top:8px"> {{ title }} </H2>
+  
+</td>
 
+
+{% if title_line %}
+{% include title_line %}
+{% endif %}
+
+<td class="noborder" style="vertical-align:top;width:200px;text-align:right">
+<a href="Javascript:help('{{ request.path }}')" class="helv_large">Help</a>    
+</td>
+</tr>
+
+
+</table>
 {% block content %}
 
 

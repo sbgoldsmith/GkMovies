@@ -7,22 +7,25 @@
 {{ title }} Help
 </TITLE>
 <style>
-    div.helv {
-        font-family: Helvetica;
-        font-size: 14px;
-    }
-    
+{{ style }}
 </style>
 
 <script src="{{url_for('.static', filename='client/GkMovies.js')}}?r={{ rand }}"></script>
 </HEAD>
 <BODY>
 
-<div class="helv">
+
+
+<div class="helv" style="width:600px;">
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="Javascript:close()" style="float:right;">Close</a>
+</div>
+
+<div class="helv_section" >
 {% include includePath %}
 </div>
 
 <img src="{{ url_for('static', filename=imagePath) }}?r={{ rand }}">
+
 
 </BODY>
 </HTML>
