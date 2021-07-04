@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="helv_section">
+There are three methods for finding movies to add to your lists.  Press a button below to learn how to use each method:
+<P>
+
+<table style="width:650">
+<tr>
+
+<td style="text-align:center">
+<BUTTON  name="byTitle" type="submit" class="{{ flasker.getButtonClass('title', typeSelect) }}" style="width:80px" onclick="adderTypeSelect('title')">Simple<br>Search</BUTTON>
+</td>
+
+<td style="text-align:center">
+<BUTTON  name="byPerson" type="submit" class="{{ flasker.getButtonClass('person', typeSelect) }}" style="width:80px" onclick="adderTypeSelect('person')">Advanced<br>Search</BUTTON>
+</td>
+
+<td style="text-align:center">
+<BUTTON  name="byPopular" type="submit" class="{{ flasker.getButtonClass('popular', typeSelect) }}" style="width:80px" onclick="adderTypeSelect('popular')">Rank<br>List</BUTTON>
+</td>
+
+</tr>
+
+
+</table>
+
+</div>
+
+
+<P>
+{% if typeSelect == 'title' %}
+	{% include 'addSearchBy/title.html' %}
+	<div id='addMoviesTable'></div>
+
+{% elif typeSelect == 'person' %}
+	{% include 'addSearchBy/person.html' %}
+	{% include 'addMoviesTable.html' %}
+	
+{% elif typeSelect == 'popular' %}
+	{% include 'addSearchBy/popular.html' %}
+	{% if movies|length == 0 %}
+	<div class="no_movies" id="no_movies">
+	No Movies Found.  Try changing Genre selection
+	</div>
+	{% endif %}
+	{% include 'addMoviesTable.html' %}
+	
+{% endif %}
+
+
+
+{% endblock %}
+

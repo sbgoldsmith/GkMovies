@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="helv_section">
+
+<!-- Oldest Movies -->
+Update oldest movies.
+<P>
+<form action="" method="post" >
+    {{ oldestForm.hidden_tag() }}
+
+    {{ oldestForm.cnt.label }}&nbsp;{{ oldestForm.cnt(size=5) }}&nbsp;&nbsp;
+    {{ oldestForm.oldestGenres.label }}&nbsp;{{ oldestForm.oldestGenres }}&nbsp;
+    {{ oldestForm.oldestCast.label }}&nbsp;{{ oldestForm.oldestCast }}&nbsp;
+<p>{{ oldestForm.submit() }}</p>    
+</form>
+{{ oldest_message }}
+<P>&nbsp;<P>&nbsp;<P>
+
+
+<!-- Highest Ranked and Most Popular Movies -->
+Update highest ranking movies
+<P>
+<form action="" method="post">
+    {{ rankForm.hidden_tag() }}
+    
+<p>{{ rankForm.submit() }}</p>    
+</form>
+{{ rank_message }}
+<P>&nbsp;<P>&nbsp;<P>
+
+
+
+
+<!-- A Single Movies -->
+Update a single movie
+<P>
+<form action="" method="post">
+    {{ singleForm.hidden_tag() }}
+    
+    {{ singleForm.tt.label }}&nbsp;{{ singleForm.tt(size=8) }}&nbsp;
+    {{ singleForm.singleGenres.label }}&nbsp;{{ singleForm.singleGenres }}&nbsp;
+    {{ singleForm.singleCast.label }}&nbsp;{{ singleForm.singleCast }}&nbsp;
+<p>{{ singleForm.submit() }}</p>    
+</form>
+{{ single_message }}
+<P>&nbsp;<P>&nbsp;<P>
+
+
+
+
+
+<P>
+
+
+</div>
+
+{% endblock %}
+

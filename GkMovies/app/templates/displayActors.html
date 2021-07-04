@@ -1,0 +1,29 @@
+<div id="div_{{ imovie.tt }}_cast" class="scrollable" style="height:{{ col.getHeight() }}px">
+
+	<table cellspacing="0" cellpadding="0" style="border:0;height:100%">
+	{% for uperson in imovie.getPersons('actor') %}
+	
+		<tr style="background-color:transparent;">
+		
+		<td style="border:0;text-align:left;width:30px;">
+		<a href="https://www.imdb.com/name/{{ uperson.nm }}"  target="_blank"><img src="{{url_for('static', filename='images/imdb.jpg')}}" style="width:25px"></a>
+		</td>
+		
+		<td style="border:0;text-align:left;">
+		<a href="Javascript:filterActor('{{ uperson.name }}')" class="imdb">{{ flasker.getFormatString(uperson.name, col) }}</a>
+		</td>
+		
+		</tr>
+	{% endfor %}
+
+	{% if imovie.tt in numCast and numCast[imovie.tt] > personLimit %}
+	{% set more = numCast[imovie.tt] - personLimit %}
+	<tr>
+	<td style="border:0;text-align:left;width:30px;" colspan="2">
+	<a href="javascript:allCast('{{ imovie.tt }}')" class="imdb">{{ more }} More...</a>
+	</td>
+	</tr>
+	{% endif %}
+
+	</table>
+</div>

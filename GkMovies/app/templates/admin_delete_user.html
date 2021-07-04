@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form action="" method="post" >
+{{ form.hidden_tag() }}
+<table>
+<tr style="vertical-align:top;height:40px;"><td>{{ form.userSelect.label }}&nbsp;</td><td>{{ form.userSelect }}<P></td></tr>
+<tr><td>&nbsp;</td><td>{{ form.submit }}</td></tr>
+</table>
+<P>
+</form>
+
+
+{% for record in message %}
+Deleted {{ record[1] }} records in table {{ record[0] }}<br>
+{% endfor %}
+
+
+{% endblock %}
+

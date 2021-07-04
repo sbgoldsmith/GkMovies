@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="helv_small_color" >
+{% if message %}
+{{ message }}
+{% else %}
+&nbsp;<br>
+{% endif %}
+</div>
+<P>	
+
+<div class="helv_section">
+
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+
+    {{ form.login.label }}&nbsp;{{ form.login(size=16) }}
+ 
+<p>{{ form.submit() }}</p>    
+
+</form>
+
+      
+</div>
+{% endblock %}
+

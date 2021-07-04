@@ -1,0 +1,6 @@
+Login: {{ contact.login }}
+Name: {{ contact.form.firstName.data }} {{ contact.form.lastName.data }}
+Email: {{ contact.form.email.data }}
+Subject: {{ contact.form.subject.data }}
+Message:
+{{ contact.form.message.data }}

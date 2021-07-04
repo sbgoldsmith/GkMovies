@@ -1,0 +1,165 @@
+
+
+<HTML>
+
+
+<HEAD>
+<TITLE>
+Goldkeys Movies - {{ title }}
+</TITLE>
+<meta property="og:image" content="https://gkmovies.info/static/images/GoldkeysMoviesLarge.png" />
+<link rel="stylesheet" href="{{url_for('static', filename='client/GkMovies.css')}}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+
+<script src="{{url_for('.static', filename='client/GkMovies.js')}}?version=1.7.1"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+
+<style>
+{{ sstyle }}
+</style>
+
+</HEAD>
+<BODY style="position:relative">
+
+<div id="base_spinner" class="base_spinner">
+<img src="{{url_for('static', filename='images/spinner.gif') }}" width="90px" >
+</div>
+
+<div class="helv">
+	<table>
+	<tr>
+	<td style="text-align:left;width:120px;height:60px" class="noborder">
+	<div class="tight">
+	    {% if cuser.isClub() %}
+		<a href="{{ url_for('clubExit') }}">
+		{% else %}
+		<a href="{{ url_for('home') }}">
+		{% endif %}
+		<img src="{{ url_for('static', filename='images/goldkeys.png') }}"></a><br>
+		
+	    Goldkeys Movies 
+	</div>
+	</td>
+ 	 
+ 	<!--  Who am I cell -->
+ 	<td class="noborder_left" style="padding-left:20px;width:180px">
+    {% if not cuser.isLogin() %}
+
+    {% elif cuser.isUser() %}
+     	{{ current_user.firstName }}'s Movies
+    {% elif cuser.isClubNone() %}
+     	<!-- <h2>Movie Clubs</h2> -->
+    {% elif cuser.isClub() %}
+    	{% if cuser.club.header == '' %}
+    	<h4>{{ cuser.club.name }}</h4>
+    	{% else %}
+		<img src="{{url_for('static', filename='clubs')}}/{{ cuser.club.header }}" height="60px">
+		{% endif %}
+		
+	{% endif %}
+	</td>
+	
+	<!--  Home or Club Home -->
+	<td class="noborder_center">
+	{% if current_user.is_anonymous and request.path not in ['/', '/index']  %}
+		<a href="{{ url_for('index') }}" class="helv">Home</a>
+	{% elif cuser.isClub() %}
+     	<a href="{{ url_for('club') }}" class="helv">{{flasker.nav('/club', 'Club<br>Home')}}</a>
+	{% elif cuser.isUser() %}
+		<a href="{{ url_for('home') }}" class="helv">{{flasker.nav('/home', 'Home')}}</a>
+    {% endif %}
+    </td>
+    
+    <!--  Add Movies -->
+    <td class="noborder_center">
+    {% if cuser.isUser() or cuser.isClubSome() %}
+    <a href="{{ url_for('addMovies') }}" class="helv">{{flasker.nav('/addMovies', 'Add<br>Movies')}}</a>
+    {% endif %}
+    </td>
+    
+    <!--  Display Movies -->
+ 	<td class="noborder_center">
+ 	{% if cuser.isUser() or cuser.isClubSome() %}
+    <a href="javascript:showBaseSpinner('displayMovies')" class="helv">{{flasker.nav('/display', 'Display<br>Movies')}}</a>
+    {% endif %}
+    </td>
+    
+    <!--  Settings -->
+    <td class="noborder_center">
+    {% if cuser.isUser() or cuser.isClubOwner(current_user.id) %}
+    <a href="{{ url_for('settings') }}" class="helv">{{flasker.nav('/settings', 'Settings')}}</a>
+    {% endif %}
+    </td>
+    
+    <!-- Enter or Exit club -->
+    <td class="noborder_center">
+    {% if current_user.is_anonymous %}
+    
+    {% elif cuser.isClub() %}
+    <a href="{{ url_for('clubExit') }}" class="helv">{{flasker.nav('/clubExit', 'Exit<br>Clubs')}}</a>
+    {% else %}
+    <a href="{{ url_for('club') }}" class="helv">{{flasker.nav('/club', 'Enter<br>Clubs')}}</a>
+    {% endif %}
+    </td>
+    
+    
+    <!-- Logout or Exit club -->
+    <td class="noborder_center">
+    {% if not current_user.is_anonymous %}
+    <a href="{{ url_for('logout') }}" class="helv">Logout</a>
+    {% endif %}
+    </td>
+    
+    {% if not current_user.is_anonymous %}
+    <!-- Profile Picture -->
+    <td class="noborder_left" style="padding-left:15px;padding-right:5px">
+    <img src="{{url_for('static', filename='faces')}}/{{ user.getFace() }}" height="30px"><br>
+    </td>
+     
+    <!-- Profile -->
+    <td class="noborder_left" >
+    <span class="helv_small">
+    Login:<br>{{ user.firstName }} {{ user.lastName}}
+    </span>
+    </td>
+    
+    {% endif %}
+    </tr>
+    </table>
+     
+</div>
+        
+<hr>
+
+<table style="width:750px">
+<tr>
+
+{% if title != '' %}
+<td class="noborder" style="vertical-align:top;height:50px;width:310px">
+<H2 style="margin-top:12px"> {{ title }} </H2>
+</td>
+{% endif %}
+
+{% if title_line %}
+<td id='baseTitleLine' class="noborder" style="vertical-align:top;height:60px;width:300px">
+{% include title_line %}
+</td>
+{% endif %}
+
+{% if cuser.isLogin() %}
+<td class="noborder" style="vertical-align:top;width:200px;text-align:right">
+<a href="Javascript:help('{{ request.path }}')" class="helv_large">Help</a>    
+</td>
+{% endif %}
+</tr>
+
+
+</table>
+{% block content %}
+
+{% endblock %}
+
+</BODY>
+</HTML>

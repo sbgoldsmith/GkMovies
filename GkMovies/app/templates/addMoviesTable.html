@@ -1,0 +1,176 @@
+
+
+<TABLE class="border">
+	{% for movie in movies %}
+	<TR class="alt">
+	
+	{% if typeSelect == 'popular' %}
+		<TD class="border_top" style="text-align:center;width:30px;">
+		{{ movie.seq }}
+		</TD>
+	{% endif %}
+	<TD class="border_top" style="width:60px;"><a href="https://www.imdb.com/title/{{ movie.tt }}"  target="_blank"><img src="{{ movie.poster }}" width="60px"  /></a></TD>
+	<TD class="border_top" style="width:140px"><a href="https://www.imdb.com/title/{{ movie.tt }}"  class="imdb" target="_blank">{{ movie.title }}</a></TD>
+	<TD class="border_top" style="width:35px">{{ movie.iyear }}</TD>
+	
+	<!--  Plot  -->	
+	<TD class="border_top_scroll" style="width:240px">
+		<div id="spinner_{{ movie.tt }}_plot" style="display:none">
+		<img src="{{url_for('static', filename='images/spinner.gif') }}" width="60px" >
+		</div>
+		
+		<TABLE id="tbl_{{ movie.tt }}_plot" >
+		<TR>
+		<td class="border_none" style="text-align: left;">
+		<div class="scrollable" id='div_{{ movie.tt }}_plot' style="height:90px;">
+
+		{{ movie.plot }}
+	
+		</div>
+		
+		</td>
+		
+		</tr>
+		
+		{% if typeSelect == 'person' and movie.plot == '' %}
+		<tr>
+		<td id="getbtn_{{ movie.tt }}_plot" class="border_none" style="text-align: center;width:240px;">
+		<BUTTON  name="refreshPlot" type="submit" class="button_small" onclick="refreshAdder('{{ movie.tt }}', 'plot')">Get Plot</BUTTON> 
+		</td>
+		</tr>
+		{% endif %}
+		
+		</TABLE>
+	
+	<!--  Genres  -->
+	{% if typeSelect in ['title', 'popular'] %}
+	<TD class="border_top" style="width:100px">
+	{{ movie.markGenre() }}
+	</TD>
+	{% endif %}
+	
+	<!--  Cast  -->
+	
+	<TD class="border_top_scroll" style="width:130px">
+	
+		<div id="spinner_{{ movie.tt }}_cast" style="display:none">
+		<img src="{{url_for('static', filename='images/spinner.gif') }}" width="60px" >
+		</div>
+		
+		
+		<TABLE id="tbl_{{ movie.tt }}_cast" >
+		<TR>
+		<td class="border_none" style="text-align: left;">
+		<div class="scrollable"  id='div_{{ movie.tt }}_cast' style='height:90px;'>
+		
+		{{ movie.markCast() }}
+		
+		</div>
+		
+		</td>
+		
+		</tr>
+		
+		{% if typeSelect == 'person' and movie.actors|length == 0 %}
+		<tr>
+		<td id="getbtn_{{ movie.tt }}_cast" class="border_none" style="text-align: center;width:130px;">
+		<BUTTON  name="refreshCast" type="submit" class="button_small" onclick="refreshAdder('{{ movie.tt }}', 'cast')">Get Cast</BUTTON> 
+		</td>
+		</tr>
+		{% endif %}
+		
+		</TABLE>&nbsp;
+		
+	</td>
+
+	
+	<!--  Crew  -->
+	{% if typeSelect == 'person' %}
+	<td class="border_top_scroll" style="width:180px">
+		<div id="spinner_{{ movie.tt }}_crew" style="display:none">
+		<img src="{{url_for('static', filename='images/spinner.gif') }}" width="60px" >
+		</div>
+		
+		<TABLE id="tbl_{{ movie.tt }}_crew" >
+		<TR>
+		<td class="border_none" style="text-align: left;">
+		<div class="scrollable"  id='div_{{ movie.tt }}_crew' style="height:90px;">	
+		
+		{{ movie.markCrew() }}
+
+		</div>
+		</td>
+		
+		</TR>
+		
+		{% if movie.directors|length == 0 and movie.writers|length == 0 %}
+		<tr>
+		<td id="getbtn_{{ movie.tt }}_crew" class="border_none" style="text-align: center;width:180px;">
+		<BUTTON name="refreshCrew" type="submit" class="button_small" onclick="refreshAdder('{{ movie.tt }}', 'crew')">Get Crew</BUTTON> 
+		</td>
+		</tr>
+	    {% endif %}
+		
+		</TABLE>
+	 </TD>
+	 {% endif %}
+	 		
+	<!--  Saw this Movie Button  -->
+	<TD class="border_middle" style="width:100px;">
+		<div id="spinner_{{ movie.tt }}_seen" style="display:none">
+		<img src="{{url_for('static', filename='images/spinner.gif') }}" width="60px" >
+		</div>
+		
+		
+		<div id="button_{{ movie.tt }}_seen" />
+		{% if cuser.getDisplayType(movie.tt) in [None, 'want'] and cuser.addAllowedSeen(user.id) %}
+			<BUTTON  name="addMovie" type="submit" class="button_up" onclick="addMovie( 'seen', '{{ movie.tt }}')">{{ cuser.getAddSeenTitle() }}</BUTTON> 
+		{% elif cuser.getDisplayType(movie.tt) == 'seen' %}
+			Saw this Movie
+		{% elif not cuser.addAllowedSeen(user.id) %}
+			<!-- No Permission to add movie-->
+		{% endif %}
+		</div>
+	</TD>
+	
+	<!--  Want to See this Movie Button  -->
+	<TD class="border_middle" style="width:100px;">
+		<div id="spinner_{{ movie.tt }}_want" style="display:none">
+		<img src="{{url_for('static', filename='images/spinner.gif') }}" width="60px" >
+		</div>
+		
+		<div id="button_{{ movie.tt }}_want" />
+		{% if cuser.getDisplayType(movie.tt) == 'seen' %}
+		
+		{% elif cuser.getDisplayType(movie.tt) == None and cuser.addAllowedWant(user.id) %}
+			<BUTTON  name="addMovie" type="submit" class="button_up" onclick="addMovie( 'want', '{{ movie.tt }}')">{{ cuser.getAddWantTitle() }}</BUTTON> 
+		{% elif cuser.getDisplayType(movie.tt) == 'want' %}
+			Movie on<br>Watch List
+		{% elif not cuser.addAllowedWant(user.id) %}
+			<!--   No Permission to add movie-->
+		{% endif %}
+		</div>
+
+	</TD>
+	
+
+	<!--  Add IMDb Button  -->
+	{% if user.admin == 'T' %}
+	<TD class="border_middle" style="width:80px;">
+		<div id="spinner_{{ movie.tt }}_imdb" style="display:none">
+		<img src="{{url_for('static', filename='images/spinner.gif') }}" width="60px" >
+		</div>
+		
+		<div id="button_{{ movie.tt }}_imdb" />
+		{% if movie.hasImdb() %}
+		<BUTTON  name="addImdb" type="submit" class="button_up" onclick="addMovie('imdb', '{{ movie.tt }}')">Add Imdb</BUTTON> 
+		{% else %}
+		Movie Loaded
+		{% endif %}
+		</div>
+	</TD>
+	{% endif %}
+	
+	</TR>
+	{% endfor %}
+</TABLE>

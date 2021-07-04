@@ -1,0 +1,92 @@
+<div class="helv_section">
+First, list movies by IMDb rank or popularity.  You can exclude movies that you have already 
+seen (and maybe don't want to see again)
+or movies already on your watch list.
+<P>
+</div>
+
+<form action="" method="post" >
+
+<table style="margin-left:300px" >
+<tr>
+<td>
+	<table>
+	{% for subfield in rankForm.rankField %}
+	
+	<tr>
+	    <td class="helv" >{{ subfield(onclick="javascript:adderGenreListRapid('')") }}</td>
+	    <td class="helv" >{{ subfield.label }}</td>
+	</tr>
+	
+	{% endfor %}
+	</table>
+</td>
+
+<td>
+	<table>
+	
+	<tr valign="middle">
+		<td class="helv" >{{ rankShowMineForm.showMineField(onclick="javascript:adderGenreListRapid('')") }}</td>
+	    <td class="helv" >{{ rankShowMineForm.showMineField.label }}</td>
+	</tr>
+
+	</table>
+</td>
+</tr>
+</table>
+
+
+</form>
+<div class="helv">
+Now, select from All Genres or one or more specific genres.
+<P>
+</div>
+<P>
+<table style="width:660px;text-align:center;">
+{% set cols = 5 %}
+{% set col = namespace(value=0) %}
+
+{% for checkbox in genreCheckBoxesForm.genreBoxes %}
+	{% if checkbox.name == 'all' %}
+		{% set colspan = " colspan='cols'" %}
+	{% else %}
+		{% set colspan = '' %}
+	{% endif %}
+
+	{% if col.value % cols == 1 %}
+	<tr>
+	{% endif %}
+    <td {{ colspan }} class="helv" style="text-align:left">{{ checkbox(onclick="javascript:adderGenreListRapid('" ~ checkbox.name ~ "')") }}&nbsp;{{ checkbox.label }}</td>
+
+
+    {% if col.value % cols == 0 %}
+	</tr>
+	{% endif %}
+	
+	{% if colspan == '' %}
+		{% set col.value = col.value + 1 %}
+	{% endif %}
+	
+{% endfor %}
+
+</table>
+
+<table style="width:660px;text-align:center;">
+<tr>
+<td style="text-align:center;">
+<div id="popularSearchSpinner" style="display:none">
+<img src="{{url_for('static', filename='images/spinner.gif') }}" width="60px" >
+</div>
+</td>
+</tr>
+</table>
+
+
+<div id="genres_selected" class="genres_selected" >
+Genres Selected: {{ checkedValues }}
+<P>
+</div>
+
+<script>
+javascript:setGenreCheckBoxesAfter('{{ checkedCodes }}')
+</script>

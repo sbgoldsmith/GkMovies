@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+<TABLE id='displayMoviesTitleTable' class="title_table" cellspacing="0" >
+
+<TR id='displayMoviesTitleRow'>
+
+
+<TD id='displayMoviesFoundCell' class="found_cell">
+</TD>
+
+
+<TD id='displayMoviesPageCell' class="page_cell">
+</td>
+
+
+
+
+
+</TR>
+</TABLE>
+
+<TABLE  class="fixed_headers" cellspacing="0">
+
+<THEAD>
+
+
+<TR id='displayMoviesSortRow'>
+</TR>
+
+<!-- 
+	Filter Row
+ -->
+<TR  id='displayMoviesFilterRow' style="display:none">
+{% for col in user.getColumns(cuser, searcher.displayType)  %}
+
+	{% if col.vis == 'T' %}
+
+		{% if col.name == "poster" %}
+			<TD class="poster_font">
+			<SPAN id="displayMoviesFilterRowClear" style="display:none">
+			<a href="javascript:clearFilters()" class="poster_link_font">Clear Filters:</a>
+			</SPAN>
+
+		{% elif col.attribute.searchable == 'T' %}
+			<TD>
+			<INPUT  id="{{ col.name }}Search" name="{{ col.name }}Search" class="filter" type="search" placeholder="Filter by {{ col.label }}" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Filter by {{ col.label }}'" value="{{ flasker.getArgValue(col.name) }}" style="height:30px;width:{{ col.getWidth() }}px; margin-top: 2px;" >
+			<script>
+			createFilterWait('{{ col.name }}Search')
+			</script>
+		{% else %}
+			<TD>
+		{% endif %}
+		
+	</TD>
+	{% endif %}
+	
+{% endfor %}
+</TR>
+
+
+</THEAD>
+
+<TBODY id='displayMoviesBody'>
+</TBODY>
+
+</TABLE>
+<script>
+doMovies()
+</script>
+
+{% endblock %}
+

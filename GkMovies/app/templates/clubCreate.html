@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% from "_macros.html" import show_errors with context %}
+
+<form action="" method="post" novalidate>
+{{ form.hidden_tag() }}
+
+<table>
+<tr>
+<td>{{ form.name.label }}</td>
+<td>{{ form.name(size=16) }}</td>
+<td>{{ show_errors(form.name) }}</td>
+<tr>
+
+<tr>
+<td>{{ form.description.label }}</td>
+<td>{{ form.description(rows='4', cols='25') }}</td>
+<td>{{ show_errors(form.description) }}</td>
+<tr>
+
+
+</table>
+
+
+<P>
+{{ form.submit() }}
+
+</form>
+
+{% endblock %}

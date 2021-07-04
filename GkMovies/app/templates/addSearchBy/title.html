@@ -1,0 +1,46 @@
+<div class='helv'>
+Below is the Simple Search Box. Start typing and after about three letters, matching movies from 
+IMDb will be listed.
+<P>
+<table >
+<tr>
+
+<td style="width: 80px">
+&nbsp;
+</td>
+
+<td style="vertical-align:top;padding-top:8px">
+Search By Title: 
+</td>
+
+<td  style="vertical-align:top">
+<INPUT  id="addTitleSearch" name="addTitleSearch" type="search" value="{{ addTitleSearch }}" size="25"  style="height:35px; font-family: Helvetica; font-size: 17px;" >
+</td>
+
+
+<td  style="vertical-align:top">
+<div id='candidates'>
+</div>
+</td>
+
+
+
+	<td  style="vertical-align:top">
+	<div id="no_results" class="helv"  style="display:none">
+	No results.  Try entering more characters.
+	</div>
+	</td>
+
+	<td  id="working"  style="display:none"  style="vertical-align:top">
+	<img src="{{url_for('static', filename='images/spinner.gif') }}" width="40px" >
+	</td>
+	
+
+</tr>
+</table>
+</div>
+
+<script>
+setSearchFocus('addTitleSearch');
+createWait('addTitleSearch')
+</script>

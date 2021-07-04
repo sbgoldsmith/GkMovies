@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% include 'upgrading.html' %}
+
+<table>
+<tr>
+<td class="helv" valign="top" width = "400px">
+Use Goldkeys Movies to track all your favorite movies and link them to the Internet Movie Database 
+<img src="{{url_for('.static', filename='images/imdb.jpg')}}"  style="vertical-align:middle" width="40">.  
+Add as many or as few movies as you like. You can add reviews, ratings, dates seen, or any other movie
+information that interests you.
+Then sort or search for titles, reviews, plot lines, cast members, etc.  
+<P>
+Begin by <a href="{{ url_for('register') }}" class="helv">Registering</a> an account, 
+then sign in with your login and password.
+</td>
+
+<td width = "70px">
+&nbsp;
+</td>
+
+
+<td valign="top" class="helv" >
+{% from "_macros.html" import show_flash with context %}
+{{ show_flash(messages=get_flashed_messages()) }}
+          
+          
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+        {{ form.login.label }}<br>
+        {{ form.login(size=24) }}
+    <p>
+        {{ form.password.label }}<br>
+        <div class="eye_inside">
+        {{ form.password(size=24) }}<i class="far fa-eye" id="togglePassword"></i>
+        </div>
+        <script>setUpEye('')</script> 
+        <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;
+		<a class="helv_small" href="{{ url_for('reset_password_request') }}">Forgot Login/Password</a>
+    </p>
+    
+    <!--  <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>  -->
+    <p>{{ form.submit() }}</p>
+</form>
+<P><br>
+<p>New User? <a href="{{ url_for('register') }}" class="helv">Register Me!</a></p>
+</td>
+</tr>
+
+
+</table>
+
+{% endblock %}
+
+

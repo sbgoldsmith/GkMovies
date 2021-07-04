@@ -1,0 +1,25 @@
+{% macro show_errors(field) %}
+	{% if field.errors|length > 0 %}
+        {% for error in field.errors %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    {% else %}
+       	<br>
+    {% endif %}  
+{% endmacro %}
+
+{% macro show_flash() %}
+		<div class="helv_small_color" style="height:18px">
+	    {% for message in kwargs['messages'] %}
+	    {{ message }}<br>
+	    {% endfor %}
+		</div>
+{% endmacro %}
+
+{% macro show_club_flash() %}
+		<div class="helv_small_color" style="margin-top:-8px;height:4px"">
+	    {% for message in kwargs['messages'] %}
+	    {{ message }}<br>
+	    {% endfor %}
+		</div>
+{% endmacro %}

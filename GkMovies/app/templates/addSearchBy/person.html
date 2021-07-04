@@ -1,0 +1,135 @@
+
+<div class='helv_section'>
+The advanced search lets you look for movies by title or person.  Persons include actors 
+and crew (i.e., directors and writers).
+This screen has access to more information but because it's slower, it only retrieves what you need it to.
+<P>
+<form action="javascript:adderSearchRapid()" method="post" >
+
+<table>
+
+<tr>
+
+<td style="width: 60px">
+&nbsp;
+</td>
+
+<td>
+Search by Title:
+</td>
+
+<td>
+<INPUT  id="addTitleSearch" name="addTitleSearch" type="search" size="25" value="{{ addTitleSearch }}" style="height:35px; font-family: Helvetica; font-size: 17px;"  onfocus="clearText('addPersonSearch')">
+
+</td>
+
+<td>
+</td>
+
+
+</tr>
+
+<tr>
+<td>
+</td>
+
+<td style='text-align:center'>
+OR
+</td>
+</tr>
+
+<tr>
+<td>
+</td>
+
+<td>
+Search by Person:
+</td>
+
+<td>
+<INPUT  id="addPersonSearch" name="addPersonSearch" type="search" size="25" value="{{ addPersonSearch }}" style="height:35px; font-family: Helvetica; font-size: 17px;" onfocus="clearText('addTitleSearch')">
+
+</td>
+
+
+
+<td>
+<input type="checkbox" id="addLesserSearch" name="addLesserSearch" {{ flasker.isChecked(addLesserSearch) }}><span class="helv_small">Include lesser known</span>
+</td>
+
+
+
+</tr>
+
+<tr>
+<td>
+</td>
+<td>
+</td>
+<td style="text-align:center">
+<P>&nbsp;<P>
+<BUTTON type="submit" class="button_up">Search</BUTTON>
+</td>
+</tr>
+
+<tr>
+<td>
+</td>
+
+<td>
+</td>
+
+<td style="text-align:center">
+<div id="personSearchSpinner" style="display:none">
+<img src="{{url_for('static', filename='images/spinner.gif') }}" width="60px" >
+</div>
+</td>
+</tr>
+
+
+</table>
+
+</form>
+
+
+
+<table>
+{% for person in persons %}
+	<tr>
+	<td style="width:200px">	
+	
+	<TD>&nbsp;&nbsp;<a href="https://www.imdb.com/name/{{ person.nm }}"  target="_blank"><img src="{{ person.image }}" width="{{ flasker.getPersonImageWidth(movies) }}px"  /></a></TD>
+	
+	<TD>
+	<div class="helv">
+	<a href="https://www.imdb.com/name/{{ person.nm }}" class='imdb'  {{ flasker.getPersonNameSize(movies) }} target="_blank">{{ person.name }}</a>
+	{% if movies|length > 0 %}
+	<br>{{ person.getDateRange() }}
+	{% endif %}
+	</div>
+	</TD>
+	
+	<TD>
+	{% if movies|length == 0 %}
+	<BUTTON id="button_{{ person.nm }}" type="submit" style="height:34px;" class="button_up" onclick="adderPersonListRapid('{{ person.nm }}')">Show Movies</BUTTON>
+
+	<div id="spinner_{{ person.nm }}" style="display:none">
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="{{url_for('static', filename='images/spinner.gif') }}" width="60px" >
+	</div>
+	{% endif %}
+	
+	</tr>
+
+{% endfor %}
+</table>
+</div>
+
+
+<script>
+{% if addPersonSearch != '' %}
+setSearchFocus('addPersonSearch');
+{% else %}
+setSearchFocus('addTitleSearch');
+{% endif %}
+</script>
+

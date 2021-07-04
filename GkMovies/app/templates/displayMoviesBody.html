@@ -1,0 +1,60 @@
+
+{% for i in pager.getMovieRange() %}
+
+{% set imovie = movies[i].imdb_movie %}
+	<tr>
+	{% for col in user.getColumns(cuser, searcher.displayType)  %}
+	
+		{% if col.vis == 'T' %}
+		<td>
+		{% if col.name == "poster" %}		
+			<a href="https://www.imdb.com/title/{{ imovie.tt }}" target="_blank"><img src="{{url_for('static', filename='posters')}}/{{ imovie.tt }}.jpg" width="{{ col.getWidth() }}px"></a>
+		{% elif col.dataFormat == "img" %}
+			<a href="Javascript:{{ col.name }}('{{ imovie.id }}', '{{ flasker.quote(imovie.title) }}' )"><img src="/static/images/{{ col.name }}.png" width="{{ col.getWidth() }}px"  ></a>
+		{% elif col.attribute.editable == 'T' and col.rows < 2 %}
+			<input type="text"  id="{{ col.name }}_{{ imovie.id }}" name="{{ col.name }}_{{ imovie.id }}" value="{{ flasker.getFormatValue(movies[i], col) }}" style="width:{{ col.getWidth() }}px"  {{ clubber.isAllowedUpdate(user.id) }}  oninput="changeInput('{{ col.name }}', '{{ imovie.id }}', '{{ col.dataFormat }}')" >
+		{% elif col.attribute.editable == "T" and col.rows > 1 %}
+<textarea id="{{ col.name }}_{{ imovie.id }}" name="{{ col.name }}_{{ imovie.id }}" style="width:{{ col.getWidth() }}px" rows="{{ col.rows }}"  {{ clubber.isAllowedUpdate(user.id) }}  oninput="changeInput('{{ col.name }}', '{{ imovie.id }}', '{{ col.dataFormat }}')" >{{ flasker.getFormatValue(movies[i], col) }}</textarea>
+		{% elif col.attribute.scrollable == 'T' %}
+		<div class="scrollable" style="height:{{ col.getHeight() }}px">
+{{ flasker.getFormatValue(movies[i], col) }}
+		</div>
+		{% elif col.name == 'title' %}
+			<a href="https://www.imdb.com/title/{{ imovie.tt }}"  target="_blank">
+			<img src="{{url_for('static', filename='images/imdb.jpg')}}" style="width:27px">
+			</a><br>
+			{% if imovie.series != '' %}
+				<a href="JavaScript:filterSeries('{{ flasker.quote(imovie.series) }}' )" class="imdb" >
+				{{ flasker.getFormatValue(movies[i], col) }}
+				</a>
+			{% else %}
+				{{ flasker.getFormatValue(movies[i], col) }} 
+			{% endif %}
+			
+			<P><br><P><br>
+			{% if clubber.canChangeToSeen(user, cuser, searcher.displayType, clubber.club) %}
+				<a href="JavaScript:movieSeen('{{ imovie.tt }}')">Change to movie seen</a>
+			{% elif searcher.displayType == 'seen' %}
+				{% for club in clubber.getMovieClubs(cuser, movies[i]) %}
+					<a href="JavaScript:movieReview( '{{ club.club_id }}', '{{ imovie.id }}')">{{ club.name }} Review</a><br>
+				{% endfor %}
+			{%endif %}
+				
+		{% elif col.name == 'genre' %}
+			{% for genre in imovie.genres %}
+				{{ flasker.getFormatString(genre.genre, col) }}<br>
+			{% endfor %}
+		{% elif col.name == 'actor' %}
+		{% include 'displayActors.html' %}
+	
+		{% elif col.name == 'crew' %}
+		{% include 'displayCrew.html' %}
+		
+		{% else %}
+			{{ flasker.getFormatValue(movies[i], col) }}
+        {% endif %}
+        </td>
+        {% endif %}
+     {% endfor %}
+     </tr>
+{% endfor %}

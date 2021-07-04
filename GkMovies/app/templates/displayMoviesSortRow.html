@@ -1,0 +1,22 @@
+{% for col in user.getColumns(cuser, searcher.displayType)  %}
+
+	{% if col.vis == 'T' %}
+		
+		{% if col.name == "poster" %}
+			<TD class="poster_font" style="padding-top: 21px;">
+			Sort by:
+		{% else %}
+			<TD align="center">
+			<IMG src="{{ flasker.getArrow(col.name) }}" width="20" style="visibility: {{ flasker.getVisibility(col.name) }}; ">
+			<br>
+			{% if col.attribute.sortable == 'T' %}
+				<BUTTON  name="{{ col.name }}" type="submit" style="height:38px;{{ col.getButtonColor() }}" onclick="doSort('{{ col.name }}')">{{ col.label }}</BUTTON>
+			{% else %}
+				<div class="button_sort">{{ col.label }}</div>
+			{% endif %}
+		{% endif %}
+		</TD>
+	{% endif %}
+	
+{% endfor %}
+

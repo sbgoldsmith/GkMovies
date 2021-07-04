@@ -1,0 +1,166 @@
+{% macro outSection(section) %}
+
+<table>
+{% for col in section %}
+
+	<tr>
+	<td class='helv'>{{ col.label }}:&nbsp;</td>
+	<td class='helv'>
+		{% if col.rows < 2 %}
+		<input type="text"  id="{{ col.name }}_{{ clubber.userMovie.id }}" name="{{ col.name }}_{{ clubber.userMovie.id }}" value="{{ flasker.getFormatValue(clubber.userMovie, col) }}" style="width:{{ col.getWidth() }}px" {{ clubber.isAllowedUpdate(user.id) }} oninput="clubUpdateField('{{ clubber.club.club_id }}', '{{ clubber.userMovie.id }}', '{{ col.name }}', '{{ col.dataFormat }}')" >
+		{% else %}
+<textarea id="{{ col.name }}_{{ clubber.userMovie.id }}" name="{{ col.name }}_{{ clubber.userMovie.id }}" style="width:{{ col.getWidth() }}px" rows="{{ col.rows }}"  {{ clubber.isAllowedUpdate(user.id) }} oninput="clubUpdateField('{{ clubber.club.club_id }}', '{{ clubber.userMovie.id }}', '{{ col.name }}', '{{ col.dataFormat }}')" >
+{{ flasker.getFormatValue(clubber.userMovie, col) }}
+</textarea>
+		{% endif %}
+	</td>
+	</tr>
+	
+{% endfor %}
+</table>
+
+{% endmacro %}
+
+
+
+<HTML>
+<HEAD>
+<meta http-equiv="cache-control" content="no-cache"  />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<TITLE>
+Movie Review
+</TITLE>
+<style>
+{{ style }}
+</style>
+
+<script src="{{url_for('.static', filename='client/GkMovies.js')}}?r={{ rand }}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+</HEAD>
+<BODY onbeforeunload="alert('function alrt WORKS !!!!')">
+{% set imovie = clubber.imdbMovie %}
+
+<!--  Header Section -->
+<table>
+<tr>
+<td>
+{% if clubber.club.header != '' %}
+<img src="{{url_for('static', filename='clubs')}}/{{ clubber.club.header }}" height="100px" width="300px">
+{% else %}
+<span class="helv_large">{{ clubber.club.name }}</span>
+{% endif %}
+</td>
+<td style="vertical-align:top">
+<div class="helv" style="width:300px;">
+<a href="Javascript:close();" style="float:right;">Close</a>
+</div>
+</td>
+</tr>
+</table>
+
+
+<!--  Title Section -->
+<hr>
+<table>
+<tr>
+<td rowspan="2" style="vertical-align:top">
+<a href="https://www.imdb.com/title/{{ imovie.tt }}" target="_blank">
+	<img src="{{url_for('static', filename='posters')}}/{{ imovie.tt }}.jpg" width="100px">
+</a>
+</td>
+
+<td class="movie_review_title" style="vertical-align:top" >{{ imovie.title }}&nbsp;({{ imovie.iyear }})<br>
+    <span class="helv">{{ imovie.getGenreString() }}</span>
+</td>
+</tr>
+
+<tr>
+<td>
+{% include 'movieReviewTitle.html' %}
+</td>
+</tr>
+			
+
+</table>
+
+<!--  Common Section -->
+<hr>
+
+<table>
+<tr>
+	<td style='vertical-align:top'>
+	{{ outSection(clubber.section1) }}
+	</td>
+	
+	<td style="width:35px"></td>
+
+	<td style='vertical-align:top'>
+	{{ outSection(clubber.section2) }}
+	</td>
+	
+</tr>
+
+</table>
+
+
+<!--  Members Section -->
+<hr>
+
+<table>
+<tr class="title_bold">
+<th></th><th>Member</th><th>Date Seen</th><th>Rating</th><th>Review</th>
+</tr>
+
+
+
+
+{% for clubUser in clubber.clubUsers %}
+
+	<tr>
+		<td style="vertical-align:top;align-text:left;width:55px">
+		<img src="{{url_for('static', filename='faces')}}/{{ clubUser.user.getFace()}}" width="50px">
+		</td>
+
+		<td  style="vertical-align:top;" class="helv">
+		{{ clubUser.user.firstName }} {{ clubUser.user.lastName }}
+		</td>
+		
+		{% set userMovie = clubUser.getUserMovie(clubber.imdbMovie.id) %}
+		{% if userMovie %}
+<td style="vertical-align:top;">
+			<input type="text"  id="my_date_seen_{{ userMovie.id }}" name="my_date_seen_{{ userMovie.id }}" value="{{ clubber.formatDate(userMovie.my_date_seen) }}" {{ clubber.getDisabled(userMovie.user_id) }} style="width:80px" oninput="clubUpdateField('{{ clubber.club.club_id }}', '{{ userMovie.id }}', 'my_date_seen', 'date')" >
+			</td>
+			
+			<td style="vertical-align:top;">
+			<input type="text"  id="my_rating_{{ userMovie.id }}" name="my_rating_{{ userMovie.id }}" value="{{ clubber.formatFloat(userMovie.my_rating) }}" {{ clubber.getDisabled(userMovie.user_id) }} style="width:50px" oninput="clubUpdateField('{{ clubber.club.club_id }}', '{{ userMovie.id }}', 'my_rating', 'number')" >
+			</td>
+			
+			<td style="vertical-align:top;">
+<textArea id="my_review_{{ userMovie.id }}" name="my_review_{{ userMovie.id }}" {{ clubber.getDisabled(userMovie.user_id) }} cols="60" rows="3" oninput="clubUpdateField('{{ clubber.club.club_id }}', '{{ userMovie.id }}', 'my_review', 'text')" >
+{{ userMovie.my_review }}
+</textArea>
+
+			</td>
+{% elif clubUser.user.id == current_user.id %}
+			<td href="helv" style="vertical-align:top;padding-left:20px" colSpan = "3">
+			<a href="addReviewedMovie?user_id={{ clubUser.user.id }}&club_id={{ clubber.club.club_id }}&imdb_movie_id={{ clubber.imdbMovie.id }}" class="helv">I saw this movie</a>
+			</tr>
+		{% elif current_user.id == clubber.club.owner_id %}
+
+			<td href="helv" style="vertical-align:top;padding-left:20px"  colSpan = "3">
+			<a href="addReviewedMovie?user_id={{ clubUser.user.id }}&club_id={{ clubber.club.club_id }}&imdb_movie_id={{ clubber.imdbMovie.id }}" class="helv">{{ clubUser.user.firstName }} saw this movie</a>
+			</td>
+		{% endif %}
+
+	</tr>
+
+{% endfor %}
+</table>
+
+<script>
+clubReviewSync('{{ clubber.club.club_id }}', '{{ imovie.id }}', 0);
+</script>
+
+</BODY>
+</HTML>

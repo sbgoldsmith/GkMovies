@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% from "_macros.html" import show_club_flash with context %}
+{{ show_club_flash(messages=get_flashed_messages()) }}
+
+<hr class="club">
+<H4>Club Memberships</H4>
+{% if clubber.myMemberships|length == 0 %}
+<span class="helv">Sorry, no clubs yet.</span>
+{% else %}
+<TABLE>
+<tr>
+<th></th>
+<th class='helv'>Club Name</th>
+<th style="width:15px"></th>
+<th class='helv'>Member<br>Since</th>
+</tr>
+{% for clubUser in clubber.myMemberships %}
+	<TR>
+	<td class='helv'>Enter&nbsp;</td> 
+	<td><a href="javaScript:displayClub('{{ clubUser.club_id }}')" class='helv'>{{ clubUser.club.name }}</a></td>
+	<td></td>
+	<td class='helv'>{{ flasker.formatDate(clubUser.date_accepted ) }}
+	</TR>
+{% endfor %}
+</TABLE>
+{% endif %}
+
+<hr class="club">
+
+<H4>Pending Invites</H4>
+{% if clubber.myInvites|length == 0 %}
+<span class="helv">You do not have pending invitations.</span>
+{% else %}
+<TABLE>
+{% for myInvite in clubber.myInvites %}
+	<TR>
+	<td class='helv'>On {{ myInvite.sdate }}, {{ myInvite.fromUser.firstName }} {{ myInvite.fromUser.lastName }} invited you to join club: '{{ myInvite.club.name }}'</td>
+	<TD></TD>
+	<th style="width:10px"></th>
+	<TD><a href="/inviteAnswer?invite_id={{myInvite.invite.invite_id }}&club_id={{ myInvite.club.club_id }}&answer=accept" class='helv'>Accept</a></TD>
+	<th style="width:10px"></th>
+	<TD><a href="/inviteAnswer?invite_id={{myInvite.invite.invite_id }}&club_id={{ myInvite.club.club_id }}&answer=decline" class='helv'>Decline</a></TD>
+	</TR>
+{% endfor %}
+</TABLE>
+{% endif %}
+<hr class="club">
+<H4>Clubs Created</H4>
+
+{% if clubber.myOwned|length == 0 %}
+<span class="helv">I have not created any clubs - yet.</span>
+{% else %}
+<table>
+<tr>
+<th></th>
+<th class='helv'>Club Name</th>
+<th style="width:15px">
+<th class='helv'>Date<br>Created</th>
+</tr>
+
+{% for club in clubber.myOwned %}
+	<tr>
+	<td class='helv'>Manage&nbsp;</td>
+	<td ><a href="/clubManage?club_id={{ club.club_id }}" class='helv'>{{ club.name }}</a></td>
+	<TD></TD>
+	<td class='helv'>{{ clubber.formatDate(club.date_created) }}</td>
+	</tr>
+{% endfor %}
+</table>
+{% endif %}
+
+<hr class="club">
+<H4><a href="clubCreate" class="h4">Create a New Club</a></H4>
+
+
+{% endblock %}

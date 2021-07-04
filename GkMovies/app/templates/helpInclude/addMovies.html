@@ -1,0 +1,39 @@
+There are three options for finding movies to add to your lists:
+<OL>
+<LI><a href="javascript:backToOpener('addMovies?action=typeSelect&addTypeSelectSearch=title');close()" class="helv">Simple Search</a>.
+<br>
+There is a single input box with this option.  Start typing a title and after about three characters, 
+matching movies from IMDb will be listed.  Unfortunately, matches must be exact so suggestions for 
+misspelled words are provided.  This option uses an older interface which 
+is fast but provides limited information.
+<P>
+<LI><a href="javascript:backToOpener('addMovies?action=typeSelect&addTypeSelectSearch=person');close()" class="helv">Advanced Search</a>.
+<br>
+The advanced search lets you look for movies by 
+title or person. Persons include actors and crew (i.e., directors and writers). 
+This option uses a new interface with access to much more information.  
+However, it is slow.  So that you don't have to wait half a lifetime, 
+it only retrieves poster and titles.  Press the appropriate 
+<BUTTON type="submit" class="button_small">Get ___</BUTTON> button to load plots, cast or crew 
+for movies that might be of interest.  If someone asked for these before, 
+they are saved locally and displayed.
+<P>
+<LI><a href="javascript:backToOpener('addMovies?action=typeSelect&addTypeSelectSearch=popular');close()" class="helv">Rank List</a>.
+<br>
+List movies by highest rank or most popular. To be included on the rank list, a movie must receive ratings from at least 25,000 users.  
+Popularity is a measure of how often users search for a movie and may include new or future releases.
+Of course, both measures change over time.  You can include movies that you previously selected or ones that are new to you.
+Use the check boxes to retrieve the overall list or a list for one or more genres.
+</OL>
+<P>
+For any movie listed:
+<UL>
+<LI>Press the <span class="light_bold">I <U>Saw</U> This Movie</span> button to 
+add it to the movies you have seen.  
+<LI>Press the <span class="light_bold">I <U>Want</U> to See This Movie</span> button to add it to your watch list of movies.
+</UL> 
+<P>
+If you have any questions,
+please
+<a href="javascript:backToOpener('{{ url_for('contact') }}?r={{ rand }}');close()" class="helv">Contact Us</a>
+so I can improve usability.

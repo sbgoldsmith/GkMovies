@@ -1,0 +1,38 @@
+	<table border=0>
+	<tr>
+		<td class="per_page_cell">
+		<div class="helv">
+		Movies per Page: 
+		<select name="perPage" id="perPage" onchange="changePerPage()">
+		<option value="5" {{ pager.getPerPageSelected(5) }}>5</option>
+  		<option value="10" {{ pager.getPerPageSelected(10) }}>10</option>
+  		<option value="25" {{ pager.getPerPageSelected(25) }}>25</option>
+  		<option value="50" {{ pager.getPerPageSelected(50) }}>50</option>
+  		<option value="100" {{ pager.getPerPageSelected(100) }}>100</option>
+  		<option value="250" {{ pager.getPerPageSelected(250) }}>250</option>
+  		<option value="500" {{ pager.getPerPageSelected(500) }}>500</option>
+  		<option value="1000" {{ pager.getPerPageSelected(1000) }}>1000</option>
+  		<option value="All" {{ pager.getPerPageSelected(0) }}>All</option>
+		</select>
+		</div>
+		</td>
+		
+		{% if pager.getNumPages() > 1 %}
+			<td class="arrow_page_cell" >
+			<a href="javascript:doPager('pageArrow', 'p2')"><img src="{{ url_for('static', filename='images/page_prev_2.png') }}" width="25" style="visibility: {{ pager.getVisibility('p2') }}; "></a>
+			<a href="javascript:doPager('pageArrow', 'p1')" style="pointer-events: {{ pager.getPointerEvents('p1') }}"><img src="{{ url_for('static', filename='images/page_prev_1.png') }}" width="25" style="opacity: {{ pager.getOpacity('p1') }}; "></a>
+			</td>
+			{% for p in pager.getGroupRange() %}
+			<td class="page_number_cell">
+			<a href="javascript:doPager('pageSelected', '{{ p }}')" class="page_text" >{{pager.strong(p)}}</a>
+			</td>
+			{% endfor %}
+			<td class="arrow_page_cell">
+			<a href="javascript:doPager('pageArrow', 'n1')" style="pointer-events: {{ pager.getPointerEvents('n1') }}"><img src="{{ url_for('static', filename='images/page_next_1.png') }}" width="25" style="opacity: {{ pager.getOpacity('n1') }}; "></a>
+			<a href="javascript:doPager('pageArrow', 'n2')"><img src="{{ url_for('static', filename='images/page_next_2.png') }}" width="25" style="visibility: {{ pager.getVisibility('n2') }}; "></a>
+			</td>
+			
+			
+		{% endif %}
+	</tr>
+	</table>

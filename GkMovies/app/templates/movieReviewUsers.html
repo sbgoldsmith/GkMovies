@@ -1,0 +1,32 @@
+
+
+<tr>
+<td style="vertical-align:top;align-text:left;width:55px">
+<img src="{{url_for('static', filename='faces')}}/{{ userMovie.user.getFace()}}" width="50px">
+</td>
+
+<td  style="vertical-align:top;" class="helv">
+{{ userMovie.user.firstName }} {{ userMovie.user.lastName }}
+</td>
+
+<td style="vertical-align:top;">
+<input type="text"  id="my_date_seen_{{ userMovie.id }}" name="my_date_seen_{{ userMovie.id }}" value="{{ clubber.formatDate(userMovie.my_date_seen) }}" {{ clubber.getDisabled(userMovie.user_id) }} style="width:80px" oninput="clubUpdateField('{{ clubber.club.club_id }}', '{{ userMovie.id }}', 'my_date_seen', 'date')" >
+</td>
+
+<td style="vertical-align:top;">
+<input type="text"  id="my_rating_{{ userMovie.id }}" name="my_rating_{{ userMovie.id }}" value="{{ clubber.formatFloat(userMovie.my_rating) }}" {{ clubber.getDisabled(userMovie.user_id) }} style="width:50px" oninput="clubUpdateField('{{ clubber.club.club_id }}', '{{ userMovie.id }}', 'my_rating', 'number')" >
+</td>
+
+<td style="vertical-align:top;">
+<textArea id="my_review_{{ userMovie.id }}" name="my_review_{{ userMovie.id }}" {{ clubber.getDisabled(userMovie.user_id) }} cols="60" rows="3" oninput="clubUpdateField('{{ clubber.club.club_id }}', '{{ userMovie.id }}', 'my_review', 'text')" >
+{{ userMovie.my_review }}
+</textArea>
+
+</td>
+
+<tr>
+{% endfor %}
+
+</table>
+
+

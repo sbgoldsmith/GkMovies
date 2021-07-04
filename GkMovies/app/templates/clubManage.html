@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% from "_macros.html" import show_errors with context %}
+{% from "_macros.html" import show_club_flash with context %}
+{{ show_club_flash(messages=get_flashed_messages()) }}
+
+<form action="/clubManage?club_id={{ clubber.club.club_id }}" method="post" enctype="multipart/form-data" novalidate>
+{{ form.hidden_tag() }}
+
+<hr class='club'>
+<H4 class="helv">Club Attributes</H4>
+<table>
+<tr>
+<td class="helv">{{ form.name.label }}&nbsp;</td>
+<td class="helv">{{ form.name(size=32) }}</td>
+<td>{{ show_errors(form.name) }}</td>
+<tr>
+
+<tr>
+<td class="helv">{{ form.description.label }}</td>
+<td class="helv">{{ form.description(rows='4', cols='40') }}</td>
+<td>{{ show_errors(form.description) }}</td>
+<tr>
+
+<tr>
+<td class="helv">{{ form.header.label }}</td>
+<td class="helv">{{ form.header }}</td>
+<td class="helv">{{ show_errors(form.header) }}</td>
+</tr>
+
+<tr>
+<td class="helv">{{ form.allow_add_seen.label }}</td>
+<td class="helv">{{ form.allow_add_seen }}&nbsp;Allow members to add movies to the seen list</td>
+<td class="helv">{{ show_errors(form.allow_add_seen) }}</td>
+</tr>
+
+<tr>
+<td class="helv">{{ form.allow_add_want.label }}</td>
+<td class="helv">{{ form.allow_add_want }}&nbsp;Allow members to add movies to the watch list</td>
+<td class="helv">{{ show_errors(form.allow_add_want) }}</td>
+</tr>
+
+<tr>
+<td class="helv">{{ form.allow_update.label }}</td>
+<td class="helv">{{ form.allow_update }}&nbsp;Allow members to update common Movie Review fields</td>
+<td class="helv">{{ show_errors(form.allow_update) }}</td>
+</tr>
+
+</table>
+
+
+<P>
+{{ form.submit() }}
+
+</form>
+
+<hr class='club'>
+<H4 class="helv">Current Members</H4>
+<table>
+<tr>
+<th class="helv">Member<br>Name</th>
+<th style="width:15px"></th>
+<th class="helv">Member<br>Since</th>
+</tr>
+{% for clubUser in clubber.club.clubUsers %}
+<tr>
+<td class="helv">{{ clubUser.user.firstName }} {{ clubUser.user.lastName }} </td>
+<td></td>
+<td class="helv">{{  flasker.formatDate(clubUser.date_accepted) }}</td> 
+</tr>
+{% endfor %}
+</table>
+
+<hr class='club'>
+<H4 class="helv">Pending Invites</H4>
+{% if clubber.clubInvites|length == 0 %}
+<span  class="helv">This club has no pending invitations.</span>
+{% else %}
+<table>
+<tr>
+<th class="helv">Name</th>
+<th style="width:15px"></th>
+<th class="helv">Invite<br>Sent</th>
+</tr>
+
+{% for invite in clubber.clubInvites %}
+<tr>
+<td class="helv">{{ invite.user.firstName }} {{ invite.user.lastName }} </td>
+<td></td>
+<td class="helv">{{ flasker.formatDate(invite.date_sent) }}</td>
+</tr>
+{% endfor %}
+</table>
+{% endif %}
+
+<hr class='club'>
+<H4 class="helv">Invite Members:</H4>
+
+<form action="/clubManageSearch?club_id={{ clubber.club.club_id }}" method="post" novalidate>
+<table>
+<tr>
+
+{{ searchForm.hidden_tag() }}
+<td class="helv">{{ searchForm.searchText.label }}</td>
+<td class="helv">{{ searchForm.searchText(size=24) }}</td>
+<td>{{ searchForm.submit() }}</td>
+</tr>
+</table>
+
+<table>
+	{% for user in clubber.matched %}
+	<tr>
+	<td class="helv">{{ user.firstName }} {{ user.lastName }}</td>
+	<th style="width:10px"></th>                                                       
+	<td class="helv">
+	{% if user.clubInviteStatus %}
+		{{ user.clubInviteStatus }}
+	{% else %}
+		<a href="clubInvite?to_user_id={{ user.id }}&club_id={{ clubber.club.club_id }}" class="helv">Invite</a>
+	{% endif %}
+	</td>
+	</tr>
+	{% endfor %}
+</table>
+</form>
+
+<hr class="club">
+<H4><a href="javascript:clubManageDelete( '{{ clubber.club.club_id }}', '{{ clubber.club.name }}' )" class="h4">Delete Club</a></H4>
+
+{% endblock %}

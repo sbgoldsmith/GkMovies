@@ -1,0 +1,37 @@
+<table>
+<tr class="title_bold">
+<th>
+Cast
+</th>
+<th>
+Crew
+</th>
+<th>
+Plot Summary
+</th>
+<tr>
+{% for col in user.getColumns(cuser, searcher.displayType)  %}	
+	{% if col.name == 'actor' %}
+		<td style="vertical-align:top;width:180px">
+			<div class="scrollable" style="height:120px">
+			{{ clubber.allCast(imovie.tt) }}
+			</div>
+		</td>
+		
+	{% elif col.name == 'crew' %}
+		<td style="vertical-align:top;width:220px">
+		{% include 'displayCrew.html' %}
+		</td>
+		
+	{% elif col.name == 'plot.summary' %}
+		<td style="width:300px">
+			<div class="scrollable_auto" style="height:120px">
+			{{ imovie.plot.summary }}
+			</div>
+		</td>
+	{% endif %}
+
+{% endfor %}
+
+</tr>
+</table>

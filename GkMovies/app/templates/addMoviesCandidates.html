@@ -1,0 +1,11 @@
+{% if omdb.candidates | length > 0 %}
+	<select class="hide_slide" name="candidate" id="candidate" size="4"  onchange="adderTitleSearchOmdbCandidate( '{{ omdb.badWord }}' )" onfocus="this.selectedIndex = -1;">
+	{% for candidate in omdb.candidates %}
+		<option value="{{ candidate }}" style="font-size: 17px;">{{ candidate }}</option>
+	{% endfor %}
+	</select>
+{% else %}
+	&nbsp;
+{% endif %}
+
+

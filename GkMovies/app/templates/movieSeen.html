@@ -1,0 +1,64 @@
+<HTML>
+<HEAD>
+<meta http-equiv="cache-control" content="no-cache"  />
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="expires" content="0" />
+<TITLE>
+Movie Seen Entry
+</TITLE>
+<style>
+{{ style }}
+</style>
+
+<script src="{{url_for('.static', filename='client/GkMovies.js')}}?r={{ rand }}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+</HEAD>
+<BODY onunload="backToOpener('/displayMovies?displayType=want')">
+<div class="helv_section">
+Movie changed to <strong>seen</strong>.<br>
+Would you like to add custom information for this movie?<br>
+You can do that now or wait until you are viewing Display "Seen" Movies.
+<P><br><P>
+</div>
+<table>
+<tr>
+<td style="vertical-align:top">
+<a href="https://www.imdb.com/title/{{ movie.imdb_movie.tt }}" target="_blank">
+	<img src="{{url_for('static', filename='posters')}}/{{ movie.imdb_movie.tt }}.jpg" width="100px">
+</a>
+</td>
+<td class="movie_review_title" style="vertical-align:top" >
+{{ movie.imdb_movie.title }}&nbsp;({{ movie.imdb_movie.iyear }})<br>
+</td>
+
+</tr>	
+</table>
+<hr>
+
+<table>
+{% for col in user.getColumns(cuser, searcher.displayType)  %}
+
+	{% if col.vis == 'T' and col.attribute.editable == 'T' %}
+		<tr>
+		<td class="helv">{{ col.label }}:&nbsp;</td>
+		
+		<td>
+		{% if col.rows < 2 %}
+		<input type="text"  id="{{ col.name }}_{{ movie.imdb_movie.id }}" name="{{ col.name }}_{{ movie.imdb_movie.id }}" value="{{ flasker.getFormatValue(movie, col) }}" style="width:{{ col.getWidth() }}px" oninput="changeInput('{{ col.name }}', '{{ movie.imdb_movie.id }}', '{{ col.dataFormat }}')" >
+		
+		{% else %}
+<textarea id="{{ col.name }}_{{ movie.imdb_movie.id }}" name="{{ col.name }}_{{ movie.imdb_movie.id }}" style="width:{{ col.getWidth() }}px" rows="{{ col.rows }}"  oninput="changeInput('{{ col.name }}', '{{ movie.imdb_movie.id }}', '{{ col.dataFormat }}')" >{{ flasker.getFormatValue(movie, col) }}</textarea>
+        
+        {% endif %}
+        </td>
+        </tr>
+	{% endif %}
+
+{% endfor %}
+</table>
+
+<P><br><P>
+
+<a href="javascript:close()" class="imdb_large" style="margin-top:80px;padding-left:200px">DONE</a>
+</BODY>
+</HTML>

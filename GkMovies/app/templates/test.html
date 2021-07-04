@@ -1,0 +1,515 @@
+
+
+
+<HTML>
+
+
+<HEAD>
+<TITLE>
+Goldkeys Movies - Account Settings
+</TITLE>
+
+<link rel="stylesheet" href="/static/client/GkMovies.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+<script src="/static/client/GkMovies.js?version=1.7.1"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+<style>
+
+        
+            
+    .title_bold {
+        font-family: Helvetica;
+        font-size: 14px;
+        font-weight: bold;
+    }
+    
+    .title_bold_special {
+        font-family: Helvetica;
+        font-size: 15px;
+        font-weight: bold;
+        color: green;
+    }
+    
+    
+    h2 {
+        font-family: Helvetica;
+        font-size: 20px;
+        margin-bottom: -1px;
+    }
+    
+    li.helv {
+        font-family: Helvetica;
+        font-size: 13px;
+    }
+
+    a.helv {
+        font-family: Helvetica;
+        font-size: 14px;
+        text-decoration: none;
+        color:blue;
+    }
+    
+    a.helv_large {
+        font-family: Helvetica;
+        font-size: 15px;
+        text-decoration: none;
+        color:blue;
+    }
+    
+    a.imdb:link {
+        font-family: Helvetica;
+        font-size: 13px;
+        text-decoration: none;
+        color:blue;
+    }
+    
+    a.imdb:visited {
+        font-family: Helvetica;
+        font-size: 13px;
+        text-decoration: none;
+        color:purple;
+    }
+
+    a.imdb_large:link {
+        font-family: Helvetica;
+        font-size: 15px;
+        text-decoration: none;
+        color:blue;
+    }
+    
+    a.imdb_large:visited {
+        font-family: Helvetica;
+        font-size: 15px;
+        text-decoration: none;
+        color:purple;
+    }
+    
+    a.helv_small {
+        font-family: Helvetica;
+        font-size: 13px;
+        text-decoration: none;
+        color:blue;
+    }
+    
+    a.helv_smaller {
+        font-family: Helvetica;
+        font-size: 12px;
+        text-decoration: none;
+        color:blue;
+    }
+    
+    div.helv {
+        font-family: Helvetica;
+        font-size: 14px;
+    }
+    
+    div.helv_small {
+        font-family: Helvetica;
+        font-size: 13px;
+    }
+    
+    div.helv_small_color {
+        font-family: Helvetica;
+        font-size: 13px;
+        color: red;
+    }
+    
+    div.helv_large {
+        font-family: Helvetica;
+        font-size: 15px;
+    }
+    
+    
+    div.helv_section {
+        font-family: Helvetica;
+        font-size: 14px;
+        width: 750px;
+    }
+
+    div.base_spinner {
+        display:none;
+        position: absolute; 
+        top: 40px;
+        left: 560px;
+    }
+    
+    
+    span.helv_small {
+        font-family: Helvetica;
+        font-size: 13px;
+    }
+    
+    span.helv {
+        font-family: Helvetica;
+        font-size: 14px;
+    }
+    
+    span.helv_large {
+        font-family: Helvetica;
+        font-size: 16px;
+    }
+    
+    td.movie_review_title {
+        vertical-align: top;
+        padding-top: 0px;
+        font-family: Helvetica;
+        font-size: 18px;
+    }
+    
+    span.light_bold {
+        font-family: Helvetica;
+        font-weight: normal;
+        color: blue;
+        font-size: 14px;
+    }
+
+    
+    
+    td.helv  {
+        font-family: Helvetica;
+        font-size: 14px;
+    }
+    
+    td.poster_font {
+        font-family: Helvetica;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: left;
+    }
+    
+    a.poster_link_font {
+        font-family: Helvetica;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: left;
+        text-decoration: none;
+    }
+    
+    td.noborder {
+        border-bottom: 0px;
+        border-left: 0px;
+        border-right: 0px;
+    }
+    
+    div.tight {
+        margin-top: -9px;
+        margin-bottom: -9px;
+    }
+    
+    div.button_sort {
+        font-family: Helvetica;
+        font-size: 14px;
+        display: inline-block;
+        padding-top: 9px;
+        padding-bottom: 8px;
+    }
+               
+    div.scrollable {
+        width: 100%;
+        padding: 0;
+        overflow: overlay;
+    }
+     
+    div.scrollable_auto {
+        width: 100%;
+        padding-left: 5;
+        padding-right: 5;
+        overflow: auto;
+        font-family: Helvetica; 
+        font-size: 13px;
+    }
+    
+    .hide_slide {
+        display: inline-block;
+        vertical-align: top;
+        overflow: hidden;
+        border: solid grey 0px;
+        outline:none;
+    }
+
+    .hide_slide select {
+        padding: 10px;
+        margin: -5px -20px -5px -5px;
+    }
+    
+    ul.version  {
+        padding-left: 14px;
+    }
+    
+    li.version {
+        padding-bottom: 8px;
+    }
+    
+    .button_up {
+        border: 1px solid #555555;
+        border-radius: 5px;
+        background-color: #D6EAF8;
+        color:blue;
+        font-family: Helvetica;
+        font-size: 13px;
+        cursor: pointer;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        box-shadow: -2px -2px 6px 2px rgba(0,0,0,0.5) inset;
+    }
+    
+    .button_down {
+        border: 1px solid #555555;
+        border-radius: 5px;
+        background-color: #D6EAF8;
+        color:red;
+        font-weight: bold;
+        font-family: Helvetica;
+        font-size: 13px;
+        cursor: pointer;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        box-shadow: 2px 2px 6px 2px rgba(0,0,0,0.5) inset;
+    }
+    
+    .button_small {
+        border: 1px solid #555555;
+        border-radius: 5px;
+        background-color: #D6EAF8;
+        color:blue;
+        font-family: Helvetica;
+        font-size: 13px;
+        cursor: pointer;
+        padding-top: 1px;
+        padding-bottom: 3px;
+        box-shadow: -2px -2px 5px 2px rgba(0,0,0,0.4) inset;
+    }
+    
+    .eye_inside i {
+        margin-left: -20px;
+        cursor: pointer;
+    }
+
+    .eye_outside i {
+        margin-left: 5px;
+        cursor: pointer;
+    }
+    
+    
+</style>
+
+</HEAD>
+<BODY style="position:relative">
+
+<div id="base_spinner" class="base_spinner">
+<img src="/static/images/spinner.gif" width="90px" >
+</div>
+
+<div class="helv">
+	<table>
+	<tr>
+	<td align="center" class="noborder">
+	<div class="tight">
+	 <a href="/home"><img src="/static/images/goldkeys.png" style="width:80px"></a><br>
+     Goldkeys Movies 
+     </div>
+ 	 </td>
+ 	 
+ 	 <td class="noborder">
+     
+	 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     Welcome Stevenb
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <a href="/home" class="helv">Home</a>&nbsp;&nbsp;
+     <a href="/addMovies" class="helv">Add</a>&nbsp;&nbsp;
+     uid = 2
+     <a href="javascript:showBaseSpinner('displayMovies', 'user', '2')" class="helv">Display</a>&nbsp;&nbsp;
+     <a href="/settings" class="helv"><strong>Settings</strong></a>&nbsp;&nbsp;
+     <a href="/logout" class="helv">Logout</a>
+     
+     </td>
+     </tr>
+     </table>
+     
+</div>
+        
+<hr>
+
+<table style="width:750px">
+<tr>
+<td class="noborder" style="vertical-align:top;height:60px;width:310px">
+<H2 style="margin-top:12px"> Account Settings </H2>
+  
+</td>
+
+<td id='baseTitleLine' class="noborder" style="vertical-align:top;width:300px">
+
+</td>
+
+<td class="noborder" style="vertical-align:top;width:200px;text-align:right">
+<a href="Javascript:help('/settings')" class="helv_large">Help</a>    
+</td>
+</tr>
+
+
+</table>
+
+
+<div class="helv">
+<table>
+<tr>
+<td valign="top" width="150px">
+
+<a href="/settings_account" class="helv"><strong>Account</strong></a><P><br>
+<a href="/settings_display" class="helv">Display</a><P><br>
+<a href="/settings_reset" class="helv">Session</a><P><br>
+
+</td>
+
+<td valign="top" width="650px">	
+
+	<div class="helv" width="500px" >
+Use this section to change your account settings.  City, state country and profile photo are optional 
+but please include them so your friends can find you when the Social Media features are implemented.
+<P>
+</div>
+
+
+
+
+
+		<div class="helv_small_color" style="height:14px">
+	    hello world
+		</div>
+
+
+<form action="" method="post" enctype="multipart/form-data" novalidate>
+    <input id="csrf_token" name="csrf_token" type="hidden" value="IjRhZTk1NmZiZDRiMTUwNDMzNjlhNjNkMzAxODJhYThkNzA2MTVjNjci.YD6G6Q.v_vj5PFaGLTm48q0ZEXWZy9zYj8">
+
+    <table>
+    <tr>
+    <td>    
+        <label for="firstName">First Name</label><br>
+        <input id="firstName" name="firstName" required size="16" type="text" value="Stevenb"><br>
+		
+	
+       	<br>
+      
+
+	</td>
+
+	<td>
+	    <label for="lastName">Last Name</label><br>
+        <input id="lastName" name="lastName" required size="16" type="text" value="Goldsmith"><br>
+		
+	
+       	<br>
+      
+
+    </td>
+    </tr>
+    
+    <tr>
+    <td colspan="2">   
+
+        <label for="login">Login</label><br>
+        <input id="login" name="login" required size="24" type="text" value="sbg"><br>
+		
+	
+       	<br>
+      
+
+	</td>
+	</tr>
+	
+	<tr>
+	<td colspan="2">
+        <label for="email">Email</label><br>
+        <input id="email" name="email" required size="24" type="text" value="sgoldsmith@goldkeys.com"><br>
+		
+	
+       	<br>
+      
+
+    </td>
+    </tr>
+    
+    <tr>
+	<td>
+        <label for="city">City</label><br>
+        <input id="city" name="city" size="24" type="text" value="Toms River"><br>
+		
+	
+       	<br>
+      
+
+    </td>
+
+
+    </tr>
+    
+    <tr>
+	
+    
+    <tr>
+	<td>
+        <label for="face">Profile Photo</label><br>
+        <input id="face" name="face" type="file"><br>
+		
+	
+       	<br>
+      
+
+    </td>
+    <td>
+    
+    <img src="/static/faces/steven.jpg" width="50px">
+    
+    </td>
+     
+    <tr>
+    <td>
+		<label for="password">Password</label><br>
+        <input id="password" name="password" required size="16" type="password" value="NothingToSee"><br>
+		
+	
+       	<br>
+      
+
+
+	</td>
+	
+	
+	<td>
+	    <label for="password2">Repeat Password</label><br>
+	    <div class="eye_outside">
+        <input id="password2" name="password2" required size="16" type="password" value="NothingToSee"><i class="far fa-eye" id="togglePassword"></i>
+        </div>
+		
+	
+       	<br>
+      
+
+    </td>
+    
+    </tr>
+    
+    <tr>
+    <td>&nbsp;<br><input id="submit" name="submit" type="submit" value="Update"></td>
+    </tr>
+
+    
+    </table>
+
+</form>
+
+<script>setUpEye('/settings')</script>
+        
+
+</td>
+
+</tr>
+</table>
+</div>
+
+
+
+</BODY>
+</HTML>

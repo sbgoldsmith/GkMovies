@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="helv">
+<table>
+<tr>
+<td valign="top" width="150px">
+
+<a href="{{ url_for('settings_account') }}" class="helv">{{ flasker.strong(settings, 'account', 'Account') }}</a><P><br>
+<a href="{{ url_for('settings_display') }}" class="helv">{{ flasker.strong(settings, 'display', 'Display') }}</a><P><br>
+<a href="{{ url_for('settings_reset') }}" class="helv">{{ flasker.strong(settings, 'reset', 'Session') }}</a><P><br>
+
+</td>
+
+<td valign="top" width="650px">	
+{% if settings == 'account' %}
+	{% include 'settings_account.html' %}
+{% elif  settings == 'display' %}
+	{% include 'settings_display.html' %}
+{% elif  settings == 'reset' %}
+	{% include 'settings_reset.html' %}
+{% else %}
+	{% include 'settings_intro.html' %}
+{% endif %}
+</td>
+
+</tr>
+</table>
+</div>
+
+{% endblock %}

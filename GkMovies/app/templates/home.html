@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% include 'upgrading.html' %}
+
+
+<div class="helv_section" style="margin-bottom:25px;">
+Welcome friend to Goldkeys Movies. Here you can track all your favorite movies and link them to the<br>
+Internet Movie Database 
+<img src="{{url_for('.static', filename='images/imdb.jpg')}}"  style="vertical-align:middle" width="40">.  
+Add as many or as few movies as you like. &nbsp;Add reviews, ratings,<br>
+dates seen, or any other movie
+information that interests you.
+Then sort or search for titles, reviews,<br>
+plot lines, cast members, etc.   
+</div>
+
+
+
+<table class="home" width="650px">
+<tr>
+<td class="home" width="130" valign="top" ><a href="{{ url_for('addMovies') }}" class="helv">Add Movies</a></td>
+<td class="home" >Go to this page first.  Search for movies by title, cast member, crew, or popularity.  
+For each movie listed, you can:
+<UL>
+<LI>Press <span class="light_bold">I <U>Saw</U> This Movie</span> to 
+add it to your list.  
+<LI>Press <span class="light_bold">I <U>Want</U> to See This Movie</span> to add it to your watch list of movies.
+</UL> 
+After you have added a few movies, try out the <a href="Javascript:showBaseSpinner('displayMovies')" class="helv">Display Movies</a> page.</td>
+
+</tr>
+
+<tr>
+<td class="home" width="130" valign="top"><a href="Javascript:showBaseSpinner('displayMovies')" class="helv">Display Movies</a></td>
+<td class="home" >This is the main Goldkeys Movies page.  It lists your movies seen or on your watch list,
+and associated information 
+from IMDb.  For each movie, you can enter these fields: Date Seen, My Rating, My Review or up to 10 other fields that you define in <a href="{{ url_for('settings') }}" class="helv">Settings</a>.   
+The remaining fields come from IMDb and are updated periodically.  This is where you can search and sort. 
+Press a button to sort and press it again to reverse the sort.
+Click on a movie poster or <img src="{{url_for('.static', filename='images/imdb.jpg')}}" style="width:27px"> icon to go to that IMDb page.  
+You can also list movies in a series (e.g. Star Wars)</td>
+</tr>
+
+<tr>
+<td class="home" width="130" valign="top"><a href="{{ url_for('settings') }}" class="helv">Settings</a></td>
+<td class="home" >You can customize Goldkeys Movies for your own needs.  Include additional columns
+of information or hide ones that don't interest you.  
+Change the width and height of 
+columns and add your own custom columns.  
+You can also change the account information that you entered when you registered.
+</td>
+</tr>
+
+<tr>
+<td class="home" width="130" valign="top"><a href="{{ url_for('club') }}" class="helv">Movie Clubs</a></td>
+<td class="home" >Members of a movie clubs can share their ratings and reviews. Create a new club or join an existing one.
+</td>
+</tr>
+
+
+<tr>
+<td class="home" width="130" valign="top"><a href="{{ url_for('contact') }}" class="helv">Contact Us</a></td>
+<td class="home" >Problems using Goldkeys Movies? Or do you have accolades you want to share?  Let us know.
+</td>
+</tr>
+
+<tr>
+<td class="home" width="130" valign="top"><a href="{{ url_for('versions') }}" class="helv">Release Notes</a></td>
+<td class="home" >Goldkeys Movies was last updated to Version {{ latestVersion.version }} on {{ latestVersion.getFormatInstallDate() }}. 
+This page shows the complete change history.
+</td>
+</tr>
+
+{% if user.admin == 'T' %}
+<tr>
+<td class="home" width="130" valign="top"><a href="{{ url_for('admin') }}" class="helv">Administration Functions</a></td>
+<td class="home" >Used to change the behavior of Goldkeys Movies for all users.</td>
+</tr>
+
+{% endif %}
+
+
+</table>
+
+<script>
+popNewVersions( {{ newVersions|length }}, {{ rand }});
+</script>
+
+
+{% endblock %}
+

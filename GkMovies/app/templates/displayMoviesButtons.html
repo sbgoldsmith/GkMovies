@@ -1,0 +1,15 @@
+<table >
+<tr >
+
+
+<TD class="noborder" style="vertical-align:top; text-align:center;width:140px;">
+<BUTTON  name="seen" type="submit" class="{{ flasker.getButtonClass('seen', searcher.displayType) }}" style="width:110px;" onclick="setDisplayType('seen', '{{ request.url_rule }}' )">{{ cuser.getDisplaySeenTitle() }}</BUTTON>
+</TD>
+
+<TD class="noborder"  style="vertical-align:top; text-align:center;width:140px;">
+<BUTTON  name="want" type="submit" class="{{ flasker.getButtonClass('want', searcher.displayType) }}" style="width:110px;" onclick="setDisplayType('want', '{{ request.url_rule }}' )">{{ cuser.getDisplayWantTitle() }}</BUTTON>
+</TD>
+
+</tr>
+
+</table>
