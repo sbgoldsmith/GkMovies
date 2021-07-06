@@ -568,6 +568,7 @@ class ClubUserMovie(db.Model):
     club_id = db.Column(db.Integer, db.ForeignKey('club.club_id'), index=True)
 
     club = db.relationship('Club')
+    
  
 def load_club_cache(id):
     return ClubCache.query.get(int(id))
