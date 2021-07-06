@@ -553,6 +553,8 @@ class ClubUser(db.Model):
     date_accepted = db.Column(db.DateTime())
     date_deleted = db.Column(db.DateTime())
     
+    club = db.relationship('Club')
+    
     def getUserMovie(self, imdb_movie_id):
         userMovie = UserMovie.query.filter(UserMovie.user_type == 'user', UserMovie.user_id == self.user_id, UserMovie.imdb_movie_id == imdb_movie_id).first()
         return userMovie

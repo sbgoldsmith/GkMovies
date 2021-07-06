@@ -85,7 +85,7 @@ from app import routes, models, errors
 from Library._TestModule import test
 
 
-with app.app_context():
-    test()
+#with app.app_context():
+    #test()
 
 
