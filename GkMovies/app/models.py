@@ -1,4 +1,4 @@
-#  Models #1
+#  Models #2
 
 from app import db, login
 from flask_login import UserMixin, current_user
